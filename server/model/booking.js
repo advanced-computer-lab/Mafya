@@ -1,10 +1,17 @@
 const mongoose = require("mongoose");
 
-const flightSchema= mongoose.Schema({
-
+const bookingSchema = mongoose.Schema(
+  {
+    clientId: {
+      type: String,
+      required: true,
+    },
+    flightId: {
+      type: String,
+      required: true,
+    },
     Flight_No:{
         type:String,
-        unique : true,
         required:true
     },
 
@@ -24,27 +31,7 @@ const flightSchema= mongoose.Schema({
         type:Date,
         required:true
     },
-    FirstSeats:{
-        type:Number,
-        required:true
-    },
-    BusinessSeats:{
-        type:Number,
-        required:true
-    },
-    EconomySeats:{
-        type:Number,
-        required:true
-    },
-    ReservedFirstSeats:{
-        type:Number,
-        required:true
-    },
-    ReservedBusinessSeats:{
-        type:Number,
-        required:true
-    },
-    ReservedEconomySeats:{
+    FirstNumberOfSeats:{
         type:Number,
         required:true
     },
@@ -52,7 +39,16 @@ const flightSchema= mongoose.Schema({
         type:Number,
         required:true
     },
+
+    BusinessNumberOfSeats:{
+        type:Number,
+        required:true
+    },
     BusinessPrice:{
+        type:Number,
+        required:true
+    },
+    EconomyNumberOfSeats:{
         type:Number,
         required:true
     },
@@ -62,27 +58,20 @@ const flightSchema= mongoose.Schema({
     },
     FirstSeatsNumbers:{
         type:[Number],
-        default :[] 
+        default : []
     },
     BusinessSeatsNumbers:{
-        type:[Number],
-        default : [] 
+        type:[Number] ,
+        default : []
     },
     EconomySeatsNumbers:{
-        type:[Number],
-        default : [] 
+        type: [Number],
+        default : []
     },
-    ReservedFirstSeatsNumbers:{
-        type:[Number],
-        default : [] 
-    },
-    ReservedBusinessSeatsNumbers:{
-        type:[Number],
-        default : [] 
-    },
-    ReservedEconomySeatsNumbers:{
-        type:[Number],
-        default : [] 
+    TotalPrice:{
+        type:Number,
+        default:'0',
+        required:true
     },
     BaggageAllowanceFirst:{
         type:Number,
@@ -98,10 +87,27 @@ const flightSchema= mongoose.Schema({
         type:Number,
         default:0,
         required:true
+    },
+    TotalBaggageAlowance:{
+        type:Number,
+        default:0,
+        required:true
+    },
+    NumberOfChildren:{
+        type:Number,
+        default:0,
+        required:true
     }
 
-});
 
-const flight =mongoose.model('flight',flightSchema);
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports= flight;
+
+
+const Booking = mongoose.model("Booking", bookingSchema);
+
+module.exports= Booking;

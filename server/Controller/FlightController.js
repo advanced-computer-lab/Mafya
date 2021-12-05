@@ -2,10 +2,24 @@
 const User = require( '../model/user.js');
 const Flight =require( '../model/flight.js');
 let alert = require('alert'); 
-let logedin = false;
+const Booking = require('../model/booking.js');
+const Client = require('../model/client.js');
+const clientController=require('../Controller/ClientController');
+let logedin = true;
+
+const nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'mafyaair@gmail.com',
+    pass: '19021902'
+  }
+});
+
 const  home= async (req,res)=>
 {
- 
+ sendMail('ahmednasser1902@gmail.com',"hello world","Mafya")
 };
 
 
@@ -44,10 +58,6 @@ const userLogin = async (req,res)=>{
 
 const createFlight=(req,res)=>
 {
-    if(!logedin){
-        res.send("Login First");
-      }
-      else{
     try{
     const flight=new Flight(
         {
@@ -58,7 +68,23 @@ const createFlight=(req,res)=>
             DateA: req.body.DateA,
             FirstSeats:req.body.FirstSeats,
             BusinessSeats: req.body.BusinessSeats,
-            EconomySeats:req.body.EconomySeats
+            EconomySeats:req.body.EconomySeats,
+            ReservedFirstSeats:0,
+            ReservedBusinessSeats: 0,
+            ReservedEconomySeats:0,
+            FirstPrice:req.body.FirstPrice,
+            BusinessPrice:req.body.BusinessPrice,
+            EconomyPrice:req.body.EconomyPrice,
+            FirstSeatsNumbers:implementArray(req.body.FirstSeats),
+            BusinessSeatsNumbers:implementArray(req.body.BusinessSeats),
+            EconomySeatsNumbers:implementArray(req.body.EconomySeats),
+            ReservedFirstSeatsNumbers:[],
+            ReservedBusinessSeatsNumbers:[],
+            ReservedEconomySeatsNumbers:[],
+            BaggageAllowanceFirst:req.body.BaggageAllowanceFirst,
+            BaggageAllowanceBusiness:req.body.BaggageAllowanceBusiness,
+            BaggageAllowanceEconomy:req.body.BaggageAllowanceEconomy
+            
 
         }
     );
@@ -67,30 +93,51 @@ const createFlight=(req,res)=>
         res.send("User created successfully");
     }).catch((err)=>
     { 
-        res.send("error try using valid Data");
+        res.send("Invalid Flight");
+        console.log(req.body)
     });
     }
     catch(error){
-        res.send("error try using valid Data");
+       
+        res.send("Invalid Flight");
     }
-}
+
  
 };
+const implementArray=(x)=>{
+   var arr = []
+   for(let i = 0 ;i<x;i++){
+       arr.push(i+1);
+   }
+   return arr;;
+}
 
 const deleteFlight = (req,res)=>{
-    if(!logedin){
-        res.send("Login First");
-      }
-      else{
     Flight.findByIdAndRemove(req.params.id).then(result =>{
-
+        notifyCancel(req.params.id)
         res.send("User Deleted successfully");
     }).catch(err => {
         res.send("error");
       });
-    }
+    
 
   };
+
+  const notifyCancel= async (id)=>{
+        Booking.find({flightId:id}).then(res=>{
+            for(let i = 0 ;i<res.length;i++){
+                Booking.findByIdAndRemove(res[i]._id).then(resss=>{
+                    Client.findById(res[i].clientId).then(currentClient=>{
+                    
+                        sendMail(currentClient.email,"Unfortunately, your booked flight is canceled due to emergency reasons ","Flight cancellation !!");
+    
+                    })
+                })
+  
+
+            }
+        })
+  }
 
   const getUpdateFlight = (req,res)=>{
     if(!logedin){
@@ -109,32 +156,131 @@ const deleteFlight = (req,res)=>{
 
 };
 
-  const updateFlight = (req,res)=>{
-      if(!logedin){
-        res.send("Login First");
-      }
-      else{
-    validateRec(req).then((valid)=>{
-        if(valid){
-        Flight.findByIdAndUpdate(req.params.id,req.body).then(result =>{
-            res.send("User updated successfully");
+const updateFlight = (req,res)=>{
+  validateRec(req).then((valid)=>{
+      if(valid){
+
+        Flight.findById(req.params.id).then((oldFilght)=>{
+
+            Flight.findByIdAndUpdate(req.params.id,req.body).then(result =>{
+                notify(oldFilght,req.body,req.params.id);
+        
+                res.send("User updated successfully");
+            }).catch(err => {
+                res.send("error");
+              });
+
         }).catch(err => {
             res.send("error");
           });
-        }
-        else{
-            res.send("invalid Data");
-        }
 
-    }).catch(err =>{
-        res.send("error");
 
-    })
+      }
+      else{
+          res.send("invalid Data");
       }
 
-  };
+  }).catch(err =>{
+      res.send("error");
 
-  const validateRec = async (req)=>{
+  })
+    
+
+};
+
+const notify=async(oldFlight,newFlight,id)=>{
+    //    oldFlight.FirstPrice==newFlight.FirstPrice&&oldFlight.BusinessPrice==newFlight.BusinessPrice&&oldFlight.EconomyPrice==newFlight.EconomyPrice;
+    const x=formatDate(oldFlight.DateD)==formatDate(newFlight.DateD)&&formatDate(oldFlight.DateA)==formatDate(newFlight.DateA)&&
+    oldFlight.Flight_No==newFlight.Flight_No&&oldFlight.From==newFlight.From&&oldFlight.To==newFlight.To
+
+
+    const clients = await Booking.find({"flightId":id});
+ 
+        for(let i = 0 ; i<clients.length;i++){
+            var currentClient = await Client.findById(clients[i].clientId);
+            var m = (isSubset(newFlight.ReservedFirstSeatsNumbers,clients[i].FirstSeatsNumbers)&&
+                    isSubset(newFlight.ReservedBusinessSeatsNumbers,clients[i].BusinessSeatsNumbers)&&
+                    isSubset(newFlight.ReservedEconomySeatsNumbers,clients[i].EconomySeatsNumbers));
+            console.log(x+"  "+m)
+            if(!m){
+                   ////cancel 
+                    clientController.cancelBooking(clients[i]._id.toString()).then(result=>{
+                    sendMail(currentClient.email,"Unfortunately, your booked flight is canceled due to emergency reasons ","Flight cancellation !!");
+                   })
+                   
+            }
+            else if(!x){
+                    ///update 
+                    console.log('update')
+                    var v ={
+                        Flight_No:newFlight.Flight_No,
+                        From:newFlight.From,
+                        To:newFlight.To,
+                        DateD:newFlight.DateD,
+                        DateA:newFlight.DateA,
+                    }
+
+ 
+
+                    Booking.findByIdAndUpdate(clients[i]._id.toString(),v).then((result)=>{
+                        sendMail(currentClient.email,"your booked flight is updated due to emergency reasons please visit your profile to check your flights details","Flight updating !!");
+                        console.log(clients[i]._id)
+                        console.log(v)
+
+                    }).catch(err => {
+                        console.log(err.message)
+                      });
+
+            }
+
+
+
+        }
+
+
+
+}
+
+
+function isSubset(arr1, arr2)
+{
+  let m = arr1.length;
+  let n = arr2.length;
+    let i = 0;
+    let j = 0;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++)
+            if (arr2[i] == arr1[j])
+                break;
+
+        if (j == m)
+            return false;
+    }
+
+    return true;
+}
+
+
+const sendMail=(email,message,subject)=>{
+    var mailOptions = {
+        from: 'mafyaair@gmail.com',
+        to: email,
+        subject: subject,
+        text: message
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error.message);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      }); 
+
+}
+
+
+const validateRec = async (req)=>{
     const data = req.body;
     const val ={};
     if(data.Flight_No==null || data.Flight_No=="" )
@@ -149,16 +295,21 @@ const deleteFlight = (req,res)=>{
        return false;
     if(data.BusinessSeats==null || data.BusinessSeats=="")
        return false;
+    if(data.FirstPrice==null || data.FirstPrice=="")
+        return false;
+    if(data.EconomyPrice==null || data.EconomyPrice=="")
+       return false;
+    if(data.BusinessPrice==null || data.BusinessPrice=="")
+       return false;
     if(data.DateA==null || data.DateA=="")
        return false;
     if(data.DateD==null || data.DateD=="")
        return false;
     return true;
     
-
   };
-
   const findAllFlights = (req, res) => {  
+      
       if(!logedin){
         res.send([]);
       } 
@@ -174,22 +325,40 @@ const deleteFlight = (req,res)=>{
     };
 
     const findFlights = (req,res)=>{
+        //console.log(req.body);
         const data = req.body;
         const val ={};
         if(data.Flight_No!=null && data.Flight_No!="" )
             Object.assign(val,{Flight_No:data.Flight_No})
+
         if(data.From!=null && data.From!="")
             Object.assign(val,{From:data.From})
         if(data.To!=null && data.To!="")
             Object.assign(val,{To:data.To})
 
-        if(data.FirstSeats!=null && data.FirstSeats!=""){
+        if(data.FirstSeats!=null && data.FirstSeats!="")
             Object.assign(val,{FirstSeats:data.FirstSeats})
-        }
-        if(data.EconomySeats!=null && data.EconomySeats!="")
-            Object.assign(val,{EconomySeats:data.EconomySeats})
+        if(data.ReservedFirstSeats!=null && data.ReservedFirstSeats!="")
+            Object.assign(val,{ReservedFirstSeats:data.ReservedFirstSeats})
+        if(data.FirstPrice!=null && data.FirstPrice!="")
+            Object.assign(val,{FirstPrice:data.FirstPrice})
+
         if(data.BusinessSeats!=null && data.BusinessSeats!="")
             Object.assign(val,{BusinessSeats:data.BusinessSeats})
+        if(data.ReservedBusinessSeats!=null && data.ReservedBusinessSeats!="")
+            Object.assign(val,{ReservedBusinessSeats:data.ReservedBusinessSeats})
+        if(data.BusinessPrice!=null && data.BusinessPrice!="")
+            Object.assign(val,{BusinessPrice:data.BusinessPrice})
+        
+        if(data.EconomySeats!=null && data.EconomySeats!="")
+            Object.assign(val,{EconomySeats:data.EconomySeats})
+        if(data.ReservedEconomySeats!=null && data.ReservedEconomySeats!="")
+            Object.assign(val,{ReservedEconomySeats:data.ReservedEconomySeats})
+        if(data.EconomyPrice!=null && data.EconomyPrice!="")
+            Object.assign(val,{EconomyPrice:data.EconomyPrice})
+
+
+        
 
         Flight.find(val).then((result)=>{
             resData =  filterDate(result,data) ;
@@ -229,7 +398,8 @@ const deleteFlight = (req,res)=>{
         findFlights,
         home,
         userLogin,
-        createUser
+        createUser,
+        sendMail
     }
 
     function formatDate(dateVal) {
