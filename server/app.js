@@ -3,6 +3,7 @@ const express=require('express');
 const app =express();
 
 const flightRouter=require('./routes/FlightRoutes');
+const clientRouter=require('./routes/ClientRouter');
 
 
 const mongoose=require('mongoose');
@@ -18,6 +19,7 @@ app.use(cors());
 
 
 app.use('/flights',flightRouter);
+
 
 
 app.listen(8000);
