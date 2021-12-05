@@ -90,48 +90,48 @@ function SearchScreen({ history }) {
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="formBasicEmail">
           
-            <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }}  label="From" variant="outlined" value={search.From} onChange={(event) =>{
+            <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="From" variant="outlined" value={search.From} onChange={(event) =>{
           setSearch({...search, From:event.target.value})
       }} />
-      <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }}label="To" variant="outlined" value={search.To} onChange={(event) =>{
+      <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="To" variant="outlined" value={search.To} onChange={(event) =>{
           setSearch({...search, To:event.target.value})
       }} />
           </Form.Group>
 
           <Form.Group controlId="formBasicEmail">
           
-          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} label="First Number Of Seats "  variant="outlined" type='Number' value={search.FirstNumberOfSeats1} onChange={(event) =>{
+          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }}required label="First Number Of Seats "  variant="outlined" type='Number' value={search.FirstNumberOfSeats1} onChange={(event) =>{
         setSearch({...search, FirstNumberOfSeats1:event.target.value})
     }} />
-    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }}label="First Number Of Seats "  variant="outlined" type='Number' value={search.FirstNumberOfSeats2} onChange={(event) =>{
+    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="First Number Of Seats "  variant="outlined" type='Number' value={search.FirstNumberOfSeats2} onChange={(event) =>{
         setSearch({...search, FirstNumberOfSeats2:event.target.value})
     }} />
         </Form.Group>
         <Form.Group controlId="formBasicEmail">
           
-          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} label="Business Number Of Seats"  variant="outlined" type='Number'value={search.BusinessNumberOfSeats1} onChange={(event) =>{
+          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="Business Number Of Seats"  variant="outlined" type='Number'value={search.BusinessNumberOfSeats1} onChange={(event) =>{
         setSearch({...search, BusinessNumberOfSeats1:event.target.value})
     }} />
-    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }}label="Business Number Of Seats"  variant="outlined" type='Number'value={search.BusinessNumberOfSeats2} onChange={(event) =>{
+    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="Business Number Of Seats"  variant="outlined" type='Number'value={search.BusinessNumberOfSeats2} onChange={(event) =>{
         setSearch({...search, BusinessNumberOfSeats2:event.target.value})
     }} />
         </Form.Group>
         <Form.Group controlId="formBasicEmail">
           
-          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} label="Economy Number Of Seats"  variant="outlined" type='Number' value={search.EconomyNumberOfSeats1} onChange={(event) =>{
+          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required  label="Economy Number Of Seats"  variant="outlined" type='Number' value={search.EconomyNumberOfSeats1} onChange={(event) =>{
         setSearch({...search, EconomyNumberOfSeats1:event.target.value})
     }} />
-    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }}label="Economy Number Of Seats"  type='Number'  variant="outlined" value={search.EconomyNumberOfSeats2} onChange={(event) =>{
+    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="Economy Number Of Seats"  type='Number'  variant="outlined" value={search.EconomyNumberOfSeats2} onChange={(event) =>{
         setSearch({...search, EconomyNumberOfSeats2:event.target.value})
     }} />
         </Form.Group>
 
         <Form.Group controlId="formBasicEmail">
           
-          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} label="Number of children"  variant="outlined" type='Number' value={search.children1} onChange={(event) =>{
+          <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="Number of children"  variant="outlined" type='Number' value={search.children1} onChange={(event) =>{
         setSearch({...search, children1:event.target.value})
     }} />
-    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }}label="Number of children"  type='Number'  variant="outlined" value={search.children2} onChange={(event) =>{
+    <TextField id="outlined-basic" sx={{ m: 1, width: '60ch' }} required label="Number of children"  type='Number'  variant="outlined" value={search.children2} onChange={(event) =>{
         setSearch({...search, children2:event.target.value})
     }} />
         </Form.Group>
@@ -141,7 +141,7 @@ function SearchScreen({ history }) {
           <Form.Group controlId="formBasicPassword">
           <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
-        renderInput={(props) => <TextField {...props}   sx={{ m: 1, width: '60ch' }}/>}
+        renderInput={(props) => <TextField {...props}  required  sx={{ m: 1, width: '60ch' }}/>}
         label="Departure Date"
         value={search.DateD}
         onChange={(newValue) =>{
@@ -152,7 +152,7 @@ function SearchScreen({ history }) {
       
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
-        renderInput={(props) => <TextField {...props} sx={{ m: 1, width: '60ch' }}  />}
+        renderInput={(props) => <TextField {...props} required  sx={{ m: 1, width: '60ch' }}  />}
         label="Arrival Date"
         value={search.DateA}
         onChange={(newValue) =>{
