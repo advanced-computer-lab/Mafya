@@ -116,6 +116,7 @@ export default function CreateFlight({history}) {
       setF1(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice);
       setB1(JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice);
       setE1(JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice);
+      console.log(res.data.FirstPrice);
 
       setFlight1({
         clientId:userInfo?userInfo._id:'',
@@ -134,7 +135,9 @@ export default function CreateFlight({history}) {
         FirstSeatsNumbers:[],
         BusinessSeatsNumbers :[],
         EconomySeatsNumbers : [],
-        TotalPrice:f1+b1+e1,
+        TotalPrice:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice)+
+                     (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice)+
+                     (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice),
         BaggageAllowanceFirst:res.data.BaggageAllowanceFirst,
         BaggageAllowanceBusiness:res.data.BaggageAllowanceBusiness,
         BaggageAllowanceEconomy:res.data.BaggageAllowanceEconomy,
@@ -173,7 +176,9 @@ export default function CreateFlight({history}) {
           FirstSeatsNumbers:[],
           BusinessSeatsNumbers :[],
           EconomySeatsNumbers : [],
-          TotalPrice:f2+b2+e2,
+          TotalPrice:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2*res.data.FirstPrice)+
+                      (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2*res.data.BusinessPrice)+
+                      (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2*res.data.EconomyPrice),
           BaggageAllowanceFirst:res.data.BaggageAllowanceFirst,
           BaggageAllowanceBusiness:res.data.BaggageAllowanceBusiness,
           BaggageAllowanceEconomy:res.data.BaggageAllowanceEconomy,
