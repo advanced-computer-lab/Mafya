@@ -16,13 +16,6 @@ import profile from "./components/editProfile/editProfile"
 import InquiryFlights from "./components/InquiryFlights/clientFlight"
 import AdminScreen from "./screens/AdminScreen/AdminScreen"
 import myFlights from "./components/myFlights/myFlights"
-
-import searchNewFlight from "./components/searchNewFlight/searchNewFlight"
-import changeDpFlight from "./components/changeDpFlight/changeDpFlight"
-import bookDp from "./components/bookDp/bookDp"
-
-import payment from "./components/payment/payment"
-
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import test from "./components/test"
@@ -39,7 +32,7 @@ function App() {
         <Route path="/" component={LandingPage} exact />
 
 
-        <Route path="/payment" component={payment} exact />
+
         <Route path="/myflights" component={myFlights}  />
         <Route path="/createFlight" component={createFlight}  />
         <Route path='/updateFlight/:id' component={updateFlight } />
@@ -55,10 +48,6 @@ function App() {
         <Route path="/showInquiry" component={InquiryFlights}  />
         <Route path="/login" component={LoginScreen} />
         <Route path="/register" component={RegisterScreen} />
-        <Route path="/searchNewFlight" component={searchNewFlight} />
-        <Route path="/changeDpFlight" component={changeDpFlight} />
-        <Route path="/bookDp" component={bookDp} />
-        
       </main>
     </Router>
   );

@@ -148,7 +148,7 @@ const deleteFlight = (req,res)=>{
     const id = req.params.id;
         Flight.findById(id).then((result)=>{
             res.status(200).json(result);
-            console.log("lolo");
+
         }).catch((err)=>{
             res.status(409).json({message: err.message})
         })

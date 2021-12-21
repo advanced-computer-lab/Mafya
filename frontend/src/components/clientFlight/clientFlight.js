@@ -67,7 +67,6 @@ export default function BasicTable({ history }) {
   };
 
   useEffect(() => {
-
     if (JSON.parse(sessionStorage.getItem("clientFlights"))) {
       const flightSearch1 = {
         From: JSON.parse(sessionStorage.getItem("clientFlights")).From,
@@ -101,38 +100,6 @@ export default function BasicTable({ history }) {
         .then((res) => {
           setFlight(res.data);
         });
-
-
-    if(JSON.parse(sessionStorage.getItem("clientFlights"))){
-      
-      const flightSearch1 ={
-        From:JSON.parse(sessionStorage.getItem("clientFlights")).From,
-        To:JSON.parse(sessionStorage.getItem("clientFlights")).To,
-        DateD:JSON.parse(sessionStorage.getItem("clientFlights")).DateD,
-        DateA:'',
-        FirstSeats:JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1,
-        BusinessSeats:JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1,
-        EconomySeats:JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1
-      }
-      axios.post('http://localhost:8000/flights/getBookingFlights',flightSearch1).then((res)=>{
-        setFlight(res.data)
-      })
-
-    }
-      else{
-        const flightSearch1 ={
-        From:'',
-        To:'',
-        DateD:'',
-        DateA:'',
-        FirstSeats:'',
-        BusinessSeats:'',
-        EconomySeats:''
-      }
-      axios.post('http://localhost:8000/flights/getBookingFlights',flightSearch1).then((res)=>{
-        setFlight(res.data)
-      })
-
     }
 
     if (JSON.parse(sessionStorage.getItem("clientFlights"))) {
@@ -172,16 +139,8 @@ export default function BasicTable({ history }) {
     }
   }, []);
 
-
   const book = () => {
     if (firstId == "" || secondId == "") {
-
-
-  },[]);
-
-  const book=()=>{
-    if(firstId==""||secondId==""){
-
       confirmAlert({
         message: "You have to choose two flights",
         buttons: [
