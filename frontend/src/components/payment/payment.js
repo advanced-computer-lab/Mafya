@@ -55,6 +55,7 @@ export default function CreateFlight({history}) {
     const [paymentInfo,setPaymentInfo]= useState([]);
     const [amountPay,setAmount]= useState(0);
     const [loading, setLoading]=useState(false);
+    const [id,setId]=useState(null);
     const userInfo  = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
@@ -64,6 +65,12 @@ export default function CreateFlight({history}) {
         setAmount(JSON.parse(sessionStorage.getItem("amount")));
         setFlight1(JSON.parse(sessionStorage.getItem("bookFlights")).flight1)
         setFlight2(JSON.parse(sessionStorage.getItem("bookFlights")).flight2)
+        const x = sessionStorage.getItem("editFlightsClient");
+        if(x){
+            setId(JSON.parse(sessionStorage.getItem("editFlightsClient")).Id);
+        }
+
+
         
     },[])
 
@@ -107,7 +114,10 @@ export default function CreateFlight({history}) {
     
                 }
               }
-
+              if(id){
+                await axios.delete(`http://localhost:8000/flights/cancelBooking/${id}`,config);
+              }
+          
               const booking1 = await axios.post('http://localhost:8000/flights/book',flight1,config);
               if(typeof booking1 === 'string'){
                 setLoading(false);
@@ -123,7 +133,7 @@ export default function CreateFlight({history}) {
                 });
                 
               }
-              else{
+              else if(!id){
               const booking2 = await axios.post('http://localhost:8000/flights/book',flight2,config);
               if(typeof booking2 === 'string'){
   
@@ -156,6 +166,19 @@ export default function CreateFlight({history}) {
                   
               
               }
+              }
+              else{
+                setLoading(false);
+                confirmAlert({
+                  title: '',
+                  message: 'Your flights booked successfully' ,
+                  buttons: [
+                    {
+                      label: 'Ok',
+                      onClick: () =>  history.push('/homepage')
+                    }
+                  ]
+                });
               }
   
           

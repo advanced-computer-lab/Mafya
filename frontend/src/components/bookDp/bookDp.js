@@ -89,41 +89,35 @@ export default function CreateFlight({history}) {
   const[DseatsF,setDseatsF]=useState([]);
   const[DseatsB,setDseatsB]=useState([]);
   const[DseatsE,setDseatsE]=useState([]);
-  const[AseatsF,setAseatsF]=useState([]);
-  const[AseatsB,setAseatsB]=useState([]);
-  const[AseatsE,setAseatsE]=useState([]);
+
+
+  const [f1,setF1] = useState(0);;
+  const [b1,setB1] = useState(0);;
+  const [e1,setE1] = useState(0);;
 
   const [loading, setLoading]=useState(false);
   const [loadingEffect,setLoadingEffect]=useState(false);
 
-  const fid=JSON.parse(sessionStorage.getItem("editFlightsClient")).Id;
+  //const fid=JSON.parse(sessionStorage.getItem("editFlightsClient")).Id;
   
-  const deleteFlight=(id)=>{
-    setLoading(true);
-    const config = {
-      headers:{
-        "Content-type":"application/json",
-        Authorization: `Bearer ${userInfo.token}`
-
-      }
-    }
-
    
-    axios.delete(`http://localhost:8000/flights/cancelBooking/${fid}`,config).then(()=>{
-      setLoading(false);
-      window.location.reload(false);
-    })
-  }
+
  
 
 
   useEffect(() => {
+    if(!userInfo){
+      history.push("/homepage");
+    }
     
 
     var firstId = JSON.parse(sessionStorage.getItem("flightsBook")).firstId;
    // var secondId = JSON.parse(sessionStorage.getItem("flightsBook")).secondId;
 
     axios.get(`http://localhost:8000/flights/bookFlights/${firstId}`).then((res)=>{
+      setF1(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice);
+      setB1(JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice);
+      setE1(JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice);
 
       setFlight1({
         clientId:userInfo?userInfo._id:'',
@@ -202,7 +196,7 @@ export default function CreateFlight({history}) {
     const bookSeats =async () =>{
       setLoading(true);
 
-      if(userInfo){
+      
         if(flight1.FirstSeatsNumbers.length==flight1.FirstNumberOfSeats && flight1.BusinessSeatsNumbers.length==flight1.BusinessNumberOfSeats && flight1.EconomySeatsNumbers.length==flight1.EconomyNumberOfSeats){
 
             setLoading(false);
@@ -234,68 +228,21 @@ export default function CreateFlight({history}) {
           });
  
       }
-      }
-      else{
-        setLoading(false);
-        confirmAlert({
-          title: '',
-          message: 'You have to Login First',
-          buttons: [
-            {
-              label: 'Ok',
-              onClick: () =>  history.push('/login')
-            },
-            {
-              label: 'Cancle',
-            }
-          ]
-        });
-      }
+      
+
     
     }
 
     const bookSeatsCon =async () =>{
       setLoading(true);
  
-        try{
+     
             //Authorization: `Bearer ${userInfo.token}`
-            const config = {
-                headers:{
-                  "Content-type":"application/json",
-                  Authorization: `Bearer ${userInfo.token}`
-
-                }
-              }
-                    axios.delete(`http://localhost:8000/flights/cancelBooking/${fid}`,config).then(()=>{
-            setLoading(false);
-            window.location.reload(false);
-            })
-        
-            const booking1 = await axios.post('http://localhost:8000/flights/book',flight1,config);
-            if(typeof booking1 === 'string'){
-              setLoading(false);
-              confirmAlert({
-                title: 'Error',
-                message: booking1,
-                buttons: [
-                  {
-                    label: 'Ok',
-                    onClick: () =>  history.push('/homepage')
-                  }
-                ]
-              });
-              
-            }
-           
-
-        
-
-        }
-        catch(error){
-          setLoading(false);
-          history.push('/homePage');
-        }
-
+            sessionStorage.setItem('bookFlights',JSON.stringify({'flight1':flight1}));
+            const paymentInfo =[{"s":"First Class  seats ","n":f1},{"s":"Business seats ","n":b1}, {"s":"Economy  seats ","n":e1},{"s":"Total Depature Flight","n":f1+b1+e1}];
+             sessionStorage.setItem('payment',JSON.stringify(paymentInfo));
+             sessionStorage.setItem('amount',JSON.stringify(f1+b1+e1));
+             history.push("/payment")
 
    }
    const handleChange = (event,x,y) => {
@@ -467,15 +414,7 @@ export default function CreateFlight({history}) {
 
      </div>
 
-     <div style={{width: '700px',float:'right'}}>
-     <Card style={{width: '700px',float:'right'}}  sx={{ m: 3 }}>
-     <h3>Mafya Air Ticket</h3>
-         <CardContent>
 
-                      </CardContent>
-     </Card>
-
-     </div>
      <Button variant="contained" style={{ width: '300px', left:'160px'}} sx={{ m: 0.5 }} onClick={bookSeats}>Book</Button>
      </div>
 

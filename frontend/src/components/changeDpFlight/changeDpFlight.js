@@ -128,11 +128,9 @@ export default function BasicTable({history}) {
 <Button variant="contained"style={{width:'100px',  position: 'related',left: '1400px'}} 
     onClick={()=> book()}
     > Book >></Button>  
-<h6 style={{left: '15px' ,top:'20px', position: 'absolute'}} >Choose two flights on from each table</h6>
-<TableContainer  component={Paper}>
-<Table  style={{width:'740px'}} aria-label="simple table">
-<TableRow>
-    <TableContainer style={{width:'740px' ,float:'left' }}  component={Paper}>
+<h6 style={{left: '15px' ,top:'20px', position: 'absolute'}} >Choose the flight </h6>
+
+    <TableContainer style={{width:'740px' }}  component={Paper}>
       <Table  style={{width:'740px'}}  aria-label="simple table">
         <TableHead style={{ backgroundColor:'black',color:'white'}}>
 
@@ -182,9 +180,7 @@ export default function BasicTable({history}) {
     </TableContainer>
 
    
-    </TableRow>
-    </Table>
-    </TableContainer>
+
 
     </div>
     </>
