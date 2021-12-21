@@ -87,6 +87,7 @@ export default function BasicTable({ history }) {
           setFlight(res.data);
         });
     }
+
   }, []);
   const comb = (arr) => {
     var s = "";
@@ -96,9 +97,49 @@ export default function BasicTable({ history }) {
     return s;
   };
 
+    
+    axios.get(`http://localhost:8000/flights/getBookings/${userInfo._id}`,config).then((res)=>{
+      //setLoadingEffect(false);
+      setFlight(res.data)
+    })
+    
+
+  }
+  },[]);
+  const comb=(arr)=>{
+      var s ="";
+      for(let i = 0 ; i <arr.length ;i++){
+        s+=arr[i]+" , ";
+      }
+      return s;
+  }
+
+  const editF=(Id,From,To,DateD, FirstNumberOfSeats,BusinessNumberOfSeats,EconomyNumberOfSeats,children)=>{
+    console.log(BusinessNumberOfSeats)
+    var x ={
+      
+    Id:Id,
+    From:From,
+    To:To,
+    DateD:DateD,
+    FirstNumberOfSeats:FirstNumberOfSeats,
+    BusinessNumberOfSeats:BusinessNumberOfSeats,
+    EconomyNumberOfSeats:EconomyNumberOfSeats,
+    children:children
+  };
+    sessionStorage.setItem('editFlightsClient',JSON.stringify(x));
+    history.push("/searchNewFlight");
+
+  }
+
+
+
+
+
   return (
     <div className="flightsContainer">
       {loadingEffect && <Loading />}
+
       <div className="flightSubContainer">
         <TableContainer component={Paper} sx={{ width: 1300 }}>
           <Table aria-label="simple table" sx={{ width: 1300 }}>
@@ -212,6 +253,83 @@ export default function BasicTable({ history }) {
       </div>
 
       {loading && <Loading />}
+
+
+      <MainScreen title="My Flights">
+    <div style={{position:'absolute',top:'150px'}}>
+    <TableContainer  component={Paper} sx={{width:1300}}>
+      <Table aria-label="simple table" sx={{width:1300}} >
+      <TableHead>
+      
+          <TableRow style={{ backgroundColor:'black',color:'white'}}>
+            <TableCell style={{color:'white'}} align="right" >Flight_No</TableCell>
+
+            <TableCell style={{color:'white'}} align="right" >From</TableCell>
+            <TableCell style={{color:'white'}} align="right">To</TableCell>
+
+            <TableCell style={{color:'white'}} align="right">Departure Date</TableCell>
+            <TableCell style={{color:'white'}} align="right">Arrival Date</TableCell>
+
+            <TableCell style={{color:'white'}} sx={{width:200}}align="right">First Seats Numbers </TableCell>
+            <TableCell style={{color:'white'}} sx={{width:200}}align="right">Business Seats Numbers</TableCell>
+            <TableCell style={{color:'white'}} sx={{width:200}} align="right">Economy Seats Numbers</TableCell>
+
+            <TableCell style={{color:'white'}} align="right">Number of children</TableCell>
+            <TableCell style={{color:'white'}} align="right">Total Price</TableCell>
+            <TableCell style={{color:'white'}} align="right">Total baggage alowance</TableCell>
+
+            <TableCell style={{color:'white'}} align="right">Cancel</TableCell>
+            <TableCell style={{color:'white'}} align="right">Change my Flight</TableCell>
+
+
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {flights.map((flight,key) => (
+            <TableRow
+              key={flight._id}
+              
+            >
+              <TableCell align="right">{flight.Flight_No}</TableCell>
+
+              <TableCell align="right">{flight.From}</TableCell>
+              <TableCell align="right">{flight.To}</TableCell>
+
+              <TableCell align="right">{formatDate(flight.DateD)}</TableCell>
+              <TableCell align="right">{formatDate(flight.DateA)}</TableCell>
+
+              <TableCell align="right">{comb(flight.FirstSeatsNumbers)}</TableCell>
+
+
+              <TableCell align="right">{comb(flight.BusinessSeatsNumbers)}</TableCell>
+
+
+              <TableCell align="right">{comb(flight.EconomySeatsNumbers)}</TableCell>
+
+              <TableCell align="right">{flight.NumberOfChildren}</TableCell>
+              <TableCell align="right">{flight.TotalPrice}</TableCell>
+              <TableCell align="right">{flight.TotalBaggageAlowance}</TableCell>
+
+              <TableCell align="right">
+              <Button aria-label="delete" size="small"  onClick={()=> deleteconf(flight._id)}>
+                    <DeleteIcon fontSize="small" />
+                  </Button>
+              </TableCell>
+              <TableCell align="right">
+             
+              <Button aria-label="edit" size="small" onClick={()=>editF(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
+                                flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
+                    <EditIcon fontSize="small" />
+                </Button>   
+                
+              </TableCell>
+
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+
     </div>
   );
 }

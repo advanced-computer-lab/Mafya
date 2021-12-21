@@ -1,3 +1,4 @@
+
 import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -17,6 +18,29 @@ import DateTimePicker from "@mui/lab/DateTimePicker";
 import Stack from "@mui/material/Stack";
 import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
 import DesktopDateTimePicker from "@mui/lab/DesktopDateTimePicker";
+
+import  React  from 'react';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { Form, Row, Col } from "react-bootstrap";
+//import { Link } from "react-router-dom";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import DateFnsUtils from '@date-io/date-fns';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DatePicker from '@mui/lab/DatePicker';
+import DateAdapter from '@mui/lab/AdapterDateFns';
+import axios from 'axios';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import Stack from '@mui/material/Stack';
+import MobileDateTimePicker from '@mui/lab/MobileDateTimePicker';
+import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
+
 //import Airports from '/airports.js'
 import Autocomplete from "@mui/material/Autocomplete";
 import { Component, useState, useEffect, useParams } from "react";
@@ -103,6 +127,7 @@ export default function CreateFlight({ history }) {
   };
 
   return (
+
     <div className="Background">
       <div className="loginContainer" style={{ marginTop: "-20px" }}>
         <img
@@ -174,5 +199,44 @@ export default function CreateFlight({ history }) {
         {loadingEffect && <Loading />}
       </div>
     </div>
+
+  
+
+    
+      <>
+      {loadingEffect && <Loading />}
+      {loading && <Loading />}
+      <MainScreen title="My Profile">
+      <Grid  container direction="column" >
+      <Grid>
+      </Grid>
+
+      <TextField id="outlined-basic" label="Name" variant="outlined"  sx={{m:1 ,width:'60ch'}} value={passenger.name} 
+      onChange={(event) =>{setPassenger({...passenger, name:event.target.value})}}
+     />
+
+      <TextField id="outlined-basic" label="Passport Number" variant="outlined"  sx={{m:1 ,width:'60ch'}} value={passenger.passport} 
+      onChange={(event) =>{setPassenger({...passenger, passport:event.target.value})}}
+       /> 
+     
+      <TextField id="outlined-basic" label="Email" variant="outlined"  sx={{m:1 ,width:'60ch'}} value={passenger.email} 
+      onChange={(event) =>{setPassenger({...passenger, email:event.target.value})}}
+     /> 
+      <TextField id="outlined-basic" label="Age" variant="outlined"  sx={{m:1 ,width:'60ch'}} value={passenger.age} 
+      onChange={(event) =>{setPassenger({...passenger, age:event.target.value})}}
+       /> 
+     
+    </Grid>
+    <Button variant="contained" size='large' sx={{m:1}} onClick={update} >update</Button>
+
+    <Row className="py-3">
+          <Col style={{margin:'8px'}}>
+            <Link to="/changePasswordScreen">Change Passowrd</Link>
+          </Col>
+        </Row>
+    </MainScreen>
+    </>
+
+
   );
 }
