@@ -96,27 +96,34 @@ export default function CreateFlight({history}) {
   const [loading, setLoading]=useState(false);
   const [loadingEffect,setLoadingEffect]=useState(false);
 
-  const [f1,setF1] = useState(0);;
-  const [b1,setB1] = useState(0);;
-  const [e1,setE1] = useState(0);;
-  const [f2,setF2] = useState(0);;
-  const [b2,setB2] = useState(0);;
-  const [e2,setE2] = useState(0);;
+  const fid=JSON.parse(sessionStorage.getItem("editFlightsClient")).Id;
+  
+  const deleteFlight=(id)=>{
+    setLoading(true);
+    const config = {
+      headers:{
+        "Content-type":"application/json",
+        Authorization: `Bearer ${userInfo.token}`
+
+      }
+    }
+
+   
+    axios.delete(`http://localhost:8000/flights/cancelBooking/${fid}`,config).then(()=>{
+      setLoading(false);
+      window.location.reload(false);
+    })
+  }
+ 
+
 
   useEffect(() => {
     
 
     var firstId = JSON.parse(sessionStorage.getItem("flightsBook")).firstId;
-    var secondId = JSON.parse(sessionStorage.getItem("flightsBook")).secondId;
-
-
-
+   // var secondId = JSON.parse(sessionStorage.getItem("flightsBook")).secondId;
 
     axios.get(`http://localhost:8000/flights/bookFlights/${firstId}`).then((res)=>{
-      setF1(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice);
-      setB1(JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice);
-      setE1(JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice);
-      console.log(res.data.FirstPrice);
 
       setFlight1({
         clientId:userInfo?userInfo._id:'',
@@ -126,25 +133,25 @@ export default function CreateFlight({history}) {
         To:res.data.To,
         DateD:res.data.DateD,
         DateA:res.data.DateA,
-        FirstNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1,
+        FirstNumberOfSeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).FirstNumberOfSeats,
         FirstPrice:res.data.FirstPrice,
-        BusinessNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1,
+        BusinessNumberOfSeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).BusinessNumberOfSeats,
         BusinessPrice:res.data.BusinessPrice,
-        EconomyNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1,
+        EconomyNumberOfSeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).EconomyNumberOfSeats,
         EconomyPrice:res.data.EconomyPrice,
         FirstSeatsNumbers:[],
         BusinessSeatsNumbers :[],
         EconomySeatsNumbers : [],
-        TotalPrice:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice)+
-                     (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice)+
-                     (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice),
+        TotalPrice:(JSON.parse(sessionStorage.getItem("changeDpFlight")).FirstNumberOfSeats*res.data.FirstPrice)+
+                   (JSON.parse(sessionStorage.getItem("changeDpFlight")).BusinessNumberOfSeats*res.data.BusinessPrice)+
+                   (JSON.parse(sessionStorage.getItem("changeDpFlight")).EconomyNumberOfSeats*res.data.EconomyPrice),
         BaggageAllowanceFirst:res.data.BaggageAllowanceFirst,
         BaggageAllowanceBusiness:res.data.BaggageAllowanceBusiness,
         BaggageAllowanceEconomy:res.data.BaggageAllowanceEconomy,
-        TotalBaggageAlowance:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.BaggageAllowanceFirst)+
-                             (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BaggageAllowanceBusiness)+
-                             (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.BaggageAllowanceEconomy),
-        NumberOfChildren:JSON.parse(sessionStorage.getItem("clientFlights")).children1
+        TotalBaggageAlowance:(JSON.parse(sessionStorage.getItem("changeDpFlight")).FirstNumberOfSeats*res.data.BaggageAllowanceFirst)+
+                             (JSON.parse(sessionStorage.getItem("changeDpFlight")).BusinessNumberOfSeats*res.data.BaggageAllowanceBusiness)+
+                             (JSON.parse(sessionStorage.getItem("changeDpFlight")).EconomyNumberOfSeats*res.data.BaggageAllowanceEconomy),
+        NumberOfChildren:JSON.parse(sessionStorage.getItem("changeDpFlight")).children1
       }) 
 
       setDseatsF(res.data.FirstSeatsNumbers)
@@ -155,49 +162,7 @@ export default function CreateFlight({history}) {
     
     })
 
-      axios.get(`http://localhost:8000/flights/bookFlights/${secondId}`).then((res)=>{
-        setF2(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2*res.data.FirstPrice);
-        setB2(JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2*res.data.BusinessPrice);
-        setE2(JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2*res.data.EconomyPrice);
-        setFlight2({
-          clientId:userInfo?userInfo._id:'',
-          flightId:secondId,
-          Flight_No:res.data.Flight_No,
-          From:res.data.From,
-          To:res.data.To,
-          DateD:res.data.DateD,
-          DateA:res.data.DateA,
-          FirstNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2,
-          FirstPrice:res.data.FirstPrice,
-          BusinessNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2,
-          BusinessPrice:res.data.BusinessPrice,
-          EconomyNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2,
-          EconomyPrice:res.data.EconomyPrice,
-          FirstSeatsNumbers:[],
-          BusinessSeatsNumbers :[],
-          EconomySeatsNumbers : [],
-          TotalPrice:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2*res.data.FirstPrice)+
-                      (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2*res.data.BusinessPrice)+
-                      (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2*res.data.EconomyPrice),
-          BaggageAllowanceFirst:res.data.BaggageAllowanceFirst,
-          BaggageAllowanceBusiness:res.data.BaggageAllowanceBusiness,
-          BaggageAllowanceEconomy:res.data.BaggageAllowanceEconomy,
-          TotalBaggageAlowance:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2*res.data.BaggageAllowanceFirst)+
-                               (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2*res.data.BaggageAllowanceBusiness)+
-                                (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2*res.data.BaggageAllowanceEconomy),
-          NumberOfChildren:JSON.parse(sessionStorage.getItem("clientFlights")).children2
-
-        })
-        setAseatsF(res.data.FirstSeatsNumbers)
-        setAseatsB(res.data.BusinessSeatsNumbers)
-        setAseatsE(res.data.EconomySeatsNumbers)
-
-        setLoadingEffect(false);
-        
-
-    
-    
-    })
+      
 
   },[]);
         
@@ -230,32 +195,7 @@ export default function CreateFlight({history}) {
     });
 
 
-    const [flight2,setFlight2]= useState({
-      clientId:'',
-      flightId:'',
-      Flight_No:'',
-      From:'',
-      To:'',
-      DateD:'',
-      DateA:'',
-      FirstNumberOfSeats:'0',
-      FirstPrice:'0',
-      BusinessNumberOfSeats:'0',
-      BusinessPrice:'0',
-      EconomyNumberOfSeats:'0',
-      EconomyPrice:'0',
-      FirstSeatsNumbers:[],
-      BusinessSeatsNumbers :[],
-      EconomySeatsNumbers : [],
-      totalPrice:'0',
-      BaggageAllowanceFirst:'0',
-      BaggageAllowanceBusiness:'0',
-      BaggageAllowanceEconomy:'0',
-      BaggageAllowanceBusiness:'0',
-      TotalBaggageAlowance:'0',
-      NumberOfChildren:'0'
-
-  });
+    
 
 
 
@@ -263,8 +203,7 @@ export default function CreateFlight({history}) {
       setLoading(true);
 
       if(userInfo){
-        if(flight1.FirstSeatsNumbers.length==flight1.FirstNumberOfSeats && flight1.BusinessSeatsNumbers.length==flight1.BusinessNumberOfSeats && flight1.EconomySeatsNumbers.length==flight1.EconomyNumberOfSeats&&
-          flight2.FirstSeatsNumbers.length==flight2.FirstNumberOfSeats && flight2.BusinessSeatsNumbers.length==flight2.BusinessNumberOfSeats && flight2.EconomySeatsNumbers.length==flight2.EconomyNumberOfSeats){
+        if(flight1.FirstSeatsNumbers.length==flight1.FirstNumberOfSeats && flight1.BusinessSeatsNumbers.length==flight1.BusinessNumberOfSeats && flight1.EconomySeatsNumbers.length==flight1.EconomyNumberOfSeats){
 
             setLoading(false);
             confirmAlert({
@@ -317,21 +256,55 @@ export default function CreateFlight({history}) {
 
     const bookSeatsCon =async () =>{
       setLoading(true);
-      sessionStorage.setItem('bookFlights',JSON.stringify({'flight1':flight1,'flight2':flight2}));
-      const paymentInfo =[{"s":"First Class Depature Flight seats ","n":f1},{"s":"Business Depature Flight seats ","n":b1}, {"s":"Economy Depature Flight seats ","n":e1},{"s":"Total Depature Flight","n":f1+b1+e1},
-                          {"s":"First Class Return Flight seats ","n":f2},{"s":"Business Return Flight seats ","n":b2}, {"s":"Economy Return Flight seats ","n":e2},{"s":"Total Return Flight","n":f2+b2+e2},{"s":"Total ","n":f1+b1+e1+f2+b2+e2}];
-       sessionStorage.setItem('payment',JSON.stringify(paymentInfo));
-       sessionStorage.setItem('amount',JSON.stringify(f1+b1+e1+f2+b2+e2));
-       history.push("/payment")
-   }
+ 
+        try{
+            //Authorization: `Bearer ${userInfo.token}`
+            const config = {
+                headers:{
+                  "Content-type":"application/json",
+                  Authorization: `Bearer ${userInfo.token}`
 
+                }
+              }
+                    axios.delete(`http://localhost:8000/flights/cancelBooking/${fid}`,config).then(()=>{
+            setLoading(false);
+            window.location.reload(false);
+            })
+        
+            const booking1 = await axios.post('http://localhost:8000/flights/book',flight1,config);
+            if(typeof booking1 === 'string'){
+              setLoading(false);
+              confirmAlert({
+                title: 'Error',
+                message: booking1,
+                buttons: [
+                  {
+                    label: 'Ok',
+                    onClick: () =>  history.push('/homepage')
+                  }
+                ]
+              });
+              
+            }
+           
+
+        
+
+        }
+        catch(error){
+          setLoading(false);
+          history.push('/homePage');
+        }
+
+
+   }
    const handleChange = (event,x,y) => {
-    
+       console.log(x+"  "+y);
     const {
       target: { value },
     } = event;
 
-    return typeof value.length === 'string' ? (value.split(',').length>y?x: value.split(',')): (value.length>y?x:value)
+    return typeof value === 'string' ? (value.split(',').length>y?x: value.split(',')): (value.length>y?x:value)
 
   };
 
@@ -499,145 +472,7 @@ export default function CreateFlight({history}) {
      <h3>Mafya Air Ticket</h3>
          <CardContent>
 
-             
-<TableContainer component={Paper} style={{ width: '650px' ,float:'left' }}  sx={{ m: 0.5 }}>
-      <Table  style={{ width: '650px' ,float:'left'}} aria-label="simple table">
-        <TableHead >
-              <TableRow>
-          <TableCell align="left" >Flight_No &nbsp;&nbsp;&nbsp;&nbsp; {flight2.Flight_No}</TableCell>
-              </TableRow>
-              <TableRow>
-          <TableCell align="left" >Total Price &nbsp;&nbsp;&nbsp;&nbsp; {flight2.TotalPrice} $</TableCell>
-          <TableCell align="left" > Total Baggage Alowance &nbsp;&nbsp;&nbsp;&nbsp; {flight2.TotalBaggageAlowance}</TableCell>
-              </TableRow>
-              <TableRow>
-          <TableCell >From &nbsp;&nbsp;&nbsp;&nbsp; {flight2.From}</TableCell>
-          <TableCell >To  &nbsp;&nbsp;&nbsp;&nbsp;{flight2.To}</TableCell>
-              </TableRow>
-              <TableRow>
-
-                
-              
-          <TableCell >Departure Time &nbsp;&nbsp;&nbsp;&nbsp; {departureHour(flight2.DateD)}</TableCell>
-          <TableCell align="left" >Arrival Time &nbsp;&nbsp;&nbsp;&nbsp;{ departureHour(flight2.DateA)}</TableCell>
-          
-          </TableRow>
-
-
-              <TableRow>
-              <TableCell >Departure Day &nbsp;&nbsp;&nbsp;&nbsp; {departureDay(flight2.DateD)}</TableCell>
-          <TableCell align="left" >Arrival Day &nbsp;&nbsp;&nbsp;&nbsp;{departureDay(flight2.DateA)}</TableCell>
-          <TableCell align="right" ></TableCell>
-              </TableRow>
-              <TableRow>
-          <TableCell> 
-            <h5>First Class Seats Number</h5>
-          </TableCell>
-          <TableCell> 
-          <div>
-     
-      <FormControl sx={{  width: 240 }}>
-     
-          <InputLabel id="demo-multiple-name-label">Select Seats</InputLabel>
-          <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          multiple
-          value={flight2.FirstSeatsNumbers}
-          onChange={(event) =>{setFlight2({...flight2, FirstSeatsNumbers:handleChange(event,flight2.FirstSeatsNumbers,flight2.FirstNumberOfSeats)})}}
-          input={<OutlinedInput label="Select Seats" />}
-          MenuProps={MenuProps}
-          
-        >
-          {AseatsF.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, flight2.FirstSeatsNumbers, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
-        </Select> 
-        </FormControl>
-    </div>
-        </TableCell>
-          </TableRow>
-          <TableRow>
-          <TableCell> 
-            <h5>Business Seats Number</h5>
-          </TableCell>
-          <TableCell> 
-          <div>
-     
-      <FormControl sx={{  width: 240 }}>
-     
-          <InputLabel id="demo-multiple-name-label">Select Seats</InputLabel>
-          <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          multiple
-          value={flight2.BusinessSeatsNumbers}
-          onChange={(event) =>{setFlight2({...flight2, BusinessSeatsNumbers:handleChange(event,flight2.BusinessSeatsNumbers,flight2.BusinessNumberOfSeats)})}}
-          input={<OutlinedInput label="Select Seats" />}
-          MenuProps={MenuProps}
-          
-        >
-          {AseatsB.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, flight2.FirstSeatsNumbers, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
-        </Select> 
-        </FormControl>
-    </div>
-        </TableCell>
-          </TableRow>
-          <TableRow>
-          <TableCell> 
-            <h5>Economy Seats Number</h5>
-          </TableCell>
-          <TableCell> 
-          <div>
-     
-      <FormControl sx={{  width: 240 }}>
-     
-          <InputLabel id="demo-multiple-name-label">Select Seats</InputLabel>
-          <Select
-          labelId="demo-multiple-name-label"
-          id="demo-multiple-name"
-          multiple
-          value={flight2.EconomySeatsNumbers}
-          onChange={(event) =>{setFlight2({...flight2, EconomySeatsNumbers:handleChange(event,flight2.EconomySeatsNumbers,flight2.EconomyNumberOfSeats)})}}
-          input={<OutlinedInput label="Select Seats" />}
-          MenuProps={MenuProps}
-          
-        >
-          {AseatsE.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, flight2.FirstSeatsNumbers, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
-        </Select> 
-        </FormControl>
-    </div>
-        </TableCell>
-          </TableRow>
-          </TableHead>
-              </Table>
-              </TableContainer>  
-      
-            
-                     
-         </CardContent>
+                      </CardContent>
      </Card>
 
      </div>

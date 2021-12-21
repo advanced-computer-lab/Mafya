@@ -92,6 +92,7 @@ export default function BasicTable({history}) {
       //setLoadingEffect(false);
       setFlight(res.data)
     })
+    
 
   }
   },[]);
@@ -102,6 +103,25 @@ export default function BasicTable({history}) {
       }
       return s;
   }
+
+  const editF=(Id,From,To,DateD, FirstNumberOfSeats,BusinessNumberOfSeats,EconomyNumberOfSeats,children)=>{
+    console.log(BusinessNumberOfSeats)
+    var x ={
+      
+    Id:Id,
+    From:From,
+    To:To,
+    DateD:DateD,
+    FirstNumberOfSeats:FirstNumberOfSeats,
+    BusinessNumberOfSeats:BusinessNumberOfSeats,
+    EconomyNumberOfSeats:EconomyNumberOfSeats,
+    children:children
+  };
+    sessionStorage.setItem('editFlightsClient',JSON.stringify(x));
+    history.push("/searchNewFlight");
+
+  }
+
 
 
 
@@ -134,6 +154,7 @@ export default function BasicTable({history}) {
             <TableCell style={{color:'white'}} align="right">Total baggage alowance</TableCell>
 
             <TableCell style={{color:'white'}} align="right">Cancel</TableCell>
+            <TableCell style={{color:'white'}} align="right">Change my Flight</TableCell>
 
 
           </TableRow>
@@ -168,7 +189,14 @@ export default function BasicTable({history}) {
               <Button aria-label="delete" size="small"  onClick={()=> deleteconf(flight._id)}>
                     <DeleteIcon fontSize="small" />
                   </Button>
-                  
+              </TableCell>
+              <TableCell align="right">
+             
+              <Button aria-label="edit" size="small" onClick={()=>editF(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
+                                flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
+                    <EditIcon fontSize="small" />
+                </Button>   
+                
               </TableCell>
 
             </TableRow>
