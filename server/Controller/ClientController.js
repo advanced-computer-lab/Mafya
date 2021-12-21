@@ -5,6 +5,7 @@ const  asyncHandler = require("express-async-handler");
 const  createTokens = require( "../utils/generateToken");
 const flightController=require('../Controller/FlightController');
 const Token = require("../model/token.js");
+const stripe = require("stripe")("sk_test_51K8TPLHG9DEEaFkHIgPdKyIv9gCvzOmb2IPAKJRyOwRlUjESClUCLSEQ4BraqG8cyIwIYsMyhjkfx2lfQRvTEemM00ftg3wFQ0")
 
 const nodemailer = require('nodemailer');
 
@@ -87,6 +88,29 @@ const SignIn =asyncHandler(async (req,res)=>{
       
     }
 });
+
+const payment = asyncHandler((req,res)=>{
+  const { product, token } = req.body;
+ stripe.customers
+    .create({
+      email: token.email,
+      source: token.id
+    }).then(customer =>{
+      stripe.charges.create(
+        {
+          amount: product.price * 100,
+          currency: "usd",
+          customer: customer.id,
+          receipt_email: customer.email,
+          description: `purchase of ${product.name}`,
+        }
+      
+      ).then(result=>{res.status(200).json("ok")})
+      .catch(err => res.send("error"))
+      
+    })
+    .catch(err => res.send("error"));
+})
 
 
 const book = asyncHandler(async (req,res)=>{
@@ -378,6 +402,7 @@ getProfile,
 updateProfile,
 cancelBooking,
 getBookings,
-deleteClientFlight
+deleteClientFlight,
+payment
 
 }

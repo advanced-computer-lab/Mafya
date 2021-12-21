@@ -16,6 +16,7 @@ import profile from "./components/editProfile/editProfile"
 import InquiryFlights from "./components/InquiryFlights/clientFlight"
 import AdminScreen from "./screens/AdminScreen/AdminScreen"
 import myFlights from "./components/myFlights/myFlights"
+import payment from "./components/payment/payment"
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import test from "./components/test"
@@ -32,7 +33,7 @@ function App() {
         <Route path="/" component={LandingPage} exact />
 
 
-
+        <Route path="/payment" component={payment} exact />
         <Route path="/myflights" component={myFlights}  />
         <Route path="/createFlight" component={createFlight}  />
         <Route path='/updateFlight/:id' component={updateFlight } />
