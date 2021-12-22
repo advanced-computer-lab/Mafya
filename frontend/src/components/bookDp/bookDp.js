@@ -115,9 +115,9 @@ export default function CreateFlight({history}) {
    // var secondId = JSON.parse(sessionStorage.getItem("flightsBook")).secondId;
 
     axios.get(`http://localhost:8000/flights/bookFlights/${firstId}`).then((res)=>{
-      setF1(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice);
-      setB1(JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice);
-      setE1(JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice);
+      setF1(JSON.parse(sessionStorage.getItem("changeDpFlight")).FirstNumberOfSeats*res.data.FirstPrice);
+      setB1(JSON.parse(sessionStorage.getItem("changeDpFlight")).BusinessNumberOfSeats*res.data.BusinessPrice);
+      setE1(JSON.parse(sessionStorage.getItem("changeDpFlight")).EconomyNumberOfSeats*res.data.EconomyPrice);
 
       setFlight1({
         clientId:userInfo?userInfo._id:'',

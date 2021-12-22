@@ -42,9 +42,9 @@ function SearchScreen({ history }) {
     setLoading(true);
 
     if (
+      //&&formatDate(search.DateD).getDate() >= new Date().getDate()
       formatDate(search.DateD).getDate() <=
-        formatDate(search.DateA).getDate() &&
-      formatDate(search.DateD).getDate() >= new Date().getDate()
+        formatDate(search.DateA).getDate() 
     ) {
       if (
         search.FirstNumberOfSeats1 +

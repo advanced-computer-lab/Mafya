@@ -88,127 +88,110 @@ export default function CreateFlight({ history }) {
   const [loading, setLoading] = useState(false);
   const [loadingEffect, setLoadingEffect] = useState(false);
 
+  const [f1,setF1] = useState(0);;
+  const [b1,setB1] = useState(0);;
+  const [e1,setE1] = useState(0);;
+  const [f2,setF2] = useState(0);;
+  const [b2,setB2] = useState(0);;
+  const [e2,setE2] = useState(0);;
+
   useEffect(() => {
+    
+
     var firstId = JSON.parse(sessionStorage.getItem("flightsBook")).firstId;
     var secondId = JSON.parse(sessionStorage.getItem("flightsBook")).secondId;
 
-    axios
-      .get(`http://localhost:8000/flights/bookFlights/${firstId}`)
-      .then((res) => {
-        setFlight1({
-          clientId: userInfo ? userInfo._id : "",
-          flightId: firstId,
-          Flight_No: res.data.Flight_No,
-          From: res.data.From,
-          To: res.data.To,
-          DateD: res.data.DateD,
-          DateA: res.data.DateA,
-          FirstNumberOfSeats: JSON.parse(
-            sessionStorage.getItem("clientFlights")
-          ).FirstNumberOfSeats1,
-          FirstPrice: res.data.FirstPrice,
-          BusinessNumberOfSeats: JSON.parse(
-            sessionStorage.getItem("clientFlights")
-          ).BusinessNumberOfSeats1,
-          BusinessPrice: res.data.BusinessPrice,
-          EconomyNumberOfSeats: JSON.parse(
-            sessionStorage.getItem("clientFlights")
-          ).EconomyNumberOfSeats1,
-          EconomyPrice: res.data.EconomyPrice,
-          FirstSeatsNumbers: [],
-          BusinessSeatsNumbers: [],
-          EconomySeatsNumbers: [],
-          TotalPrice:
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .FirstNumberOfSeats1 *
-              res.data.FirstPrice +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .BusinessNumberOfSeats1 *
-              res.data.BusinessPrice +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .EconomyNumberOfSeats1 *
-              res.data.EconomyPrice,
-          BaggageAllowanceFirst: res.data.BaggageAllowanceFirst,
-          BaggageAllowanceBusiness: res.data.BaggageAllowanceBusiness,
-          BaggageAllowanceEconomy: res.data.BaggageAllowanceEconomy,
-          TotalBaggageAlowance:
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .FirstNumberOfSeats1 *
-              res.data.BaggageAllowanceFirst +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .BusinessNumberOfSeats1 *
-              res.data.BaggageAllowanceBusiness +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .EconomyNumberOfSeats1 *
-              res.data.BaggageAllowanceEconomy,
-          NumberOfChildren: JSON.parse(sessionStorage.getItem("clientFlights"))
-            .children1,
-        });
 
-        setDseatsF(res.data.FirstSeatsNumbers);
-        setDseatsB(res.data.BusinessSeatsNumbers);
-        setDseatsE(res.data.EconomySeatsNumbers);
-      });
 
-    axios
-      .get(`http://localhost:8000/flights/bookFlights/${secondId}`)
-      .then((res) => {
+
+    axios.get(`http://localhost:8000/flights/bookFlights/${firstId}`).then((res)=>{
+      setF1(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice);
+      setB1(JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice);
+      setE1(JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice);
+      console.log(res.data.FirstPrice);
+
+      setFlight1({
+        clientId:userInfo?userInfo._id:'',
+        flightId:firstId,
+        Flight_No:res.data.Flight_No,
+        From:res.data.From,
+        To:res.data.To,
+        DateD:res.data.DateD,
+        DateA:res.data.DateA,
+        FirstNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1,
+        FirstPrice:res.data.FirstPrice,
+        BusinessNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1,
+        BusinessPrice:res.data.BusinessPrice,
+        EconomyNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1,
+        EconomyPrice:res.data.EconomyPrice,
+        FirstSeatsNumbers:[],
+        BusinessSeatsNumbers :[],
+        EconomySeatsNumbers : [],
+        TotalPrice:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.FirstPrice)+
+                     (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BusinessPrice)+
+                     (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.EconomyPrice),
+        BaggageAllowanceFirst:res.data.BaggageAllowanceFirst,
+        BaggageAllowanceBusiness:res.data.BaggageAllowanceBusiness,
+        BaggageAllowanceEconomy:res.data.BaggageAllowanceEconomy,
+        TotalBaggageAlowance:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats1*res.data.BaggageAllowanceFirst)+
+                             (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats1*res.data.BaggageAllowanceBusiness)+
+                             (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats1*res.data.BaggageAllowanceEconomy),
+        NumberOfChildren:JSON.parse(sessionStorage.getItem("clientFlights")).children1
+      }) 
+
+      setDseatsF(res.data.FirstSeatsNumbers)
+      setDseatsB(res.data.BusinessSeatsNumbers)
+      setDseatsE(res.data.EconomySeatsNumbers)
+      
+      
+    
+    })
+
+      axios.get(`http://localhost:8000/flights/bookFlights/${secondId}`).then((res)=>{
+        setF2(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2*res.data.FirstPrice);
+        setB2(JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2*res.data.BusinessPrice);
+        setE2(JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2*res.data.EconomyPrice);
         setFlight2({
-          clientId: userInfo ? userInfo._id : "",
-          flightId: secondId,
-          Flight_No: res.data.Flight_No,
-          From: res.data.From,
-          To: res.data.To,
-          DateD: res.data.DateD,
-          DateA: res.data.DateA,
-          FirstNumberOfSeats: JSON.parse(
-            sessionStorage.getItem("clientFlights")
-          ).FirstNumberOfSeats2,
-          FirstPrice: res.data.FirstPrice,
-          BusinessNumberOfSeats: JSON.parse(
-            sessionStorage.getItem("clientFlights")
-          ).BusinessNumberOfSeats2,
-          BusinessPrice: res.data.BusinessPrice,
-          EconomyNumberOfSeats: JSON.parse(
-            sessionStorage.getItem("clientFlights")
-          ).EconomyNumberOfSeats2,
-          EconomyPrice: res.data.EconomyPrice,
-          FirstSeatsNumbers: [],
-          BusinessSeatsNumbers: [],
-          EconomySeatsNumbers: [],
-          TotalPrice:
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .FirstNumberOfSeats2 *
-              res.data.FirstPrice +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .BusinessNumberOfSeats2 *
-              res.data.BusinessPrice +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .EconomyNumberOfSeats2 *
-              res.data.EconomyPrice,
-          BaggageAllowanceFirst: res.data.BaggageAllowanceFirst,
-          BaggageAllowanceBusiness: res.data.BaggageAllowanceBusiness,
-          BaggageAllowanceEconomy: res.data.BaggageAllowanceEconomy,
-          TotalBaggageAlowance:
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .FirstNumberOfSeats2 *
-              res.data.BaggageAllowanceFirst +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .BusinessNumberOfSeats2 *
-              res.data.BaggageAllowanceBusiness +
-            JSON.parse(sessionStorage.getItem("clientFlights"))
-              .EconomyNumberOfSeats2 *
-              res.data.BaggageAllowanceEconomy,
-          NumberOfChildren: JSON.parse(sessionStorage.getItem("clientFlights"))
-            .children2,
-        });
-        setAseatsF(res.data.FirstSeatsNumbers);
-        setAseatsB(res.data.BusinessSeatsNumbers);
-        setAseatsE(res.data.EconomySeatsNumbers);
+          clientId:userInfo?userInfo._id:'',
+          flightId:secondId,
+          Flight_No:res.data.Flight_No,
+          From:res.data.From,
+          To:res.data.To,
+          DateD:res.data.DateD,
+          DateA:res.data.DateA,
+          FirstNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2,
+          FirstPrice:res.data.FirstPrice,
+          BusinessNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2,
+          BusinessPrice:res.data.BusinessPrice,
+          EconomyNumberOfSeats:JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2,
+          EconomyPrice:res.data.EconomyPrice,
+          FirstSeatsNumbers:[],
+          BusinessSeatsNumbers :[],
+          EconomySeatsNumbers : [],
+          TotalPrice:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2*res.data.FirstPrice)+
+                      (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2*res.data.BusinessPrice)+
+                      (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2*res.data.EconomyPrice),
+          BaggageAllowanceFirst:res.data.BaggageAllowanceFirst,
+          BaggageAllowanceBusiness:res.data.BaggageAllowanceBusiness,
+          BaggageAllowanceEconomy:res.data.BaggageAllowanceEconomy,
+          TotalBaggageAlowance:(JSON.parse(sessionStorage.getItem("clientFlights")).FirstNumberOfSeats2*res.data.BaggageAllowanceFirst)+
+                               (JSON.parse(sessionStorage.getItem("clientFlights")).BusinessNumberOfSeats2*res.data.BaggageAllowanceBusiness)+
+                                (JSON.parse(sessionStorage.getItem("clientFlights")).EconomyNumberOfSeats2*res.data.BaggageAllowanceEconomy),
+          NumberOfChildren:JSON.parse(sessionStorage.getItem("clientFlights")).children2
+
+        })
+        setAseatsF(res.data.FirstSeatsNumbers)
+        setAseatsB(res.data.BusinessSeatsNumbers)
+        setAseatsE(res.data.EconomySeatsNumbers)
 
         setLoadingEffect(false);
-      });
-  }, []);
+        
+
+    
+    
+    })
+
+  },[]);
 
   const [flight1, setFlight1] = useState({
     clientId: "",
@@ -262,141 +245,80 @@ export default function CreateFlight({ history }) {
     NumberOfChildren: "0",
   });
 
-  const bookSeats = async () => {
+  const bookSeats =async () =>{
     setLoading(true);
 
-    if (userInfo) {
-      if (
-        flight1.FirstSeatsNumbers.length == flight1.FirstNumberOfSeats &&
-        flight1.BusinessSeatsNumbers.length == flight1.BusinessNumberOfSeats &&
-        flight1.EconomySeatsNumbers.length == flight1.EconomyNumberOfSeats &&
-        flight2.FirstSeatsNumbers.length == flight2.FirstNumberOfSeats &&
-        flight2.BusinessSeatsNumbers.length == flight2.BusinessNumberOfSeats &&
-        flight2.EconomySeatsNumbers.length == flight2.EconomyNumberOfSeats
-      ) {
-        setLoading(false);
-        confirmAlert({
-          title: "confirm to Book",
-          message: "Are you Sure to book these tickts ?",
+    if(userInfo){
+      if(flight1.FirstSeatsNumbers.length==flight1.FirstNumberOfSeats && flight1.BusinessSeatsNumbers.length==flight1.BusinessNumberOfSeats && flight1.EconomySeatsNumbers.length==flight1.EconomyNumberOfSeats&&
+        flight2.FirstSeatsNumbers.length==flight2.FirstNumberOfSeats && flight2.BusinessSeatsNumbers.length==flight2.BusinessNumberOfSeats && flight2.EconomySeatsNumbers.length==flight2.EconomyNumberOfSeats){
+
+          setLoading(false);
+          confirmAlert({
+          title: 'confirm to Book',
+          message: 'Are you Sure to book these tickts ?',
           buttons: [
             {
-              label: "Yes",
-              onClick: () => bookSeatsCon(),
+              label: 'Yes',
+              onClick: () =>  bookSeatsCon()
             },
             {
-              label: "No",
-            },
-          ],
-        });
-      } else {
-        setLoading(false);
-        confirmAlert({
-          title: "Error",
-          message: "Invalid seats Numbers",
-          buttons: [
-            {
-              label: "ok",
-            },
-          ],
+              label: 'No',
+            }
+          ]
         });
       }
-    } else {
+      else{
+        setLoading(false);
+        confirmAlert({
+          title: 'Error',
+          message: 'Invalid seats Numbers',
+          buttons: [
+            {
+              label: 'ok',
+
+            }
+          ]
+        });
+
+    }
+    }
+    else{
       setLoading(false);
       confirmAlert({
-        title: "",
-        message: "You have to Login First",
+        title: '',
+        message: 'You have to Login First',
         buttons: [
           {
-            label: "Ok",
-            onClick: () => history.push("/login"),
+            label: 'Ok',
+            onClick: () =>  history.push('/login')
           },
           {
-            label: "Cancle",
-          },
-        ],
+            label: 'Cancle',
+          }
+        ]
       });
     }
-  };
+  
+  }
 
-  const bookSeatsCon = async () => {
+  const bookSeatsCon =async () =>{
     setLoading(true);
+    sessionStorage.setItem('bookFlights',JSON.stringify({'flight1':flight1,'flight2':flight2}));
+    const paymentInfo =[{"s":"First Class Depature Flight seats ","n":f1},{"s":"Business Depature Flight seats ","n":b1}, {"s":"Economy Depature Flight seats ","n":e1},{"s":"Total Depature Flight","n":f1+b1+e1},
+                        {"s":"First Class Return Flight seats ","n":f2},{"s":"Business Return Flight seats ","n":b2}, {"s":"Economy Return Flight seats ","n":e2},{"s":"Total Return Flight","n":f2+b2+e2},{"s":"Total ","n":f1+b1+e1+f2+b2+e2}];
+     sessionStorage.setItem('payment',JSON.stringify(paymentInfo));
+     sessionStorage.setItem('amount',JSON.stringify(f1+b1+e1+f2+b2+e2));
+     history.push("/payment")
+ }
+ const handleChange = (event,x,y) => {
+    
+  const {
+    target: { value },
+  } = event;
 
-    try {
-      //Authorization: `Bearer ${userInfo.token}`
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-      const booking1 = await axios.post(
-        "http://localhost:8000/flights/book",
-        flight1,
-        config
-      );
-      if (typeof booking1 === "string") {
-        setLoading(false);
-        confirmAlert({
-          title: "Error",
-          message: booking1,
-          buttons: [
-            {
-              label: "Ok",
-              onClick: () => history.push("/homepage"),
-            },
-          ],
-        });
-      } else {
-        const booking2 = await axios.post(
-          "http://localhost:8000/flights/book",
-          flight2,
-          config
-        );
-        if (typeof booking2 === "string") {
-          ////// remove booking1
-          setLoading(false);
-          confirmAlert({
-            title: "Error",
-            message: booking2,
-            buttons: [
-              {
-                label: "Ok",
-                onClick: () => history.push("/homepage"),
-              },
-            ],
-          });
-        } else {
-          setLoading(false);
-          confirmAlert({
-            title: "",
-            message: "Your flights booked successfully",
-            buttons: [
-              {
-                label: "Ok",
-                onClick: () => history.push("/homepage"),
-              },
-            ],
-          });
-        }
-      }
-    } catch (error) {
-      setLoading(false);
-      history.push("/homePage");
-    }
-  };
-  const handleChange = (event, x, y) => {
-    const {
-      target: { value },
-    } = event;
+  return typeof value.length === 'string' ? (value.split(',').length>y?x: value.split(',')): (value.length>y?x:value)
 
-    return typeof value.length === "string"
-      ? value.split(",").length > y
-        ? x
-        : value.split(",")
-      : value.length > y
-      ? x
-      : value;
-  };
+};
 
   return (
     <>
