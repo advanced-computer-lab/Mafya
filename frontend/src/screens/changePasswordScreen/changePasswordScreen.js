@@ -79,10 +79,9 @@ function RegisterScreen({ history }) {
            const  ans =  await axios.post('http://localhost:8000/flights/getPassword',password,config);
            setLoading(false);
            
-           if(ans.data=="ok"){
+           if(ans.data==="ok"){
             confirmAlert({
-                title: 'confirm to Change Password',
-                message: 'Are you Sure to Change your Password ?',
+                message: 'Password Changed successfully',
                 buttons: [
                   {
                     label: 'Ok',
@@ -95,7 +94,6 @@ function RegisterScreen({ history }) {
            }
            else{
             confirmAlert({
-                title: 'confirm to Change Password',
                 message: 'Wrong Password?',
                 buttons: [
                   {
@@ -111,12 +109,23 @@ function RegisterScreen({ history }) {
    
 
   return (
-    <MainScreen title="Change Password">
-      <div className="loginContainer">
-        {loading && <Loading />}
+    <div className="Background">
+      <div className="loginContainer" style={{ marginTop: "-20px" }}>
+       
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name">
-           <TextField id="outlined-basic" label="Old Password" type="password" required variant="outlined"  sx={{m:1 ,width:'60ch'}} value={password.password} 
+           <TextField 
+           id="filled-basic"
+           InputLabelProps={{ className: "textfield__label" }}
+           InputProps={{ className: "textfield__input" }}
+           label="Filled"
+           variant="filled"
+           label="Old Password" 
+           sx={{ m: 1, width: "60ch" }}
+           type="password" 
+           required 
+          
+           value={password.password} 
       onChange={(event) =>{setPassword({...password, password:event.target.value})}}
      />
           </Form.Group>
@@ -124,26 +133,34 @@ function RegisterScreen({ history }) {
           
           <Form.Group controlId="formBasicPassword">
             <TextField 
-            id="outlined-basic" 
-            sx={{m:1,width: '60ch' }}
+            id="filled-basic"
+            InputLabelProps={{ className: "textfield__label" }}
+            InputProps={{ className: "textfield__input" }}
+            label="Filled"
+            variant="filled"
+            label="Age"
+            sx={{ m: 1, width: "60ch" }}
             label="New Password"
-              type="password"
-              required
-              value={password.newPassword}
-              placeholder="Password"
+            type="password"
+            required
+            value={password.newPassword}
+            placeholder="Password"
               onChange={(event) =>{setPassword({...password, newPassword:event.target.value})}}            >
             </TextField>
           </Form.Group>
 
           
 
-          <Button variant="primary" style={{margin:'10px', width: '25ch' }} type="submit">
+          <Button className="loginbutton" variant="primary" style={{margin:'10px', width: '25ch' }} type="submit">
             update 
           </Button>
+          {loading && <Loading />}
         </Form>
         
+        
       </div>
-    </MainScreen>
+      </div>
+    
   );
 }
 
