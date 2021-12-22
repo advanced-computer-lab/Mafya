@@ -16,6 +16,10 @@ import profile from "./components/editProfile/editProfile"
 import InquiryFlights from "./components/InquiryFlights/clientFlight"
 import AdminScreen from "./screens/AdminScreen/AdminScreen"
 import myFlights from "./components/myFlights/myFlights"
+import searchNewFlight from "./components/searchNewFlight/searchNewFlight"
+import changeDpFlight from "./components/changeDpFlight/changeDpFlight"
+import bookDp from "./components/bookDp/bookDp"
+import changePasswordScreen from "./screens/changePasswordScreen/changePasswordScreen"
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import test from "./components/test"
@@ -48,6 +52,11 @@ function App() {
         <Route path="/showInquiry" component={InquiryFlights}  />
         <Route path="/login" component={LoginScreen} />
         <Route path="/register" component={RegisterScreen} />
+        <Route path="/searchNewFlight" component={searchNewFlight} />
+        <Route path="/changeDpFlight" component={changeDpFlight} />
+        <Route path="/bookDp" component={bookDp} />
+        <Route path="/changePasswordScreen" component={changePasswordScreen} />
+        
       </main>
     </Router>
   );
