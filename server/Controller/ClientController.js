@@ -366,6 +366,18 @@ const getPassword=asyncHandler(async(req,res)=>{
 
 })
 
+const editSeatsNumber=asyncHandler(async(req,res)=>{
+  try{
+  await Booking.findByIdAndUpdate(req.body.BId,req.body.BN);
+  await Flight.findByIdAndUpdate(req.body.FId,req.body.FN);
+  res.send("ok")
+  }
+  catch(err){
+    res.send("error")
+
+  }
+})
+
 
 function filter(result,data){
   ans=[];
@@ -426,6 +438,7 @@ cancelBooking,
 getBookings,
 deleteClientFlight,
 payment,
-getPassword
+getPassword,
+editSeatsNumber
 
 }

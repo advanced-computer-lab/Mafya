@@ -311,6 +311,7 @@ export default function CreateFlight({ history }) {
      history.push("/payment")
  }
  const handleChange = (event,x,y) => {
+   console.log(flight1.FirstSeatsNumbers)
     
   const {
     target: { value },
@@ -322,7 +323,7 @@ export default function CreateFlight({ history }) {
 
   return (
     <>
-      {loadingEffect && <Loading />}
+
       {loading && <Loading />}
       <div className="TicketContainer">
         <div className="progressss">

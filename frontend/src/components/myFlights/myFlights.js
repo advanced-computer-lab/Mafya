@@ -112,20 +112,9 @@ export default function BasicTable({ history }) {
 
   }
 
-  const editS=(Id,From,To,DateD, FirstNumberOfSeats,BusinessNumberOfSeats,EconomyNumberOfSeats,children)=>{
-    var x ={
-      
-    Id:Id,
-    From:From,
-    To:To,
-    DateD:DateD,
-    FirstNumberOfSeats:FirstNumberOfSeats,
-    BusinessNumberOfSeats:BusinessNumberOfSeats,
-    EconomyNumberOfSeats:EconomyNumberOfSeats,
-    children:children
-  };
-    sessionStorage.setItem('editFlightsClient',JSON.stringify(x));
-    history.push("/searchNewFlight");
+  const editS=(flight)=>{
+    sessionStorage.setItem('editSeats',JSON.stringify(flight));
+    history.push("/editFlightSeats");
 
   }
 
@@ -251,8 +240,7 @@ export default function BasicTable({ history }) {
 
              <TableCell align="right">
              
-             <Button className="editButton" aria-label="edit" size="small" onClick={()=>editS(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
-                            flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
+             <Button className="editButton" aria-label="edit" size="small" onClick={()=>editS(flight)}>
                 <EditIcon fontSize="small" />
             </Button>   
             

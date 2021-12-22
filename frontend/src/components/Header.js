@@ -34,6 +34,7 @@ function Header() {
     console.log(out.data);
     if (out.data == "ok") {
       localStorage.removeItem("userInfo");
+      sessionStorage.clear();
       window.location.reload(false);
     }
   };

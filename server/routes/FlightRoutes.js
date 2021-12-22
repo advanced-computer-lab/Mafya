@@ -45,6 +45,7 @@ flightRouter.get('/getToken',protect.createTokents);
 
 flightRouter.post('/payment',protect.protect,clientController.payment);
 flightRouter.post('/getPassword',protect.protect,clientController.getPassword);
+flightRouter.post('/editSeatsNumber',protect.protect,clientController.editSeatsNumber)
 
 
 
