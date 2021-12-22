@@ -16,13 +16,13 @@ import profile from "./components/editProfile/editProfile"
 import InquiryFlights from "./components/InquiryFlights/clientFlight"
 import AdminScreen from "./screens/AdminScreen/AdminScreen"
 import myFlights from "./components/myFlights/myFlights"
-<<<<<<< HEAD
+
 import searchNewFlight from "./components/searchNewFlight/searchNewFlight"
 import changeDpFlight from "./components/changeDpFlight/changeDpFlight"
 import bookDp from "./components/bookDp/bookDp"
-=======
+
 import payment from "./components/payment/payment"
->>>>>>> 3eb0b23fb58f53f827d0ffcfa153e7d510798925
+
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import test from "./components/test"

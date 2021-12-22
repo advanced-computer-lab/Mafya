@@ -45,7 +45,7 @@ function SearchScreen({ history }) {
     e.preventDefault();
     setLoading(true);
   
-    if(formatDate(search.DateD).getDate()<=formatDate(search.DateA).getDate()&&formatDate(search.DateD).getDate()>=new Date().getDate()){
+    if(formatDate(search.DateD).getDate()<=formatDate(search.DateA).getDate()){
       if(search.FirstNumberOfSeats1+search.BusinessNumberOfSeats1+search.EconomyNumberOfSeats1>0&&search.FirstNumberOfSeats1+search.BusinessNumberOfSeats1+search.EconomyNumberOfSeats1>search.children1 &&
         search.FirstNumberOfSeats2+search.BusinessNumberOfSeats2+search.EconomyNumberOfSeats2>0&&search.FirstNumberOfSeats2+search.BusinessNumberOfSeats2+search.EconomyNumberOfSeats2>search.children2){
           setLoading(false);
