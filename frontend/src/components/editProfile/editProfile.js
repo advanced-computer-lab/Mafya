@@ -2,6 +2,8 @@ import  React  from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { Form, Row, Col } from "react-bootstrap";
+//import { Link } from "react-router-dom";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -139,6 +141,12 @@ export default function CreateFlight({history}) {
      
     </Grid>
     <Button variant="contained" size='large' sx={{m:1}} onClick={update} >update</Button>
+
+    <Row className="py-3">
+          <Col style={{margin:'8px'}}>
+            <Link to="/changePasswordScreen">Change Passowrd</Link>
+          </Col>
+        </Row>
     </MainScreen>
     </>
 
