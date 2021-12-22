@@ -1,7 +1,7 @@
 import  React  from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { Form, Button, Row, Col } from "react-bootstrap";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -39,6 +39,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Loading from "../../components/Loading";
+import "./InquiryScreen.css";
 
 
 const ITEM_HEIGHT = 48;
@@ -207,26 +208,98 @@ export default function CreateFlight(props) {
 
     
       <>
-      {loadingEffect && <Loading />}
-      {loading && <Loading />}
-      <MainScreen title="Change Flight">
+      <div className="inquiryMain">
+      <div className="reservationContainer">
+       <div className="searchSubContainer">
+       {loading && <Loading />}
+          <h3
+            className="heading"
+            style={{ paddingLeft: "13px", color: "#3c5977" }}
+          >
+            Search for aFlight
+          </h3>
+    
 
-      <TableContainer sx={{width: '85ch' }} component={Paper}>
-    <Table  sx={{width: '85ch' }} aria-label="simple table">
-    <TableRow>
-      </TableRow>
+      
+      <Form >
+      <div className="form-group">
+       <TextField 
+       id="filled-basic"
+       InputLabelProps={{ className: "textfield_label" }}
+       InputProps={{ className: "textfield_input" }}
+       variant="filled"
+       sx={{ m: 2, width: "60ch" }}
+        label="From"  value={flight.From}  />
 
+      <TextField id="filled-basic"
+        InputLabelProps={{ className: "textfield_label" }}
+        InputProps={{ className: "textfield_input" }}
+        variant="filled"
+        sx={{ m: 2, width: "60ch" }} 
+        label="To"
+        value={flight.To}  /> 
+     </div>
+     <div className="form-group">
+        <TextField 
+                 id="filled-basic"
+                InputLabelProps={{ className: "textfield_label" }}
+                InputProps={{ className: "textfield_input" }}
+                label="Filled"
+                variant="filled" 
+                type="Number"
+                sx={{ m: 2, width: "38.5ch" }} 
+                label="FirstNumberOfSeats"
+                required
+                value={flight.FirstNumberOfSeats} 
+                onChange={(event) =>{
+          setFlight({...flight, FirstNumberOfSeats:event.target.value})
+      }} />
+      <TextField 
+               id="filled-basic"
+               InputLabelProps={{ className: "textfield_label" }}
+               InputProps={{ className: "textfield_input" }}
+               label="Filled"
+               variant="filled" 
+               type="Number"
+               sx={{ m: 2, width: "38.5ch" }} 
+               required
+               label="BusinessNumberOfSeats" 
+               value={flight.BusinessNumberOfSeats} 
+               onChange={(event) =>{
+              setFlight({...flight, BusinessNumberOfSeats:event.target.value})
+      }} />
+      <TextField 
+              id="filled-basic"
+              InputLabelProps={{ className: "textfield_label" }}
+              InputProps={{ className: "textfield_input" }}
+              label="Filled"
+              variant="filled" 
+              type="Number"
+              sx={{ m: 2, width: "38.5ch" }} 
+              required 
+              label="EconomyNumberOfSeats" 
+              value={flight.EconomyNumberOfSeats} 
+              onChange={(event) =>{
+          setFlight({...flight, EconomyNumberOfSeats:event.target.value})
+      }} />
+      </div>
 
-      <TableRow>
-       <TextField id="outlined-basic" label="From" variant="outlined"  sx={{ m: 1, width: '40ch' }}value={flight.From}  />
-      <TextField id="outlined-basic" label="To" variant="outlined" sx={{ m: 1, width: '40ch' }} value={flight.To}  /> 
-      </TableRow>
-
-
-      <TableRow>
+      <div className="form-group">
+      
             <LocalizationProvider dateAdapter={AdapterDateFns}>
       <DatePicker
-        renderInput={(props) => <TextField {...props} sx={{ m: 1, width: '40ch' }} />}
+         renderInput={(props) => (
+                <TextField
+                    id="filled-basic"
+                    InputLabelProps={{ className: "textfield_label" }}
+                      InputProps={{ className: "textfield_inputDate" }}
+                          label="Filled"
+                      variant="filled"
+                      required
+                        {...props}
+                         sx={{ m: 2, width: "60ch" }}
+                    />
+                   )}
         label="Departure Date"
         value={flight.DateD}
         onChange={(newValue) =>{
@@ -234,33 +307,43 @@ export default function CreateFlight(props) {
       }} 
       />
     </LocalizationProvider>
-    <TextField id="outlined-basic" label="numberOfChildern" variant="outlined"  sx={{ m: 1, width: '40ch' }}value={flight.children} onChange={(event) =>{
+    <TextField
+      id="filled-basic"
+      InputLabelProps={{ className: "textfield_label" }}
+      InputProps={{ className: "textfield_input" }}
+      label="Filled"
+      variant="filled" 
+      type="Number"
+      sx={{ m: 2, width: "60ch" }} 
+      required 
+      label="numberOfChildern"  
+      value={flight.children} onChange={(event) =>{
           setFlight({...flight, children:event.target.value})
       }} />
+      </div>
    
-    </TableRow>
+   
 
-    <TableRow>
-        <TextField id="outlined-basic" label="FirstNumberOfSeats" variant="outlined"  sx={{ m: 1, width: '25ch' }}value={flight.FirstNumberOfSeats} onChange={(event) =>{
-          setFlight({...flight, FirstNumberOfSeats:event.target.value})
-      }} />
-      <TextField id="outlined-basic" label="BusinessNumberOfSeats" variant="outlined"  sx={{ m: 1, width: '25ch' }}value={flight.BusinessNumberOfSeats} onChange={(event) =>{
-          setFlight({...flight, BusinessNumberOfSeats:event.target.value})
-      }} />
-      <TextField id="outlined-basic" label="EconomyNumberOfSeats" variant="outlined"  sx={{ m: 1, width: '25ch' }}value={flight.EconomyNumberOfSeats} onChange={(event) =>{
-          setFlight({...flight, EconomyNumberOfSeats:event.target.value})
-      }} />
+
       
-    </TableRow>
     
-    <TableRow>
-      <Button variant="contained" style={{left:'200px'}}sx={{ m: 1, width: '20ch' }}
-      onClick={()=> search(flight)}>Search</Button>
-      </TableRow>
+      <div className="form-group">
+   
+      <Button 
+      className="inquirybutton"
+      
+      onClick={()=> search(flight)}>
+        Search</Button>
+       {loading && <Loading />}
+       </div>
+    
  
-      </Table>
-      </TableContainer>
-      </MainScreen>
+   
+    
+      </Form>
+      </div>
+      </div>
+      </div>
     </>
 
     

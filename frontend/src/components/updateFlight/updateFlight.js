@@ -586,7 +586,7 @@ export default function CreateFlight(props) {
                   InputProps={{ className: "textfield_input" }}
                   variant="filled"
                   label="FirstPrice"
-                  sx={{ m: 1, width: "27.3ch" }}
+                  sx={{ m: 1, width: "27.1ch" }}
                   value={flight.FirstPrice}
                   type="Number"
                   onChange={(event) => {
@@ -600,7 +600,7 @@ export default function CreateFlight(props) {
                   InputProps={{ className: "textfield_input" }}
                   variant="filled"
                   label="BusinessPrice"
-                  sx={{ m: 1, width: "27.3ch" }}
+                  sx={{ m: 1, width: "27.1ch" }}
                   value={flight.BusinessPrice}
                   type="Number"
                   onChange={(event) => {
@@ -614,7 +614,7 @@ export default function CreateFlight(props) {
                   InputProps={{ className: "textfield_input" }}
                   variant="filled"
                   label="EconomyPrice"
-                  sx={{ m: 1, width: "27.3ch" }}
+                  sx={{ m: 1, width: "27.1ch" }}
                   value={flight.EconomyPrice}
                   type="Number"
                   onChange={(event) => {
@@ -631,7 +631,7 @@ export default function CreateFlight(props) {
                   InputProps={{ className: "textfield_input" }}
                   variant="filled"
                   label="Baggage allowance first"
-                  sx={{ m: 1, width: "27.3ch" }}
+                  sx={{ m: 1, width: "27.1ch" }}
                   value={flight.BaggageAllowanceFirst}
                   type="Number"
                   onChange={(event) => {
@@ -648,7 +648,7 @@ export default function CreateFlight(props) {
                   InputProps={{ className: "textfield_input" }}
                   variant="filled"
                   label="Baggage allowance business"
-                  sx={{ m: 1, width: "27.3ch" }}
+                  sx={{ m: 1, width: "27.1ch" }}
                   value={flight.BaggageAllowanceBusiness}
                   type="Number"
                   onChange={(event) => {
@@ -665,7 +665,7 @@ export default function CreateFlight(props) {
                   InputProps={{ className: "textfield_input" }}
                   variant="filled"
                   label="Baggage allowance economy"
-                  sx={{ m: 1, width: "27.3ch" }}
+                  sx={{ m: 1, width: "27.1ch" }}
                   value={flight.BaggageAllowanceEconomy}
                   type="Number"
                   onChange={(event) => {
@@ -681,7 +681,7 @@ export default function CreateFlight(props) {
               <TableRow>
                 <Button
                   className="createbutton"
-                  style={{ marginTop: "20px", marginLeft: "209.5px" }}
+                  style={{ marginTop: "20px", marginLeft: "206.5px" }}
                   onClick={updateFlight}
                 >
                   update

@@ -1,28 +1,28 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { Component, useState,useEffect } from 'react';
-import axios from 'axios'
-import  IconButton  from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete'
-import DateAdapter from '@mui/lab/AdapterDateFns';
-import EditIcon from '@material-ui/icons/Edit';
-import { Link } from 'react-router-dom';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import DateFnsUtils from '@date-io/date-fns';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import DateTimePicker from '@mui/lab/DateTimePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import * as React from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { Component, useState, useEffect } from "react";
+import axios from "axios";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import DateAdapter from "@mui/lab/AdapterDateFns";
+import EditIcon from "@material-ui/icons/Edit";
+import { Link } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import { Button } from "react-bootstrap";
+import DateFnsUtils from "@date-io/date-fns";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DateTimePicker from "@mui/lab/DateTimePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
-import { color, height } from '@mui/system';
+import { confirmAlert } from "react-confirm-alert"; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { color, height } from "@mui/system";
 import Loading from "../../components/Loading";
 
 
@@ -100,7 +100,7 @@ export default function BasicTable({history}) {
   const book=()=>{
     if(firstId==""){
       confirmAlert({
-        message: 'You have to choose two flights',
+        message: 'You have to choose a flights',
         buttons: [
           {
             label: 'ok',
@@ -120,29 +120,46 @@ export default function BasicTable({history}) {
   return (
       <>
 
- <h1 className="heading">Available Flights</h1>
- {loadingEffect && <Loading />}
+<div className="flightsContainer">
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+        rel="stylesheet"
+      />
 
-<div style={{position:'absolute',top:'150px'}}>
+<div className="flightSubContainer">
 
-<Button variant="contained"style={{width:'100px',  position: 'related',left: '1400px'}} 
-    onClick={()=> book()}
-    > Book >></Button>  
-<h6 style={{left: '15px' ,top:'20px', position: 'absolute'}} >Choose the flight </h6>
 
-    <TableContainer style={{width:'740px' }}  component={Paper}>
-      <Table  style={{width:'740px'}}  aria-label="simple table">
-        <TableHead style={{ backgroundColor:'black',color:'white'}}>
 
-          <TableRow >
-            <TableCell style={{color:'white'}} align="right" >From</TableCell>
-            <TableCell style={{color:'white'}} align="right">To</TableCell>
-            <TableCell style={{color:'white'}} align="right">Departure Date</TableCell>
-            <TableCell style={{color:'white'}} align="right">Arrival Date</TableCell>
-            <TableCell style={{color:'white'}} align="right">First $ </TableCell>
-            <TableCell style={{color:'white'}} align="right">Economy $</TableCell>
-            <TableCell style={{color:'white'}} align="right">Business $</TableCell>
-            <TableCell style={{color:'white'}} align="right">Edit</TableCell>
+ 
+ <div style={{ margin: "50px" }}>
+   
+       <TableContainer
+          style={{ width: "740px", borderRadius: "0" }}
+          component={Paper}
+        >
+        <Table
+            style={{ width: "740px", borderRadius: "0" }}
+            aria-label="simple table"
+          >
+        <TableHead
+              style={{
+                backgroundColor: "#3c5977",
+                color: "white",
+                borderRadius: "0",
+              }}
+            >
+
+          <TableRow style={{ borderRadius: "0" }}>
+            <TableCell className="FlightCell" align="center" >From</TableCell>
+            <TableCell className="FlightCell" align="center">To</TableCell>
+            <TableCell className="FlightCell" align="center">Departure Date</TableCell>
+            <TableCell className="FlightCell" align="center">Arrival Date</TableCell>
+            <TableCell className="FlightCell" align="center">First $ </TableCell>
+            <TableCell className="FlightCell" align="center">Economy $</TableCell>
+            <TableCell className="FlightCell" align="center">Business $</TableCell>
+            <TableCell className="FlightCell" align="center">Edit</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -152,23 +169,25 @@ export default function BasicTable({history}) {
               style={{ backgroundColor:color1(flight._id)}}
             >
 
-              <TableCell align="right">{flight.From}</TableCell>
-              <TableCell align="right">{flight.To}</TableCell>
+              <TableCell align="center" className="FlightSubCell">{flight.From}</TableCell>
+              <TableCell align="center" className="FlightSubCell">{flight.To}</TableCell>
 
-              <TableCell align="right">{formatDate(flight.DateD)}</TableCell>
-              <TableCell align="right">{formatDate(flight.DateA)}</TableCell>
+              <TableCell align="center" className="FlightSubCell">{formatDate(flight.DateD)}</TableCell>
+              <TableCell align="center" className="FlightSubCell">{formatDate(flight.DateA)}</TableCell>
 
-              <TableCell align="right">{flight.FirstPrice}$</TableCell>
-              <TableCell align="right">{flight.BusinessPrice}$</TableCell>
-              <TableCell align="right">{flight.EconomyPrice}$</TableCell>
+              <TableCell align="center" className="FlightSubCell">{flight.FirstPrice}$</TableCell>
+              <TableCell align="center" className="FlightSubCell">{flight.BusinessPrice}$</TableCell>
+              <TableCell align="center" className="FlightSubCell">{flight.EconomyPrice}$</TableCell>
               
 
-              <TableCell align="right">
+              <TableCell align="center" className="FlightSubCell">
               
   
-              <Button  aria-label="edit" size="small"  onClick={()=> setFirstId(flight._id)}>
+              <Button  className="editButton"
+                        aria-label="edit"
+                        size="small"  onClick={()=> setFirstId(flight._id)}>
                     <EditIcon fontSize="small" />
-                </Button>   
+              </Button>   
               
              
              
@@ -177,11 +196,21 @@ export default function BasicTable({history}) {
           ))}
         </TableBody>
       </Table>
+
     </TableContainer>
+
 
    
 
-
+    <Button
+          className="loginbutton"
+          style={{ marginLeft: "36%", marginTop: "20px" }}
+          onClick={()=> book()}
+        >
+          Book
+        </Button>
+    </div>
+    </div>
     </div>
     </>
   );

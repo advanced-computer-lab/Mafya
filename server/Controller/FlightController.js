@@ -165,7 +165,7 @@ const updateFlight = (req,res)=>{
             Flight.findByIdAndUpdate(req.params.id,req.body).then(result =>{
                 notify(oldFilght,req.body,req.params.id);
         
-                res.send("User updated successfully");
+                res.send("Flight is updated successfully");
             }).catch(err => {
                 res.send("error");
               });
