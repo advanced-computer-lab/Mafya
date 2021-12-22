@@ -19,7 +19,6 @@ import myFlights from "./components/myFlights/myFlights"
 import searchNewFlight from "./components/searchNewFlight/searchNewFlight"
 import changeDpFlight from "./components/changeDpFlight/changeDpFlight"
 import bookDp from "./components/bookDp/bookDp"
-import changePasswordScreen from "./screens/changePasswordScreen/changePasswordScreen"
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import test from "./components/test"
@@ -55,7 +54,6 @@ function App() {
         <Route path="/searchNewFlight" component={searchNewFlight} />
         <Route path="/changeDpFlight" component={changeDpFlight} />
         <Route path="/bookDp" component={bookDp} />
-        <Route path="/changePasswordScreen" component={changePasswordScreen} />
         
       </main>
     </Router>
