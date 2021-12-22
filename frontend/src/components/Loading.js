@@ -1,18 +1,20 @@
+import { color } from "@mui/system";
 import React from "react";
 import { Spinner } from "react-bootstrap";
 
-function Loading({ size = 100 }) {
+function Loading({ size = 50 }) {
   return (
     <div
       style={{
-        position: "absolute",
+        position: "relative",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        width: "100%",
-        height: "100%",
-        top:"-50px",
-        left:"50px"
+        width: "50%",
+        height: "50%",
+         top:"20px",
+         left:"110px",
+         color:"rgba(34, 48, 60, 0.8)"
 
       }}
     >

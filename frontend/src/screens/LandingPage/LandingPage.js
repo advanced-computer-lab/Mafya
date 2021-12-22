@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { Button, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import background from "../video/background2.mp4"
 import "./LandingStyles.css";
+
 
 function LandingPage({ history }) {
  //const userLogin = useSelector((state) => state.userLogin);
@@ -18,11 +20,12 @@ function LandingPage({ history }) {
 
   return (
     <div className="main">
-      <Container>
+      
+        <Container>
         <Row>
           <div className="intro-text">
             <div>
-              <h1 className="title">Welcome to MAFYA AIR</h1>
+              <p className="title" >  WELCOME TO MAFYA AIR</p> 
               <p className="subtitle">One Safe place for all your trips.</p>
             </div>
             <div className="buttonContainer">
@@ -33,7 +36,6 @@ function LandingPage({ history }) {
               </Link>
               <Link to="/search">
                 <Button
-                  
                   size="lg"
                   className="landingbutton"
                 >

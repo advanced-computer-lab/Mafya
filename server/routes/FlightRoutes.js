@@ -43,9 +43,6 @@ flightRouter.get('/getProfile/',protect.protect,clientController.getProfile);
 flightRouter.post('/updateProfile/',protect.protect,clientController.updateProfile);
 flightRouter.get('/getToken',protect.createTokents);
 
-flightRouter.post('/payment',protect.protect,clientController.payment);
-
-
 
 flightRouter.post('/test',testController.createst);
 flightRouter.post('/testGet',testController.getTest);
