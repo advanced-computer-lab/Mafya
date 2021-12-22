@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import background from "../video/background2.mp4"
+
 import "./LandingStyles.css";
 
 
