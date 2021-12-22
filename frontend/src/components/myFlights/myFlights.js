@@ -96,7 +96,23 @@ export default function BasicTable({ history }) {
     return s;
   };
   const editF=(Id,From,To,DateD, FirstNumberOfSeats,BusinessNumberOfSeats,EconomyNumberOfSeats,children)=>{
-    console.log(BusinessNumberOfSeats)
+    var x ={
+      
+    Id:Id,
+    From:From,
+    To:To,
+    DateD:DateD,
+    FirstNumberOfSeats:FirstNumberOfSeats,
+    BusinessNumberOfSeats:BusinessNumberOfSeats,
+    EconomyNumberOfSeats:EconomyNumberOfSeats,
+    children:children
+  };
+    sessionStorage.setItem('editFlightsClient',JSON.stringify(x));
+    history.push("/searchNewFlight");
+
+  }
+
+  const editS=(Id,From,To,DateD, FirstNumberOfSeats,BusinessNumberOfSeats,EconomyNumberOfSeats,children)=>{
     var x ={
       
     Id:Id,
@@ -175,6 +191,7 @@ export default function BasicTable({ history }) {
                   Cancel
                 </TableCell>
                 <TableCell style={{color:'white'}} align="right">Change my Flight</TableCell>
+                <TableCell style={{color:'white'}} align="right">Change Seats Numbers</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -225,12 +242,21 @@ export default function BasicTable({ history }) {
 
                   <TableCell align="right">
              
-             <Button aria-label="edit" size="small" onClick={()=>editF(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
+                <Button className="editButton" aria-label="edit" size="small" onClick={()=>editF(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
                                flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
                    <EditIcon fontSize="small" />
                </Button>   
                
              </TableCell>
+
+             <TableCell align="right">
+             
+             <Button className="editButton" aria-label="edit" size="small" onClick={()=>editS(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
+                            flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
+                <EditIcon fontSize="small" />
+            </Button>   
+            
+          </TableCell>
                 </TableRow>
               ))}
             </TableBody>

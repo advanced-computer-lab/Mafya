@@ -4,6 +4,7 @@ const Flight =require( '../model/flight');
 const  asyncHandler = require("express-async-handler");
 const  createTokens = require( "../utils/generateToken");
 const flightController=require('../Controller/FlightController');
+const bcrypt = require("bcryptjs");
 const Token = require("../model/token.js");
 const stripe = require("stripe")("sk_test_51K8TPLHG9DEEaFkHIgPdKyIv9gCvzOmb2IPAKJRyOwRlUjESClUCLSEQ4BraqG8cyIwIYsMyhjkfx2lfQRvTEemM00ftg3wFQ0")
 
@@ -340,6 +341,31 @@ const getBookings = (req,res)=>{
 
 };
 
+const getPassword=asyncHandler(async(req,res)=>{
+  const id = req.user._id.toString();
+  const client = await Client.findById(id);
+  const content = req.body;
+  
+  if (client && (await client.matchPassword(content.password))) {
+          try{
+            const salt = await bcrypt.genSalt(10);
+            const passNew = await bcrypt.hash(content.newPassword, salt);
+          await Client.findByIdAndUpdate(id,{password:passNew});
+          res.send("ok");
+          }
+          catch(error){
+            console.log(error.message);
+            res.send(error.message);
+          }
+  }
+  else{
+        res.send("no");
+  }
+  
+
+
+})
+
 
 function filter(result,data){
   ans=[];
@@ -399,6 +425,7 @@ updateProfile,
 cancelBooking,
 getBookings,
 deleteClientFlight,
-payment
+payment,
+getPassword
 
 }

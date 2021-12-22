@@ -22,6 +22,7 @@ import changeDpFlight from "./components/changeDpFlight/changeDpFlight"
 import bookDp from "./components/bookDp/bookDp"
 
 import payment from "./components/payment/payment"
+import changePassword from "./screens/changePasswordScreen/changePasswordScreen"
 
 import { useState } from "react";
 import Button from '@mui/material/Button';
@@ -46,6 +47,8 @@ function App() {
         <Route path='/showFlights' component={showFlights} />
         
         <Route path='/adminSearch' component={AdminScreen} />
+        
+        <Route path='/changePassword' component={changePassword} />
         
         <Route path="/profile" component={profile} />
         <Route path="/book" component={bookFlight} />

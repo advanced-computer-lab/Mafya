@@ -171,6 +171,9 @@ export default function CreateFlight({ history }) {
         >
           update
         </Button>
+        <Link to='/changePassword'>
+            <h4>change Password</h4>
+        </Link>
         {loadingEffect && <Loading />}
       </div>
     </div>
