@@ -1,7 +1,7 @@
 import  React  from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { Button } from "react-bootstrap";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -195,43 +195,49 @@ export default function CreateFlight({history}) {
     return (
         
         <>
-        <MainScreen title="Payment">
+        <div className="TicketContainer">
+        <div className="TicketSubContainer1">
 
         {loading && <Loading />}
-        <TableContainer component={Paper} sx={{m:4}} style={{ width: '500px' ,float:'left' }} sx={{ m: 0.5}}>
-        <Table  style={{ width: '500px' ,float:'left'}} aria-label="simple table">
-        <TableHead  >
-            <h2>Payment  Info</h2>
-            
-        </TableHead >
-        <TableBody>
-        {paymentInfo.map((payment,key) => (
+        <Card className="Ticketcard" sx={{ m: 3 }}>
+         <h3 className="TicketHead">Payment  Info</h3>
+         <CardContent>
+         <TableContainer component={Paper} className="tableContainer1">
+         <Table>
+         <TableHead>
+         {paymentInfo.map((payment,key) => (
                     <TableRow>
-                    <TableCell><h5>{payment.s}</h5></TableCell>
-                    <TableCell><h5>{payment.n}</h5></TableCell>
+                    <TableCell className="TableCell" align="left"><h5>{payment.s}</h5></TableCell>
+                    <TableCell className="TableCell" align="left"><h5>{payment.n}</h5></TableCell>
                 </TableRow>
 
+
         ))}
-        
-        
-        <TableRow>
+                <TableRow>
+
+        </TableRow>
+            
+        </TableHead >
+
+        </Table>
+        </TableContainer>
+        </CardContent> 
+        </Card>
+        </div>
         <StripeCheckout
             stripeKey="pk_test_51K8TPLHG9DEEaFkHJfY1B91ETxQykw5Escd7jvXXrWB0iP17P0n9OPVdHcESNe9Mhf0jiLWYt88hB9qIhSSllYyR00R0wEHU43"
             token={makePayment}
             name="Pay for Mafya"
             amount={amountPay*100}
           >
-            <Button variant="contained" style={{ width: '200px'}} sx={{ m: 0.5 }}> Pay </Button>
+            <Button 
+            className="loginbutton"
+            style={{ marginTop: "-30px", marginBottom: "20px" }}
+             > Pay </Button>
              
             
           </StripeCheckout>
-        </TableRow>
-        </TableBody>
-        </Table>
-        </TableContainer>
-            
-            
-        </MainScreen>
+        </div>
        
         
         </>
