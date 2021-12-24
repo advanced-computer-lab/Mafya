@@ -20,20 +20,42 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import MainScreen from "../../components/MainScreen";
-import Loading from "../../components/Loading";
 import "./clientFlight.css";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { color, height } from "@mui/system";
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
 
 export default function BasicTable({ history }) {
   const [firstId, setFirstId] = useState("");
   const [secondId, setSecondId] = useState("");
   const [flights, setFlight] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [loadingEffect, setLoadingEffect] = useState(false);
+
 
   useEffect(() => {
+    setProcessing(true);
+    
     if (JSON.parse(sessionStorage.getItem("inquiryFlights"))) {
       const flightSearch1 = {
         From: JSON.parse(sessionStorage.getItem("inquiryFlights")).From,
@@ -50,8 +72,11 @@ export default function BasicTable({ history }) {
       axios
         .post("http://localhost:8000/flights/getBookingFlights", flightSearch1)
         .then((res) => {
-          setLoadingEffect(false);
           setFlight(res.data);
+          setTimeout(() => {
+            setProcessing(false);
+          }, 1500);
+        
         });
     } else {
       const flightSearch2 = {
@@ -66,13 +91,15 @@ export default function BasicTable({ history }) {
       axios
         .post("http://localhost:8000/flights/getBookingFlights", flightSearch2)
         .then((res) => {
-          setLoadingEffect(false);
           setFlight(res.data);
         });
     }
   }, []);
 
+  const [processing, setProcessing] = useState(false);
+
   return (
+    <>
     <div className="flightsContainer">
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -191,6 +218,19 @@ export default function BasicTable({ history }) {
         </TableContainer>
       </div>
     </div>
+<>
+        {processing ? (
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+                <Lottie options={defaultOptions1} height={200} width={200} />
+              </div>
+          ) : (<></>
+          )}
+</>
+    
+    
+        
+    </>
+    
   );
 }
 function formatDate(dateVal) {

@@ -38,8 +38,45 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import Loading from "../../components/Loading";
+
 import "./updateFlight.css";
+
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import * as fail from "../../56947-icon-failed.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: fail.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const colorG = "#3ABC5E";
+const colorR = "#B2243C";
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -67,12 +104,11 @@ export default function CreateFlight(props) {
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
 
-  const [loading, setLoading] = useState(false);
-  const [loadingEffect, setLoadingEffect] = useState(false);
 
   useEffect(() => {
+    setProcessing(true);
     if (!userInfo || !userInfo.isAdmin) {
-      setLoadingEffect(false);
+     
       history.push("/homepage");
     } else {
       const config = {
@@ -88,8 +124,11 @@ export default function CreateFlight(props) {
           config
         )
         .then((res) => {
-          setLoadingEffect(false);
+      
           setFlight(res.data);
+          setTimeout(() => {
+            setProcessing(false);
+          }, 1500);
         });
     }
   }, []);
@@ -129,48 +168,71 @@ export default function CreateFlight(props) {
   });
 
   const updateFlight = () => {
-    setLoading(true);
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-      handleDiff();
-
-      axios
-        .post(
-          `http://localhost:8000/flights/doUpdateFlights/${props.match.params.id}`,
-          flight,
-          config
-        )
-        .then((res) => {
-          setLoading(false);
-          confirmAlert({
-            title: "messege",
-            message: res.data,
-            buttons: [
-              {
-                label: "ok",
-                onClick: () => window.location.reload(false),
-              },
-            ],
-          });
-        });
-    } catch (error) {
-      setLoading(false);
-      confirmAlert({
-        title: "messege",
-        message: error.message,
-        buttons: [
-          {
-            label: "ok",
-            onClick: () => window.location.reload(false),
+    if( formatDate(flight.DateD).getDate() <=
+    formatDate(flight.DateA).getDate() ){
+      
+      try {
+        setloading(true);
+        setConfirm(false);
+        setOption(defaultOptions1);
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${userInfo.token}`,
           },
-        ],
-      });
+        };
+        handleDiff();
+  
+        axios
+          .post(
+            `http://localhost:8000/flights/doUpdateFlights/${props.match.params.id}`,
+            flight,
+            config
+          )
+          .then((res) => {
+            if(res.data=="1"){
+              setOption(defaultOptions2);
+              setMessage("Flight has been Updated  successfully");
+              setmessageColor(colorG);
+              setTimeout(() => {
+                setloading(false);
+                setOption(defaultOptions1);
+                setMessage(null);
+                window.location.reload(false);
+              }, 3000);
+            }
+            else{
+              setOption(defaultOptions3);
+              setMessage("Error , Invalid Flight Data");
+              setmessageColor(colorR);
+              setTimeout(() => {
+                setloading(false);
+                setOption(defaultOptions1);
+                setMessage(null);
+                
+              }, 3000);
+            }
+           
+          });
+      } catch (error) {
+        setOption(defaultOptions3);
+        setMessage("Error , please try again later");
+        setmessageColor(colorR);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          setMessage(null);
+          
+        }, 3000);
+
+      }
+
     }
+    else{
+      setErrorMessage("Invalid Dates")
+    }
+   
+
   };
   const handleDiff = () => {
     diffSets(flight.FirstSeatsNumbers, DseatsF);
@@ -190,30 +252,25 @@ export default function CreateFlight(props) {
 
     return arr1;
   };
-  const rest = () => {
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
 
-    axios
-      .get(
-        `http://localhost:8000/flights/updateFlights/${props.match.params.id}`,
-        config
-      )
-      .then((res) => {
-        setFlight(res.data);
-      });
-  };
+
+  const [errorMessage,setErrorMessage] = useState();
+
+  const [processing, setProcessing] = useState(false);
+
+  const [loading, setloading] = useState(false);
+
+  const [confirm,setConfirm] = useState(false);
+
+  const [option,setOption]= useState(defaultOptions1);
+  const [message,setMessage]= useState("");
+  const [messageColor,setmessageColor]=useState("#3ABC5E");
 
   return (
-    <div className="inquiryMain">
+    <>
+    {!processing ? (    <div className="inquiryMain">
       <div className="reservationContainer">
         <div>
-          {loadingEffect && <Loading />}
-          {loading && <Loading />}
 
           <TableContainer
             className="searchSubContainer"
@@ -679,9 +736,10 @@ export default function CreateFlight(props) {
               </TableRow>
 
               <TableRow>
+              <h4 style={{color:"red",textAlign:'center',marginTop: "20px"}}>{errorMessage}</h4>
                 <Button
                   className="createbutton"
-                  style={{ marginTop: "20px", marginLeft: "206.5px" }}
+                  style={{  marginLeft: "206.5px" }}
                   onClick={updateFlight}
                 >
                   update
@@ -691,6 +749,63 @@ export default function CreateFlight(props) {
           </TableContainer>
         </div>
       </div>
-    </div>
+    </div>):(<></>)}
+
+    <>
+        {processing ? (
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+               <>
+            <Lottie options={defaultOptions1} height={200} width={200} />
+
+               </>
+                
+           
+              </div>
+          ) : (<></> )}
+       </>
+
+       <>
+    {loading ? (
+      <>
+        <div style={{width:"1519px",height:"870px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"870px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            <Lottie options={option} height={200} width={200} />
+            
+            <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+
+    </>
   );
+}
+function formatDate(dateVal) {
+  var newDate = new Date(dateVal);
+
+  var sMonth = padValue(newDate.getMonth() + 1);
+  var sDay = padValue(newDate.getDate());
+  var sYear = newDate.getFullYear();
+  var sHour = newDate.getHours();
+  var sMinute = padValue(newDate.getMinutes());
+  var sAMPM = "AM";
+
+  var iHourCheck = parseInt(sHour);
+
+  if (iHourCheck > 12) {
+    sAMPM = "PM";
+    sHour = iHourCheck - 12;
+  } else if (iHourCheck === 0) {
+    sHour = "12";
+  }
+
+  sHour = padValue(sHour);
+
+  return new Date(sYear, sMonth, sDay, sHour, sMinute, 0);
+}
+function padValue(value) {
+  return value < 10 ? "0" + value : value;
 }

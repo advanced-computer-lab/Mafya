@@ -21,36 +21,66 @@ import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
-import Loading from "../../components/Loading";
 import "./showFlight.css";
+
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import * as fail from "../../56947-icon-failed.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: fail.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const colorG = "#3ABC5E";
+const colorR = "#B2243C";
+
 export default function BasicTable({ history }) {
   const userInfo = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
 
-  const [loading, setLoading] = useState(false);
-  const [loadingEffect, setLoadingEffect] = useState(false);
+ const [idDel,setIdDel] = useState(); 
 
   const deleteconf = (id) => {
-    confirmAlert({
-      title: "Confirm to delete",
-      message: "Are you sure to delete this Flight",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => deleteFlight(id),
-        },
-        {
-          label: "No",
-        },
-      ],
-    });
+    setIdDel(id);
+    setProcessing(false);
+    setloading(false);
+    setConfirm(true);
   };
 
   const [flights, setFlight] = useState([]);
 
-  const deleteFlight = (id) => {
-    setLoading(true);
+  const deleteFlight = () => {
+    const id = idDel;
+    setloading(true);
+    setConfirm(false);
+    setOption(defaultOptions1);
+
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -61,18 +91,39 @@ export default function BasicTable({ history }) {
     axios
       .delete(`http://localhost:8000/flights/deleteFlights/${id}`, config)
       .then(() => {
-        setLoading(false);
-        window.location.reload(false);
-      });
+        setOption(defaultOptions2);
+        setMessage("The Flights has been deleted successfully");
+        setmessageColor(colorG);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          setMessage(null);
+          window.location.reload(false);
+        }, 3000);
+       
+      }).
+      catch(err=>{
+        setOption(defaultOptions3);
+        setMessage("Error , please try again later");
+        setmessageColor(colorR);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          setMessage(null);
+          
+        }, 3000);
+
+      })
   };
 
   useEffect(() => {
+    setProcessing(true);
     if (
       !userInfo ||
       !userInfo.isAdmin ||
       !sessionStorage.getItem("adminSearch")
     ) {
-      setLoadingEffect(false);
+ 
       history.push("/homepage");
     } else {
       setFlightSearch(JSON.parse(sessionStorage.getItem("adminSearch")));
@@ -85,8 +136,12 @@ export default function BasicTable({ history }) {
       axios
         .post("http://localhost:8000/flights/getFlights", flightSearch, config)
         .then((res) => {
-          setLoadingEffect(false);
           setFlight(res.data);
+          setTimeout(() => {
+            setProcessing(false);
+            
+          }, 1500);
+          
         });
     }
   }, []);
@@ -108,9 +163,21 @@ export default function BasicTable({ history }) {
     EconomyPrice: "",
   });
 
+  const [processing, setProcessing] = useState(false);
+
+  const [loading, setloading] = useState(false);
+
+  const [confirm,setConfirm] = useState(false);
+
+  const [option,setOption]= useState(defaultOptions1);
+  const [message,setMessage]= useState("");
+  const [messageColor,setmessageColor]=useState("#3ABC5E");
+
+  
+
   return (
-    <div className="flightsContainer" style={{ display: "flex" }}>
-      {loadingEffect && <Loading />}
+    <>
+    {!processing ?(    <div className="flightsContainer" style={{ display: "flex" }}>
       <div style={{ position: "absolute", top: "150px" }}>
         <TableContainer component={Paper}>
           <Table aria-label="simple table">
@@ -265,8 +332,56 @@ export default function BasicTable({ history }) {
           </Table>
         </TableContainer>
       </div>
-      {loading && <Loading />}
-    </div>
+    </div>):(<></>)}
+
+
+    <>
+    {processing ? (
+      <>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            <Lottie options={defaultOptions1} height={200} width={200} />
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+
+    <>
+    {loading ? (
+      <>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            <Lottie options={option} height={200} width={200} />
+            
+            <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+
+    <>
+    {confirm ? (
+      <>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            
+            <h2 style={{color:"white",left :"670px" ,textAlign:'center'}}>Are you sure to cancel this Flight</h2>
+            <Button className="loginbutton" style={{ marginTop: "30px",left :"580px",position:'absolute',width:"60px",height:"40px"}} onClick={deleteFlight}>Yes</Button>
+            <Button className="loginbutton" style={{ marginTop: "30px",left :"660px",position:'absolute',width:"60px",height:"40px"}} onClick={()=>setConfirm(false)}>No</Button>
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+    </>
   );
 }
 function formatDate(dateVal) {

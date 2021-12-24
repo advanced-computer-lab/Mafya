@@ -26,22 +26,55 @@ import { Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import MainScreen from "../../components/MainScreen";
-import Loading from "../../components/Loading";
+
 import pic from "../../profile.png";
 //import TextField from '@material-ui/core/TextField';
-//import createFlight from '../'
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import * as fail from "../../56947-icon-failed.json";
+import Lottie from "react-lottie";
 
-{
-  /**Function must start with upper case */
-}
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: fail.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+
+const colorG = "#3ABC5E";
+const colorR = "#B2243C";
 export default function CreateFlight({ history }) {
   const userInfo = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
-  const [loading, setLoading] = useState(false);
-  const [loadingEffect, setLoadingEffect] = useState(false);
+
 
   useEffect(() => {
+    setProcessing(true)
     if (userInfo) {
       const config = {
         headers: {
@@ -52,11 +85,13 @@ export default function CreateFlight({ history }) {
       axios
         .get("http://localhost:8000/flights/getProfile/", config)
         .then((res) => {
-          setLoadingEffect(false);
           setPassenger(res.data);
+          setTimeout(() => {
+            setProcessing(false);
+          }, 1500);
         });
     } else {
-      setLoadingEffect(false);
+      
       history.push("/homePage");
     }
   }, []);
@@ -69,7 +104,10 @@ export default function CreateFlight({ history }) {
   });
 
   const update = () => {
-    setLoading(true);
+    setloading(true);
+    setConfirm(false);
+    setOption(defaultOptions1);
+
 
     const config = {
       headers: {
@@ -87,23 +125,51 @@ export default function CreateFlight({ history }) {
           userInfo.passport = passenger.passport;
           localStorage.removeItem("userInfo");
           localStorage.setItem("userInfo", JSON.stringify(userInfo));
+
+          setOption(defaultOptions2);
+          setMessage("Your Profile has been Updated  successfully");
+          setmessageColor(colorG);
+          setTimeout(() => {
+            setloading(false);
+            setOption(defaultOptions1);
+            window.location.reload(false);
+          }, 3000);
         }
-        setLoading(false);
-        confirmAlert({
-          title: "messege",
-          message: res.data,
-          buttons: [
-            {
-              label: "ok",
-              onClick: () => window.location.reload(false),
-            },
-          ],
-        });
-      });
+        else{
+          setOption(defaultOptions3);
+          setMessage("Error , please try again later");
+          setmessageColor(colorR);
+          setTimeout(() => {
+            setloading(false);
+            setOption(defaultOptions1);
+            
+          }, 3000);
+        }
+      }).catch(err=>{
+        setOption(defaultOptions3);
+        setMessage("Error , please try again later");
+        setmessageColor(colorR);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          
+        }, 3000);
+
+      })
   };
+  const [processing, setProcessing] = useState(false);
+
+  const [loading, setloading] = useState(false);
+
+  const [confirm,setConfirm] = useState(false);
+
+  const [option,setOption]= useState(defaultOptions1);
+  const [message,setMessage]= useState("");
+  const [messageColor,setmessageColor]=useState("#3ABC5E");
 
   return (
-    <div className="Background">
+    <>
+    {!processing ?(    <div className="Background">
       <div className="loginContainer" style={{ marginTop: "-20px" }}>
         <img
           src={pic}
@@ -158,6 +224,7 @@ export default function CreateFlight({ history }) {
           label="Filled"
           variant="filled"
           label="Age"
+          type="number"
           sx={{ m: 1, width: "60ch" }}
           value={passenger.age}
           onChange={(event) => {
@@ -174,8 +241,39 @@ export default function CreateFlight({ history }) {
         <Link to='/changePassword'>
             <h4>change Password</h4>
         </Link>
-        {loadingEffect && <Loading />}
+       
       </div>
-    </div>
+    </div>):(<></>)}
+
+
+<>
+{processing ? (
+    <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+       <>
+    <Lottie options={defaultOptions1} height={200} width={200} />
+
+       </>
+        
+   
+      </div>
+  ) : (<></> )}
+</>
+
+<>
+{loading ? (
+<>
+<div style={{width:"1519px",height:"815px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+</div>
+<div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+    <Lottie options={option} height={200} width={200} />
+    
+    <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
+    
+</div>
+  </>
+) : (<></>
+)}
+</>
+</>
   );
 }

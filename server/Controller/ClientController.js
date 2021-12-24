@@ -333,7 +333,7 @@ const getBookings = (req,res)=>{
   const id = req.params.id;
       Booking.find({clientId:id}).then((result)=>{
           res.status(200).send(result);
-          console.log(result);
+          
       }).catch((err)=>{
           res.status(409).json({message: err.message})
       })

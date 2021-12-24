@@ -33,15 +33,50 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Loading from "../../components/Loading";
+
 import "./createFlight.css";
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import * as fail from "../../56947-icon-failed.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: fail.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const colorG = "#3ABC5E";
+const colorR = "#B2243C";
+
 export default function CreateFlight({ history }) {
   const userInfo = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
 
-  const [loading, setLoading] = useState(false);
-  const [loadingEffect, setLoadingEffect] = useState(false);
+
 
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
@@ -67,32 +102,80 @@ export default function CreateFlight({ history }) {
   });
 
   const createFlight = () => {
-    setLoading(true);
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+    if( formatDate(flight.DateD).getDate() <=
+    formatDate(flight.DateA).getDate() ){
+      setloading(true);
+      setConfirm(false);
+      setOption(defaultOptions1);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+  
+      axios
+        .post("http://localhost:8000/flights/createFlights", flight, config)
+        .then((res) => {
+          console.log(res.data)
+          if(res.data=="1"){
+            setOption(defaultOptions2);
+            setMessage("Flight has been created  successfully");
+            setmessageColor(colorG);
+            setTimeout(() => {
+              setloading(false);
+              setOption(defaultOptions1);
+            }, 3000);
+  
+          }
+          else{
+            setOption(defaultOptions3);
+            setMessage("Error , Invalid Flight");
+            setmessageColor(colorR);
+            setTimeout(() => {
+              setloading(false);
+              setOption(defaultOptions1);
+              setMessage(null);
+              
+            }, 3000);
+  
+          }
+       
+  
+        }).catch(err=>{
+          setOption(defaultOptions3);
+          setMessage("Error , please try again later");
+          setmessageColor(colorR);
+          setTimeout(() => {
+            setloading(false);
+            setOption(defaultOptions1);
+            setMessage(null);
+            
+          }, 3000);
+        })
 
-    axios
-      .post("http://localhost:8000/flights/createFlights", flight, config)
-      .then((res) => {
-        setLoading(false);
-        confirmAlert({
-          title: "messege",
-          message: res.data,
-          buttons: [
-            {
-              label: "ok",
-            },
-          ],
-        });
-      });
+    }
+    else{
+      setErrorMessage("Invalid Dates")
+    }
+ 
+
   };
+  const [errorMessage,setErrorMessage] = useState();
+
+  const [processing, setProcessing] = useState(false);
+
+  const [loading, setloading] = useState(false);
+
+  const [confirm,setConfirm] = useState(false);
+
+  const [option,setOption]= useState(defaultOptions1);
+  const [message,setMessage]= useState("");
+  const [messageColor,setmessageColor]=useState("#3ABC5E");
 
   return (
-    <div className="inquiryMain">
+    <>
+    {!processing ?(    <div className="inquiryMain">
       <div className="reservationContainer">
         <TableContainer
           className="searchSubContainer"
@@ -114,6 +197,7 @@ export default function CreateFlight({ history }) {
                 InputProps={{ className: "textfieldinput" }}
                 variant="filled"
                 label="Flight_No"
+                required
                 sx={{ m: 1, width: "82.5ch" }}
                 type="number"
                 value={flight.Flight_No}
@@ -130,6 +214,7 @@ export default function CreateFlight({ history }) {
                 InputProps={{ className: "textfieldinput" }}
                 label="From"
                 variant="filled"
+                required
                 sx={{ m: 1, width: "40ch" }}
                 value={flight.From}
                 onChange={(event) => {
@@ -143,6 +228,7 @@ export default function CreateFlight({ history }) {
                 InputProps={{ className: "textfieldinput" }}
                 label="To"
                 variant="filled"
+                required
                 sx={{ m: 1, width: "40ch" }}
                 value={flight.To}
                 onChange={(event) => {
@@ -161,6 +247,7 @@ export default function CreateFlight({ history }) {
                       InputProps={{ className: "textfieldinput" }}
                       label="Filled"
                       variant="filled"
+                      required
                       {...props}
                       sx={{ m: 1, width: "40ch" }}
                     />
@@ -181,6 +268,7 @@ export default function CreateFlight({ history }) {
                       InputLabelProps={{ className: "textfieldlabel" }}
                       InputProps={{ className: "textfieldinput" }}
                       label="Filled"
+                      required
                       variant="filled"
                       {...props}
                       sx={{ m: 1, width: "40ch" }}
@@ -202,6 +290,7 @@ export default function CreateFlight({ history }) {
                 InputProps={{ className: "textfieldinput" }}
                 label="Filled"
                 variant="filled"
+                required
                 label="First Seats"
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.FirstSeats}
@@ -220,6 +309,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.FirstPrice}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({ ...flight, FirstPrice: event.target.value });
                 }}
@@ -235,6 +325,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.BaggageAllowanceFirst}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({
                     ...flight,
@@ -256,6 +347,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.BusinessSeats}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({ ...flight, BusinessSeats: event.target.value });
                 }}
@@ -272,6 +364,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.BusinessPrice}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({ ...flight, BusinessPrice: event.target.value });
                 }}
@@ -288,6 +381,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.BaggageAllowanceBusiness}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({
                     ...flight,
@@ -308,6 +402,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.EconomySeats}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({ ...flight, EconomySeats: event.target.value });
                 }}
@@ -324,6 +419,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.EconomyPrice}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({ ...flight, EconomyPrice: event.target.value });
                 }}
@@ -340,6 +436,7 @@ export default function CreateFlight({ history }) {
                 sx={{ m: 1, width: "26ch" }}
                 value={flight.BaggageAllowanceEconomy}
                 type="Number"
+                required
                 onChange={(event) => {
                   setFlight({
                     ...flight,
@@ -351,18 +448,75 @@ export default function CreateFlight({ history }) {
             </TableRow>
 
             <TableRow>
+            <h4 style={{color:"red",textAlign:'center',marginTop: "20px"}}>{errorMessage}</h4>
               <Button
                 className="createbutton"
-                style={{ marginTop: "20px", marginLeft: "195px" }}
+                style={{ marginLeft: "195px" }}
                 onClick={createFlight}
               >
                 Save
               </Button>
-              {loading && <Loading />}
+              
             </TableRow>
           </Table>
         </TableContainer>
       </div>
-    </div>
+    </div>):(<></>)}
+    <>
+        {processing ? (
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+               <>
+            <Lottie options={defaultOptions1} height={200} width={200} />
+
+               </>
+                
+           
+              </div>
+          ) : (<></> )}
+       </>
+
+       <>
+    {loading ? (
+      <>
+        <div style={{width:"1519px",height:"815px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            <Lottie options={option} height={200} width={200} />
+            
+            <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+
+    </>
   );
+}
+function formatDate(dateVal) {
+  var newDate = new Date(dateVal);
+
+  var sMonth = padValue(newDate.getMonth() + 1);
+  var sDay = padValue(newDate.getDate());
+  var sYear = newDate.getFullYear();
+  var sHour = newDate.getHours();
+  var sMinute = padValue(newDate.getMinutes());
+  var sAMPM = "AM";
+
+  var iHourCheck = parseInt(sHour);
+
+  if (iHourCheck > 12) {
+    sAMPM = "PM";
+    sHour = iHourCheck - 12;
+  } else if (iHourCheck === 0) {
+    sHour = "12";
+  }
+
+  sHour = padValue(sHour);
+
+  return new Date(sYear, sMonth, sDay, sHour, sMinute, 0);
+}
+function padValue(value) {
+  return value < 10 ? "0" + value : value;
 }

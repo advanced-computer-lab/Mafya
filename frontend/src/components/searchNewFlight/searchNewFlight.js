@@ -21,9 +21,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { Component, useState,useEffect,useParams } from 'react';
 import { Container , AppBar, Typography, Grow, Grid } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import MainScreen from "../../components/MainScreen";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -38,7 +35,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Loading from "../../components/Loading";
+
 import "./InquiryScreen.css";
 
 
@@ -72,8 +69,7 @@ export default function CreateFlight(props) {
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
-  const [loading, setLoading]=useState(false);
-  const [loadingEffect,setLoadingEffect]=useState(false);
+
 
   const [flight,setFlight]= useState({
     From:'',
@@ -85,6 +81,9 @@ export default function CreateFlight(props) {
     children:0,
   });
   useEffect(() => {
+    if(!userInfo){
+      history.push("/homepage")
+    }
     setFlight({
         From:JSON.parse(sessionStorage.getItem("editFlightsClient")).From,
         To:JSON.parse(sessionStorage.getItem("editFlightsClient")).To,
@@ -98,14 +97,28 @@ export default function CreateFlight(props) {
      
   },[]);
   const search=(flight)=>{
+    ///// valid dates
+    if (
+      parseInt(flight.FirstNumberOfSeats) +
+      parseInt(flight.BusinessNumberOfSeats) +
+      parseInt(flight.EconomyNumberOfSeats) >
+        0 &&
+      parseInt(flight.FirstNumberOfSeats) +
+      parseInt(flight.BusinessNumberOfSeats) +
+      parseInt(flight.EconomyNumberOfSeats) >
+      parseInt(flight.children)){
+        sessionStorage.setItem('changeDpFlight',JSON.stringify(flight))
+        history.push("/changeDpFlight");
+      }
+      else{
+        setErrorMessage("invalid seats Numbers");
+      }
+    
    
-    //sessionStorage.setItem('editFlightsClient',JSON.stringify(x));
-    console.log(flight.FirstNumberOfSeats)
-    sessionStorage.setItem('changeDpFlight',JSON.stringify(flight))
-    history.push("/changeDpFlight");
+
 
   }
-
+  const [errorMessage,setErrorMessage] = useState();
 
   const[DseatsF,setDseatsF]=useState([]);
   const[DseatsB,setDseatsB]=useState([]);
@@ -118,57 +131,6 @@ export default function CreateFlight(props) {
         
 
 
-    const updateFlight =() =>{
-      setLoading(true);
-      try{
-
-        const config = {
-          headers:{
-            "Content-type":"application/json",
-            Authorization: `Bearer ${userInfo.token}`
-    
-          }
-        }
-        handleDiff();
-        
-           axios.post(`http://localhost:8000/flights/doUpdateFlights/${props.match.params.id}`,flight,config).then((res)=>{
-            setLoading(false);
-            confirmAlert({
-                title: 'messege',
-                message: res.data,
-                buttons: [
-                  {
-                    label: 'ok',
-                    onClick: () =>window.location.reload(false)
-                    
-                  }
-                ]
-            });
-            
-        
-          })
-
-      }
-      catch(error){
-        setLoading(false);;
-        confirmAlert({
-          title: 'messege',
-          message: error.message,
-          buttons: [
-            {
-              label: 'ok',
-              onClick: () =>window.location.reload(false)
-              
-            }
-          ]
-      });
-      
-      
-      }
-
-
-
-    }
     const handleDiff=()=>{
       diffSets(flight.FirstSeatsNumbers,DseatsF);
       diffSets(flight.ReservedFirstSeatsNumbers,DseatsFR);
@@ -189,19 +151,7 @@ export default function CreateFlight(props) {
         return arr1;
 
     }
-    const rest=()=>{
-      const config = {
-        headers:{
-          "Content-type":"application/json",
-          Authorization: `Bearer ${userInfo.token}`
-  
-        }
-      }
-             
-      axios.get(`http://localhost:8000/flights/updateFlights/${props.match.params.id}`,config).then((res)=>{
-        setFlight(res.data) 
-      })  
-    }
+
 
   return (
   
@@ -211,12 +161,12 @@ export default function CreateFlight(props) {
       <div className="inquiryMain">
       <div className="reservationContainer">
        <div className="searchSubContainer">
-       {loading && <Loading />}
+     
           <h3
             className="heading"
             style={{ paddingLeft: "13px", color: "#3c5977" }}
           >
-            Search for aFlight
+            Search for a Flight
           </h3>
     
 
@@ -328,13 +278,13 @@ export default function CreateFlight(props) {
       
     
       <div className="form-group">
-   
+      <h4 style={{color:"red",textAlign:'center'}}>{errorMessage}</h4>
       <Button 
       className="inquirybutton"
       
       onClick={()=> search(flight)}>
         Search</Button>
-       {loading && <Loading />}
+    
        </div>
     
  

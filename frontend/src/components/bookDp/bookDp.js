@@ -43,7 +43,20 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Loading from "../../components/Loading";
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
 //import TextField from '@material-ui/core/TextField';
 //import createFlight from '../'
 
@@ -95,8 +108,6 @@ export default function CreateFlight({history}) {
   const [b1,setB1] = useState(0);;
   const [e1,setE1] = useState(0);;
 
-  const [loading, setLoading]=useState(false);
-  const [loadingEffect,setLoadingEffect]=useState(false);
 
   //const fid=JSON.parse(sessionStorage.getItem("editFlightsClient")).Id;
   
@@ -106,6 +117,7 @@ export default function CreateFlight({history}) {
 
 
   useEffect(() => {
+    setProcessing(true);
     if(!userInfo){
       history.push("/homepage");
     }
@@ -145,14 +157,16 @@ export default function CreateFlight({history}) {
         TotalBaggageAlowance:(JSON.parse(sessionStorage.getItem("changeDpFlight")).FirstNumberOfSeats*res.data.BaggageAllowanceFirst)+
                              (JSON.parse(sessionStorage.getItem("changeDpFlight")).BusinessNumberOfSeats*res.data.BaggageAllowanceBusiness)+
                              (JSON.parse(sessionStorage.getItem("changeDpFlight")).EconomyNumberOfSeats*res.data.BaggageAllowanceEconomy),
-        NumberOfChildren:JSON.parse(sessionStorage.getItem("changeDpFlight")).children1
+        NumberOfChildren:JSON.parse(sessionStorage.getItem("changeDpFlight")).children
       }) 
 
       setDseatsF(res.data.FirstSeatsNumbers)
       setDseatsB(res.data.BusinessSeatsNumbers)
       setDseatsE(res.data.EconomySeatsNumbers)
       
-      
+      setTimeout(() => {
+        setProcessing(false);
+      }, 1500);
     
     })
 
@@ -194,50 +208,22 @@ export default function CreateFlight({history}) {
 
 
     const bookSeats =async () =>{
-      setLoading(true);
-
       
-        if(flight1.FirstSeatsNumbers.length==flight1.FirstNumberOfSeats && flight1.BusinessSeatsNumbers.length==flight1.BusinessNumberOfSeats && flight1.EconomySeatsNumbers.length==flight1.EconomyNumberOfSeats){
 
-            setLoading(false);
-            confirmAlert({
-            title: 'confirm to Book',
-            message: 'Are you Sure to book these tickts ?',
-            buttons: [
-              {
-                label: 'Yes',
-                onClick: () =>  bookSeatsCon()
-              },
-              {
-                label: 'No',
-              }
-            ]
-          });
+      if(flight1.FirstSeatsNumbers.length==flight1.FirstNumberOfSeats && flight1.BusinessSeatsNumbers.length==flight1.BusinessNumberOfSeats && flight1.EconomySeatsNumbers.length==flight1.EconomyNumberOfSeats){
+
+        bookSeatsCon();
         }
         else{
-          setLoading(false);
-          confirmAlert({
-            title: 'Error',
-            message: 'Invalid seats Numbers',
-            buttons: [
-              {
-                label: 'ok',
 
-              }
-            ]
-          });
- 
-      }
+            setErrorMessage('Invalid seats Numbers')
+         }
       
 
     
     }
 
     const bookSeatsCon =async () =>{
-      setLoading(true);
- 
-     
-            //Authorization: `Bearer ${userInfo.token}`
             sessionStorage.setItem('bookFlights',JSON.stringify({'flight1':flight1}));
             const paymentInfo =[{"s":"First Class  seats ","n":f1},{"s":"Business seats ","n":b1}, {"s":"Economy  seats ","n":e1},{"s":"Total Depature Flight","n":f1+b1+e1}];
              sessionStorage.setItem('payment',JSON.stringify(paymentInfo));
@@ -255,254 +241,266 @@ export default function CreateFlight({history}) {
 
   };
 
+  const [processing, setProcessing] = useState(false);
+  const [errorMessage,setErrorMessage] = useState();
+
 
   return (
   
 
     
       <>
-
-       {loading && <Loading />}
-       <div className="TicketContainer">
+      {!processing ? (      <div className="TicketContainer">
      
-       <div className="TicketSubContainer1">
-       <Card className="Ticketcard" sx={{ m: 3 }}>
-       <h3 className="TicketHead">Mafya Air Ticket</h3>
-         <CardContent>
+     <div className="TicketSubContainer1">
+     <Card className="Ticketcard" sx={{ m: 3 }}>
+     <h3 className="TicketHead">Mafya Air Ticket</h3>
+       <CardContent>
 
-             
-         <TableContainer component={Paper} className="tableContainer1">
-         <Table aria-label="simple table">
-          <TableHead >
-           <TableRow>
-           <TableCell align="left" className="TableCell">
-                        FlightNo :{" "}
-                        <span style={{ color: "black" }}>
-                          {flight1.Flight_No}
-                        </span>
-            </TableCell>
-              </TableRow>
-              <TableRow>
-                      <TableCell align="left" className="TableCell">
-                        Total Price :{" "}
-                        <span style={{ color: "black" }}>
-                          {" "}
-                          {flight1.TotalPrice} $
-                        </span>
-                      </TableCell>
-                      <TableCell align="left" className="TableCell">
+           
+       <TableContainer component={Paper} className="tableContainer1">
+       <Table aria-label="simple table">
+        <TableHead >
+         <TableRow>
+         <TableCell align="left" className="TableCell">
+                      FlightNo :{" "}
+                      <span style={{ color: "black" }}>
+                        {flight1.Flight_No}
+                      </span>
+          </TableCell>
+            </TableRow>
+            <TableRow>
+                    <TableCell align="left" className="TableCell">
+                      Total Price :{" "}
+                      <span style={{ color: "black" }}>
                         {" "}
-                        Total Baggage Alowance :{" "}
-                        <span style={{ color: "black" }}>
-                          {flight1.TotalBaggageAlowance}
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="TableCell">
-                        From :{" "}
-                        <span style={{ color: "black" }}>{flight1.From}</span>
-                      </TableCell>
-                      <TableCell className="TableCell">
-                        To :{" "}
-                        <span style={{ color: "black" }}>{flight1.To}</span>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="TableCell">
-                        Departure Time :{" "}
-                        <span style={{ color: "black" }}>
-                          {departureHour(flight1.DateD)}{" "}
-                        </span>
-                      </TableCell>
-                      <TableCell className="TableCell" align="left">
-                        Arrival Time :{" "}
-                        <span style={{ color: "black" }}>
-                          {departureHour(flight1.DateA)}
-                        </span>
-                      </TableCell>
-                    </TableRow>
+                        {flight1.TotalPrice} $
+                      </span>
+                    </TableCell>
+                    <TableCell align="left" className="TableCell">
+                      {" "}
+                      Total Baggage Alowance :{" "}
+                      <span style={{ color: "black" }}>
+                        {flight1.TotalBaggageAlowance}
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="TableCell">
+                      From :{" "}
+                      <span style={{ color: "black" }}>{flight1.From}</span>
+                    </TableCell>
+                    <TableCell className="TableCell">
+                      To :{" "}
+                      <span style={{ color: "black" }}>{flight1.To}</span>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="TableCell">
+                      Departure Time :{" "}
+                      <span style={{ color: "black" }}>
+                        {departureHour(flight1.DateD)}{" "}
+                      </span>
+                    </TableCell>
+                    <TableCell className="TableCell" align="left">
+                      Arrival Time :{" "}
+                      <span style={{ color: "black" }}>
+                        {departureHour(flight1.DateA)}
+                      </span>
+                    </TableCell>
+                  </TableRow>
 
-                    <TableRow>
-                      <TableCell className="TableCell">
-                        Departure Day :{" "}
-                        <span style={{ color: "black" }}>
-                          {departureDay(flight1.DateD)}
-                        </span>
-                      </TableCell>
-                      <TableCell className="TableCell" align="left">
-                        Arrival Day :{" "}
-                        <span style={{ color: "black" }}>
-                          {departureDay(flight1.DateA)}
-                        </span>
-                      </TableCell>
-                      <TableCell
-                        className="TableCell"
-                        align="right"
-                      ></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="TableCell">
-                        <h5>First Class Seats Number</h5>
-                      </TableCell>
-                      <TableCell className="TableCell">
-                        <div>
-                          <FormControl className="ddList">
-                            <InputLabel id="demo-multiple-name-label">
-                              Select Seats
-                            </InputLabel>
-                            <Select
-                              labelId="demo-multiple-name-label"
-                              id="demo-multiple-name"
-                              multiple
-                              value={flight1.FirstSeatsNumbers}
-                              onChange={(event) => {
-                                setFlight1({
-                                  ...flight1,
-                                  FirstSeatsNumbers: handleChange(
-                                    event,
-                                    flight1.FirstSeatsNumbers,
-                                    flight1.FirstNumberOfSeats
-                                  ),
-                                });
-                              }}
-                              input={<OutlinedInput label="Select Seats" />}
-                              MenuProps={MenuProps}
-                            >
-                              {DseatsF.map((name) => (
-                                <MenuItem
-                                  key={name}
-                                  value={name}
-                                  style={getStyles(
-                                    name,
-                                    flight1.FirstSeatsNumbers,
-                                    theme
-                                  )}
-                                >
-                                  {name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="TableCell">
-                        <h5>Business Seats Number</h5>
-                      </TableCell>
-                      <TableCell className="TableCell">
-                        <div>
-                          <FormControl className="ddList">
-                            <InputLabel id="demo-multiple-name-label">
-                              Select Seats
-                            </InputLabel>
-                            <Select
-                              labelId="demo-multiple-name-label"
-                              id="demo-multiple-name"
-                              multiple
-                              value={flight1.BusinessSeatsNumbers}
-                              onChange={(event) => {
-                                setFlight1({
-                                  ...flight1,
-                                  BusinessSeatsNumbers: handleChange(
-                                    event,
-                                    flight1.BusinessSeatsNumbers,
-                                    flight1.BusinessNumberOfSeats
-                                  ),
-                                });
-                              }}
-                              input={<OutlinedInput label="Select Seats" />}
-                              MenuProps={MenuProps}
-                            >
-                              {DseatsB.map((name) => (
-                                <MenuItem
-                                  key={name}
-                                  value={name}
-                                  style={getStyles(
-                                    name,
-                                    flight1.FirstSeatsNumbers,
-                                    theme
-                                  )}
-                                >
-                                  {name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="TableCell">
-                        <h5>Economy Seats Number</h5>
-                      </TableCell>
-                      <TableCell className="TableCell">
-                        <div>
-                          <FormControl className="ddList">
-                            <InputLabel id="demo-multiple-name-label">
-                              Select Seats
-                            </InputLabel>
-                            <Select
-                              labelId="demo-multiple-name-label"
-                              id="demo-multiple-name"
-                              multiple
-                              value={flight1.EconomySeatsNumbers}
-                              onChange={(event) => {
-                                setFlight1({
-                                  ...flight1,
-                                  EconomySeatsNumbers: handleChange(
-                                    event,
-                                    flight1.EconomySeatsNumbers,
-                                    flight1.EconomyNumberOfSeats
-                                  ),
-                                });
-                              }}
-                              input={<OutlinedInput label="Select Seats" />}
-                              MenuProps={MenuProps}
-                            >
-                              {DseatsE.map((name) => (
-                                <MenuItem
-                                  key={name}
-                                  value={name}
-                                  style={getStyles(
-                                    name,
-                                    flight1.FirstSeatsNumbers,
-                                    theme
-                                  )}
-                                >
-                                  {name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-          </TableHead>
-              </Table>
-              </TableContainer>  
+                  <TableRow>
+                    <TableCell className="TableCell">
+                      Departure Day :{" "}
+                      <span style={{ color: "black" }}>
+                        {departureDay(flight1.DateD)}
+                      </span>
+                    </TableCell>
+                    <TableCell className="TableCell" align="left">
+                      Arrival Day :{" "}
+                      <span style={{ color: "black" }}>
+                        {departureDay(flight1.DateA)}
+                      </span>
+                    </TableCell>
+                    <TableCell
+                      className="TableCell"
+                      align="right"
+                    ></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="TableCell">
+                      <h5>First Class Seats Number</h5>
+                    </TableCell>
+                    <TableCell className="TableCell">
+                      <div>
+                        <FormControl className="ddList">
+                          <InputLabel id="demo-multiple-name-label">
+                            Select Seats
+                          </InputLabel>
+                          <Select
+                            labelId="demo-multiple-name-label"
+                            id="demo-multiple-name"
+                            multiple
+                            value={flight1.FirstSeatsNumbers}
+                            onChange={(event) => {
+                              setFlight1({
+                                ...flight1,
+                                FirstSeatsNumbers: handleChange(
+                                  event,
+                                  flight1.FirstSeatsNumbers,
+                                  flight1.FirstNumberOfSeats
+                                ),
+                              });
+                            }}
+                            input={<OutlinedInput label="Select Seats" />}
+                            MenuProps={MenuProps}
+                          >
+                            {DseatsF.map((name) => (
+                              <MenuItem
+                                key={name}
+                                value={name}
+                                style={getStyles(
+                                  name,
+                                  flight1.FirstSeatsNumbers,
+                                  theme
+                                )}
+                              >
+                                {name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="TableCell">
+                      <h5>Business Seats Number</h5>
+                    </TableCell>
+                    <TableCell className="TableCell">
+                      <div>
+                        <FormControl className="ddList">
+                          <InputLabel id="demo-multiple-name-label">
+                            Select Seats
+                          </InputLabel>
+                          <Select
+                            labelId="demo-multiple-name-label"
+                            id="demo-multiple-name"
+                            multiple
+                            value={flight1.BusinessSeatsNumbers}
+                            onChange={(event) => {
+                              setFlight1({
+                                ...flight1,
+                                BusinessSeatsNumbers: handleChange(
+                                  event,
+                                  flight1.BusinessSeatsNumbers,
+                                  flight1.BusinessNumberOfSeats
+                                ),
+                              });
+                            }}
+                            input={<OutlinedInput label="Select Seats" />}
+                            MenuProps={MenuProps}
+                          >
+                            {DseatsB.map((name) => (
+                              <MenuItem
+                                key={name}
+                                value={name}
+                                style={getStyles(
+                                  name,
+                                  flight1.FirstSeatsNumbers,
+                                  theme
+                                )}
+                              >
+                                {name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="TableCell">
+                      <h5>Economy Seats Number</h5>
+                    </TableCell>
+                    <TableCell className="TableCell">
+                      <div>
+                        <FormControl className="ddList">
+                          <InputLabel id="demo-multiple-name-label">
+                            Select Seats
+                          </InputLabel>
+                          <Select
+                            labelId="demo-multiple-name-label"
+                            id="demo-multiple-name"
+                            multiple
+                            value={flight1.EconomySeatsNumbers}
+                            onChange={(event) => {
+                              setFlight1({
+                                ...flight1,
+                                EconomySeatsNumbers: handleChange(
+                                  event,
+                                  flight1.EconomySeatsNumbers,
+                                  flight1.EconomyNumberOfSeats
+                                ),
+                              });
+                            }}
+                            input={<OutlinedInput label="Select Seats" />}
+                            MenuProps={MenuProps}
+                          >
+                            {DseatsE.map((name) => (
+                              <MenuItem
+                                key={name}
+                                value={name}
+                                style={getStyles(
+                                  name,
+                                  flight1.FirstSeatsNumbers,
+                                  theme
+                                )}
+                              >
+                                {name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+        </TableHead>
+            </Table>
+            </TableContainer>  
 
-            
-                     
-         </CardContent>
-     </Card>
+          
+                   
+       </CardContent>
+   </Card>
 
-     </div>
+   </div>
 
-     <br></br>
-        {loadingEffect && <Loading />}
-        {loading && <Loading />}
-        <br></br>
-        <Button
-          className="loginbutton"
-          style={{ marginTop: "-30px", marginBottom: "20px" }}
-          onClick={bookSeats}
-        >
-          Book
-        </Button>
-    
-     </div>
+   <h4 style={{color:"red",textAlign:'center',marginTop: "-40px"}}>{errorMessage}</h4>
+      <Button
+        className="loginbutton"
+        style={{ marginBottom: "30px" }}
+        onClick={bookSeats}
+      >
+        Book
+      </Button>
+  
+     </div>):(<></>)}
+
+     <>
+        {processing ? (
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+                <Lottie options={defaultOptions1} height={200} width={200} />
+           
+              </div>
+          ) : (
+    <></>
+          )}
+    </>
+
+       
+ 
 
 
     

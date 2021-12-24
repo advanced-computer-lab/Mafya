@@ -10,8 +10,9 @@ import {
 import {} from "react-router-dom";
 import axios from "axios";
 import "./Header.css";
+import Loading from "./Loading"
 
-function Header() {
+function Header({history}) {
   const userInfo = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
@@ -34,7 +35,6 @@ function Header() {
     console.log(out.data);
     if (out.data == "ok") {
       localStorage.removeItem("userInfo");
-      sessionStorage.clear();
       window.location.reload(false);
     }
   };
@@ -46,6 +46,7 @@ function Header() {
     if (userInfo && admin) {
       return (
         <>
+        
           <Nav.Link href="/myflights" class="nav-link active">
             {" "}
             My Flights

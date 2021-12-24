@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Loading from "../../components/Loading";
-import ErrorMessage from "../../components/ErrorMessage";
 import MainScreen from "../../components/MainScreen";
 import "./SearchScreen.css";
 import axios from "axios";
@@ -15,8 +13,6 @@ import DatePicker from "@mui/lab/DatePicker";
 import DateAdapter from "@mui/lab/AdapterDateFns";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import { width } from "@mui/system";
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 
 function SearchScreen({ history }) {
   const [search, setSearch] = useState({
@@ -33,13 +29,13 @@ function SearchScreen({ history }) {
     children1: 0,
     children2: "0",
   });
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+
   const [userInfo, setUserInfo] = useState("");
+  const [errorMessage,setErrorMessage] = useState();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
 
     if (
       //&&formatDate(search.DateD).getDate() >= new Date().getDate()
@@ -47,48 +43,32 @@ function SearchScreen({ history }) {
         formatDate(search.DateA).getDate() 
     ) {
       if (
-        search.FirstNumberOfSeats1 +
-          search.BusinessNumberOfSeats1 +
-          search.EconomyNumberOfSeats1 >
+        parseInt(search.FirstNumberOfSeats1) +
+        parseInt(search.BusinessNumberOfSeats1) +
+        parseInt(search.EconomyNumberOfSeats1) >
           0 &&
-        search.FirstNumberOfSeats1 +
-          search.BusinessNumberOfSeats1 +
-          search.EconomyNumberOfSeats1 >
-          search.children1 &&
-        search.FirstNumberOfSeats2 +
-          search.BusinessNumberOfSeats2 +
-          search.EconomyNumberOfSeats2 >
+        parseInt(search.FirstNumberOfSeats1) +
+        parseInt(search.BusinessNumberOfSeats1) +
+        parseInt(search.EconomyNumberOfSeats1) >
+        parseInt(search.children1) &&
+        parseInt(search.FirstNumberOfSeats2) +
+        parseInt(search.BusinessNumberOfSeats2) +
+        parseInt(search.EconomyNumberOfSeats2) >
           0 &&
-        search.FirstNumberOfSeats2 +
-          search.BusinessNumberOfSeats2 +
-          search.EconomyNumberOfSeats2 >
-          search.children2
+        parseInt(search.FirstNumberOfSeats2 )+
+        parseInt(search.BusinessNumberOfSeats2) +
+        parseInt(search.EconomyNumberOfSeats2) >
+        parseInt(search.children2)
       ) {
-        setLoading(false);
+
+       
         history.push("/show");
       } else {
-        setLoading(false);
-        confirmAlert({
-          title: "Error",
-          message: "invalid seats Number",
-          buttons: [
-            {
-              label: "Ok",
-            },
-          ],
-        });
+        setErrorMessage("invalid seats Numbers");
       }
     } else {
-      setLoading(false);
-      confirmAlert({
-        title: "Error",
-        message: "invalid Dates",
-        buttons: [
-          {
-            label: "Ok",
-          },
-        ],
-      });
+      setErrorMessage("invalid Dates");
+
     }
   };
 
@@ -103,7 +83,7 @@ function SearchScreen({ history }) {
       </div>
       <div className="reservationContainer">
         <div className="searchSubContainer">
-          {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
+        
           <Form onSubmit={submitHandler}>
             <div
               className="form-group"
@@ -330,6 +310,7 @@ function SearchScreen({ history }) {
             </div>
 
             <div className="form-group">
+            <h4 style={{color:"red",textAlign:'center'}}>{errorMessage}</h4>
               <Button
                 className="searchbutton"
                 type="submit"
@@ -342,7 +323,7 @@ function SearchScreen({ history }) {
               >
                 Search
               </Button>
-              {loading && <Loading />}
+            
             </div>
           </Form>
         </div>

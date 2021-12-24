@@ -43,9 +43,45 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Loading from "../../components/Loading";
+
 import MainScreen from "../../components/MainScreen";
 import StripeCheckout from "react-stripe-checkout";
+
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import * as fail from "../../56947-icon-failed.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: fail.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const colorG = "#3ABC5E";
+const colorR = "#B2243C";
 
 //import TextField from '@material-ui/core/TextField';
 //import createFlight from '../'
@@ -54,12 +90,17 @@ export default function CreateFlight({history}) {
     const [flight2,setFlight2]= useState({});
     const [paymentInfo,setPaymentInfo]= useState([]);
     const [amountPay,setAmount]= useState(0);
-    const [loading, setLoading]=useState(false);
+
     const [id,setId]=useState(null);
     const userInfo  = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
     useEffect(() => {
+      setProcessing(true);
+      if(!userInfo){
+        history.push("/homepage")
+      }
+      try{
         
         setPaymentInfo(JSON.parse(sessionStorage.getItem("payment")))
         setAmount(JSON.parse(sessionStorage.getItem("amount")));
@@ -69,6 +110,15 @@ export default function CreateFlight({history}) {
         if(x){
             setId(JSON.parse(sessionStorage.getItem("editFlightsClient")).Id);
         }
+        setTimeout(() => {
+          setProcessing(false);
+        }, 1500);
+      }
+    
+    catch(err){
+      history.push("/homepage")
+
+    }
 
 
         
@@ -78,6 +128,10 @@ export default function CreateFlight({history}) {
 
 
     const makePayment = token => {
+      setloading(true);
+      setConfirm(false);
+      setOption(defaultOptions1);
+     
         const config = {
             headers:{
               "Content-type":"application/json",
@@ -93,17 +147,26 @@ export default function CreateFlight({history}) {
         };
 
         axios.post("http://localhost:8000/flights/payment",body,config) .then(response => {
-              console.log("RESPONSE ", response);
               const { status } = response;
               bookSeatsCon();
-              console.log("STATUS ", status);
+             
             })
-            .catch(error => console.log(error));
+            .catch(error => {
+              setOption(defaultOptions3);
+              setMessage("Error , please try again later");
+              setmessageColor(colorR);
+              setTimeout(() => {
+                setloading(false);
+                setOption(defaultOptions1);
+                
+              }, 3000);
+
+            });
 
       };
 
       const bookSeatsCon =async () =>{
-        setLoading(true);
+        
    
           try{
               //Authorization: `Bearer ${userInfo.token}`
@@ -119,86 +182,53 @@ export default function CreateFlight({history}) {
               }
           
               const booking1 = await axios.post('http://localhost:8000/flights/book',flight1,config);
-              if(typeof booking1 === 'string'){
-                setLoading(false);
-                confirmAlert({
-                  title: 'Error',
-                  message: booking1,
-                  buttons: [
-                    {
-                      label: 'Ok',
-                      onClick: () =>  history.push('/homepage')
-                    }
-                  ]
-                });
-                
-              }
-              else if(!id){
+              if(!id){
               const booking2 = await axios.post('http://localhost:8000/flights/book',flight2,config);
-              if(typeof booking2 === 'string'){
-  
-                ////// remove booking1
-                setLoading(false);
-                confirmAlert({
-                  title: 'Error',
-                  message: booking2,
-                  buttons: [
-                    {
-                      label: 'Ok',
-                      onClick: () =>  history.push('/homepage')
-                    }
-                  ]
-                });
-                
               }
-              else{
-                setLoading(false);
-                  confirmAlert({
-                    title: '',
-                    message: 'Your flights booked successfully' ,
-                    buttons: [
-                      {
-                        label: 'Ok',
-                        onClick: () =>  history.push('/homepage')
-                      }
-                    ]
-                  });
-                  
+
               
-              }
-              }
-              else{
-                setLoading(false);
-                confirmAlert({
-                  title: '',
-                  message: 'Your flights booked successfully' ,
-                  buttons: [
-                    {
-                      label: 'Ok',
-                      onClick: () =>  history.push('/homepage')
-                    }
-                  ]
-                });
-              }
-  
           
           }
           catch(error){
-            setLoading(false);
+            setOption(defaultOptions3);
+            setMessage("Error , please try again later");
+            setmessageColor(colorR);
+            setTimeout(() => {
+              setloading(false);
+              setOption(defaultOptions1);
+              
+            }, 3000);
             history.push('/homePage');
           }
+
+
+          setOption(defaultOptions2);
+          setMessage("Your Reservation has been completed  successfully");
+          setmessageColor(colorG);
+          setTimeout(() => {
+            setloading(false);
+            setOption(defaultOptions1);
+            history.push('/homePage');
+          }, 3000);
+          
   
   
      }
+     const [processing, setProcessing] = useState(false);
 
-
+     const [loading, setloading] = useState(false);
+   
+     const [confirm,setConfirm] = useState(false);
+   
+     const [option,setOption]= useState(defaultOptions1);
+     const [message,setMessage]= useState("");
+     const [messageColor,setmessageColor]=useState("#3ABC5E");
     return (
         
         <>
+        {!processing ? (        
         <div className="TicketContainer">
         <div className="TicketSubContainer1">
-
-        {loading && <Loading />}
         <Card className="Ticketcard" sx={{ m: 3 }}>
          <h3 className="TicketHead">Payment  Info</h3>
          <CardContent>
@@ -222,22 +252,59 @@ export default function CreateFlight({history}) {
         </Table>
         </TableContainer>
         </CardContent> 
+        
         </Card>
+        
         </div>
+        
         <StripeCheckout
             stripeKey="pk_test_51K8TPLHG9DEEaFkHJfY1B91ETxQykw5Escd7jvXXrWB0iP17P0n9OPVdHcESNe9Mhf0jiLWYt88hB9qIhSSllYyR00R0wEHU43"
             token={makePayment}
             name="Pay for Mafya"
             amount={amountPay*100}
           >
+            
             <Button 
             className="loginbutton"
             style={{ marginTop: "-30px", marginBottom: "20px" }}
              > Pay </Button>
-             
             
+             
+             
           </StripeCheckout>
+          
+        </div>):(<></>)}
+
+
+        <>
+        {processing ? (
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+               <>
+            <Lottie options={defaultOptions1} height={200} width={200} />
+
+               </>
+                
+           
+              </div>
+          ) : (<></> )}
+       </>
+
+       <>
+    {loading ? (
+      <>
+        <div style={{width:"1519px",height:"815px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
         </div>
+        <div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            <Lottie options={option} height={200} width={200} />
+            
+            <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+
        
         
         </>

@@ -20,10 +20,23 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+
 import { color, height } from "@mui/system";
-import Loading from "../../components/Loading";
+
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
 
 
 
@@ -40,8 +53,7 @@ export default function BasicTable({history}) {
  // const[flights2,setFlight2]=useState([]);
 
  
-  const [loading, setLoading]=useState(false);
-  const [loadingEffect,setLoadingEffect]=useState(false);
+
 
   const color1=(id)=>{
   if(firstId==id)
@@ -49,11 +61,7 @@ export default function BasicTable({history}) {
 
   }
 
-//   const color2=(id)=>{
-//     if(secondId==id)
-//         return '#C0C0C0'
-  
-//     }
+
 
 
 
@@ -61,6 +69,7 @@ export default function BasicTable({history}) {
 
 
   useEffect(() => {
+    setProcessing(true);
 
     if(JSON.parse(sessionStorage.getItem("changeDpFlight"))){
       
@@ -75,22 +84,14 @@ export default function BasicTable({history}) {
       }
       axios.post('http://localhost:8000/flights/getBookingFlights',flightSearch1).then((res)=>{
         setFlight(res.data)
+        setTimeout(() => {
+          setProcessing(false);
+        }, 2000);
       })
 
     }
       else{
-        const flightSearch1 ={
-        From:'',
-        To:'',
-        DateD:'',
-        DateA:'',
-        FirstSeats:'',
-        BusinessSeats:'',
-        EconomySeats:''
-      }
-      axios.post('http://localhost:8000/flights/getBookingFlights',flightSearch1).then((res)=>{
-        setFlight(res.data)
-      })
+          history.push("/homePage")
     }
 
    
@@ -99,14 +100,7 @@ export default function BasicTable({history}) {
 
   const book=()=>{
     if(firstId==""){
-      confirmAlert({
-        message: 'You have to choose a flights',
-        buttons: [
-          {
-            label: 'ok',
-          }
-        ]
-      });
+      setErrorMessage('You have to choose a flights')
     }
     else{
     sessionStorage.setItem('flightsBook',JSON.stringify({'firstId':firstId}));
@@ -115,103 +109,120 @@ export default function BasicTable({history}) {
   
     }
 
-
+    const [processing, setProcessing] = useState(false);
+    const [errorMessage,setErrorMessage] = useState();
 
   return (
       <>
-
-<div className="flightsContainer">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
-        rel="stylesheet"
-      />
-
-<div className="flightSubContainer">
-
-
-
- 
- <div style={{ margin: "50px" }}>
-   
-       <TableContainer
-          style={{ width: "740px", borderRadius: "0" }}
-          component={Paper}
-        >
-        <Table
-            style={{ width: "740px", borderRadius: "0" }}
-            aria-label="simple table"
-          >
-        <TableHead
-              style={{
-                backgroundColor: "#3c5977",
-                color: "white",
-                borderRadius: "0",
-              }}
-            >
-
-          <TableRow style={{ borderRadius: "0" }}>
-            <TableCell className="FlightCell" align="center" >From</TableCell>
-            <TableCell className="FlightCell" align="center">To</TableCell>
-            <TableCell className="FlightCell" align="center">Departure Date</TableCell>
-            <TableCell className="FlightCell" align="center">Arrival Date</TableCell>
-            <TableCell className="FlightCell" align="center">First $ </TableCell>
-            <TableCell className="FlightCell" align="center">Economy $</TableCell>
-            <TableCell className="FlightCell" align="center">Business $</TableCell>
-            <TableCell className="FlightCell" align="center">Edit</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {flights.map((flight,key) => (
-            <TableRow
-              key={flight._id}
-              style={{ backgroundColor:color1(flight._id)}}
-            >
-
-              <TableCell align="center" className="FlightSubCell">{flight.From}</TableCell>
-              <TableCell align="center" className="FlightSubCell">{flight.To}</TableCell>
-
-              <TableCell align="center" className="FlightSubCell">{formatDate(flight.DateD)}</TableCell>
-              <TableCell align="center" className="FlightSubCell">{formatDate(flight.DateA)}</TableCell>
-
-              <TableCell align="center" className="FlightSubCell">{flight.FirstPrice}$</TableCell>
-              <TableCell align="center" className="FlightSubCell">{flight.BusinessPrice}$</TableCell>
-              <TableCell align="center" className="FlightSubCell">{flight.EconomyPrice}$</TableCell>
-              
-
-              <TableCell align="center" className="FlightSubCell">
-              
-  
-              <Button  className="editButton"
-                        aria-label="edit"
-                        size="small"  onClick={()=> setFirstId(flight._id)}>
-                    <EditIcon fontSize="small" />
-              </Button>   
-              
+      {!processing ?(
+               <div className="flightsContainer">
+               <link rel="preconnect" href="https://fonts.googleapis.com" />
+               <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+               <link
+                 href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+                 rel="stylesheet"
+               />
+         
+                  <div className="flightSubContainer">
+         
+         
+         
+          
+                <div style={{ margin: "50px" }}>
+            
+                <TableContainer
+                   style={{ width: "740px", borderRadius: "0" }}
+                   component={Paper}
+                 >
+                 <Table
+                     style={{ width: "740px", borderRadius: "0" }}
+                     aria-label="simple table"
+                   >
+                 <TableHead
+                       style={{
+                         backgroundColor: "#3c5977",
+                         color: "white",
+                         borderRadius: "0",
+                       }}
+                     >
+         
+                   <TableRow style={{ borderRadius: "0" }}>
+                     <TableCell className="FlightCell" align="center" >From</TableCell>
+                     <TableCell className="FlightCell" align="center">To</TableCell>
+                     <TableCell className="FlightCell" align="center">Departure Date</TableCell>
+                     <TableCell className="FlightCell" align="center">Arrival Date</TableCell>
+                     <TableCell className="FlightCell" align="center">First $ </TableCell>
+                     <TableCell className="FlightCell" align="center">Economy $</TableCell>
+                     <TableCell className="FlightCell" align="center">Business $</TableCell>
+                     <TableCell className="FlightCell" align="center">Edit</TableCell>
+                   </TableRow>
+                 </TableHead>
+                 <TableBody>
+                   {flights.map((flight,key) => (
+                     <TableRow
+                       key={flight._id}
+                       style={{ backgroundColor:color1(flight._id)}}
+                     >
+         
+                       <TableCell align="center" className="FlightSubCell">{flight.From}</TableCell>
+                       <TableCell align="center" className="FlightSubCell">{flight.To}</TableCell>
+         
+                       <TableCell align="center" className="FlightSubCell">{formatDate(flight.DateD)}</TableCell>
+                       <TableCell align="center" className="FlightSubCell">{formatDate(flight.DateA)}</TableCell>
+         
+                       <TableCell align="center" className="FlightSubCell">{flight.FirstPrice}$</TableCell>
+                       <TableCell align="center" className="FlightSubCell">{flight.BusinessPrice}$</TableCell>
+                       <TableCell align="center" className="FlightSubCell">{flight.EconomyPrice}$</TableCell>
+                       
+         
+                       <TableCell align="center" className="FlightSubCell">
+                       
+           
+                       <Button  className="editButton"
+                                 aria-label="edit"
+                                 size="small"  onClick={()=> setFirstId(flight._id)}>
+                             <EditIcon fontSize="small" />
+                       </Button>   
+                       
+                      
+                      
+                       </TableCell>
+                     </TableRow>
+                   ))}
+                 </TableBody>
+               </Table>
+         
+             </TableContainer>
+         
+         
+             <div className="form-group">
              
-             
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+             <h4 style={{color:"red",textAlign:'center',marginTop: "20px"}}>{errorMessage}</h4>
+             <Button
+                   className="loginbutton"
+                   style={{ marginLeft: "36%"}}
+                   onClick={()=> book()}
+                 >
+                   Book
+                 </Button>
+                 </div>
+             </div>
+             </div>
+                </div>
+      ):(<></>)}
 
-    </TableContainer>
+<>
+        {processing ? (
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+                <Lottie options={defaultOptions1} height={200} width={200} />
+           
+              </div>
+          ) : (
+    <></>
+          )}
+    </>
 
 
-   
-
-    <Button
-          className="loginbutton"
-          style={{ marginLeft: "36%", marginTop: "20px" }}
-          onClick={()=> book()}
-        >
-          Book
-        </Button>
-    </div>
-    </div>
-    </div>
     </>
   );
 }

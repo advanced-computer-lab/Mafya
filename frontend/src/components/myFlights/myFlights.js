@@ -19,38 +19,68 @@ import DateFnsUtils from "@date-io/date-fns";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+
 import MainScreen from "../../components/MainScreen";
-import Loading from "../../components/Loading";
+
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import * as fail from "../../56947-icon-failed.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: fail.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const colorG = "#3ABC5E";
+const colorR = "#B2243C";
 
 export default function BasicTable({ history }) {
   const userInfo = localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null;
 
-  const [loading, setLoading] = useState(false);
-  const [loadingEffect, setLoadingEffect] = useState(false);
+const [idDel,setIdDel] = useState(); 
+const [flights, setFlight] = useState([]);
   const deleteconf = (id) => {
-    confirmAlert({
-      title: "Confirm to cancel",
-      message: "Are you sure to cancel this ?",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => deleteFlight(id),
-        },
-        {
-          label: "No",
-        },
-      ],
-    });
+    setIdDel(id);
+    setProcessing(false);
+    setloading(false);
+    setConfirm(true);
   };
 
-  const [flights, setFlight] = useState([]);
 
-  const deleteFlight = (id) => {
-    setLoading(true);
+
+
+  const deleteFlight = () => {
+    const id = idDel;
+    setloading(true);
+    setConfirm(false);
+    setOption(defaultOptions1);
+ 
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -61,15 +91,36 @@ export default function BasicTable({ history }) {
     axios
       .delete(`http://localhost:8000/flights/cancelBooking/${id}`, config)
       .then(() => {
-        setLoading(false);
-        window.location.reload(false);
-      });
+        setOption(defaultOptions2);
+        setMessage("Your Flights has been cancelled successfully");
+        setmessageColor(colorG);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          setMessage(null);
+          window.location.reload(false);
+        }, 3000);
+      }).
+      catch(err=>{
+        setOption(defaultOptions3);
+        setMessage("Error , please try again later");
+        setmessageColor(colorR);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          setMessage(null);
+          
+        }, 3000);
+
+      })
   };
 
   useEffect(() => {
+    setProcessing(true);
     if (!userInfo) {
       history.push("/homepage");
     } else {
+      
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -83,8 +134,11 @@ export default function BasicTable({ history }) {
           config
         )
         .then((res) => {
-          //setLoadingEffect(false);
+         
           setFlight(res.data);
+          setTimeout(() => {
+             setProcessing(false);
+          }, 1500);
         });
     }
   }, []);
@@ -118,142 +172,208 @@ export default function BasicTable({ history }) {
 
   }
 
+  const [processing, setProcessing] = useState(false);
+
+  const [loading, setloading] = useState(false);
+
+  const [confirm,setConfirm] = useState(false);
+
+  const [option,setOption]= useState(defaultOptions1);
+  const [message,setMessage]= useState("");
+  const [messageColor,setmessageColor]=useState("#3ABC5E");
+
+
   return (
-    <div className="flightsContainer">
-      {loadingEffect && <Loading />}
-      <div className="flightSubContainer">
-        <TableContainer component={Paper} sx={{ width: 1300 }}>
-          <Table aria-label="simple table" sx={{ width: 1300 }}>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "#3c5977", color: "white" }}>
-                <TableCell style={{ color: "white" }} align="center">
-                  Flight_No
-                </TableCell>
+    <>
+    {!processing ?(    <div className="flightsContainer">
 
-                <TableCell style={{ color: "white" }} align="center">
-                  From
-                </TableCell>
-                <TableCell style={{ color: "white" }} align="center">
-                  To
-                </TableCell>
-
-                <TableCell style={{ color: "white" }} align="center">
-                  Departure Date
-                </TableCell>
-                <TableCell style={{ color: "white" }} align="center">
-                  Arrival Date
-                </TableCell>
-
-                <TableCell
-                  style={{ color: "white" }}
-                  sx={{ width: 200 }}
-                  align="center"
-                >
-                  First Seats Numbers{" "}
-                </TableCell>
-                <TableCell
-                  style={{ color: "white" }}
-                  sx={{ width: 200 }}
-                  align="center"
-                >
-                  Business Seats Numbers
-                </TableCell>
-                <TableCell
-                  style={{ color: "white" }}
-                  sx={{ width: 200 }}
-                  align="center"
-                >
-                  Economy Seats Numbers
-                </TableCell>
-
-                <TableCell style={{ color: "white" }} align="center">
-                  Number of children
-                </TableCell>
-                <TableCell style={{ color: "white" }} align="center">
-                  Total Price
-                </TableCell>
-                <TableCell style={{ color: "white" }} align="center">
-                  Total baggage alowance
-                </TableCell>
-
-                <TableCell style={{ color: "white" }} align="center">
-                  Cancel
-                </TableCell>
-                <TableCell style={{color:'white'}} align="right">Change my Flight</TableCell>
-                <TableCell style={{color:'white'}} align="right">Change Seats Numbers</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {flights.map((flight, key) => (
-                <TableRow key={flight._id}>
-                  <TableCell align="center">{flight.Flight_No}</TableCell>
-
-                  <TableCell align="center">{flight.From}</TableCell>
-                  <TableCell align="center">{flight.To}</TableCell>
-
-                  <TableCell align="center">
-                    {formatDate(flight.DateD)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {formatDate(flight.DateA)}
-                  </TableCell>
-
-                  <TableCell align="center">
-                    {comb(flight.FirstSeatsNumbers)}
-                  </TableCell>
-
-                  <TableCell align="center">
-                    {comb(flight.BusinessSeatsNumbers)}
-                  </TableCell>
-
-                  <TableCell align="center">
-                    {comb(flight.EconomySeatsNumbers)}
-                  </TableCell>
-
-                  <TableCell align="center">
-                    {flight.NumberOfChildren}
-                  </TableCell>
-                  <TableCell align="center">{flight.TotalPrice}</TableCell>
-                  <TableCell align="center">
-                    {flight.TotalBaggageAlowance}
-                  </TableCell>
-
-                  <TableCell align="center">
-                    <Button
-                      aria-label="delete"
-                      size="small"
-                      className="editButton"
-                      onClick={() => deleteconf(flight._id)}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </Button>
-                  </TableCell>
-
-                  <TableCell align="right">
-             
-                <Button className="editButton" aria-label="edit" size="small" onClick={()=>editF(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
-                               flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
-                   <EditIcon fontSize="small" />
-               </Button>   
-               
-             </TableCell>
-
-             <TableCell align="right">
-             
-             <Button className="editButton" aria-label="edit" size="small" onClick={()=>editS(flight)}>
-                <EditIcon fontSize="small" />
-            </Button>   
-            
+<div className="flightSubContainer">
+  <TableContainer component={Paper} sx={{ width: 1300 }}>
+    <Table aria-label="simple table" sx={{ width: 1300 }}>
+      <TableHead>
+        <TableRow style={{ backgroundColor: "#3c5977", color: "white" }}>
+          <TableCell style={{ color: "white" }} align="center">
+            Flight_No
           </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
 
-      {loading && <Loading />}
-    </div>
+          <TableCell style={{ color: "white" }} align="center">
+            From
+          </TableCell>
+          <TableCell style={{ color: "white" }} align="center">
+            To
+          </TableCell>
+
+          <TableCell style={{ color: "white" }} align="center">
+            Departure Date
+          </TableCell>
+          <TableCell style={{ color: "white" }} align="center">
+            Arrival Date
+          </TableCell>
+
+          <TableCell
+            style={{ color: "white" }}
+            sx={{ width: 200 }}
+            align="center"
+          >
+            First Seats Numbers{" "}
+          </TableCell>
+          <TableCell
+            style={{ color: "white" }}
+            sx={{ width: 200 }}
+            align="center"
+          >
+            Business Seats Numbers
+          </TableCell>
+          <TableCell
+            style={{ color: "white" }}
+            sx={{ width: 200 }}
+            align="center"
+          >
+            Economy Seats Numbers
+          </TableCell>
+
+          <TableCell style={{ color: "white" }} align="center">
+            Number of children
+          </TableCell>
+          <TableCell style={{ color: "white" }} align="center">
+            Total Price
+          </TableCell>
+          <TableCell style={{ color: "white" }} align="center">
+            Total baggage alowance
+          </TableCell>
+
+          <TableCell style={{ color: "white" }} align="center">
+            Cancel
+          </TableCell>
+          <TableCell style={{color:'white'}} align="right">Change my Flight</TableCell>
+          <TableCell style={{color:'white'}} align="right">Change Seats Numbers</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {flights.map((flight, key) => (
+          <TableRow key={flight._id}>
+            <TableCell align="center">{flight.Flight_No}</TableCell>
+
+            <TableCell align="center">{flight.From}</TableCell>
+            <TableCell align="center">{flight.To}</TableCell>
+
+            <TableCell align="center">
+              {formatDate(flight.DateD)}
+            </TableCell>
+            <TableCell align="center">
+              {formatDate(flight.DateA)}
+            </TableCell>
+
+            <TableCell align="center">
+              {comb(flight.FirstSeatsNumbers)}
+            </TableCell>
+
+            <TableCell align="center">
+              {comb(flight.BusinessSeatsNumbers)}
+            </TableCell>
+
+            <TableCell align="center">
+              {comb(flight.EconomySeatsNumbers)}
+            </TableCell>
+
+            <TableCell align="center">
+              {flight.NumberOfChildren}
+            </TableCell>
+            <TableCell align="center">{flight.TotalPrice}</TableCell>
+            <TableCell align="center">
+              {flight.TotalBaggageAlowance}
+            </TableCell>
+
+            <TableCell align="center">
+              <Button
+                aria-label="delete"
+                size="small"
+                className="editButton"
+                onClick={() => deleteconf(flight._id)}
+              >
+                <DeleteIcon fontSize="small" />
+              </Button>
+            </TableCell>
+
+            <TableCell align="right">
+       
+          <Button className="editButton" aria-label="edit" size="small" onClick={()=>editF(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
+                         flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
+             <EditIcon fontSize="small" />
+         </Button>   
+         
+       </TableCell>
+
+       <TableCell align="right">
+       
+       <Button className="editButton" aria-label="edit" size="small" onClick={()=>editS(flight)}>
+          <EditIcon fontSize="small" />
+      </Button>   
+      
+    </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</div>
+</div>):(<></>)}
+
+
+
+    <>
+    <>
+    {processing ? (
+      <>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            <Lottie options={defaultOptions1} height={200} width={200} />
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+
+    <>
+    {loading ? (
+      <>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            <Lottie options={option} height={200} width={200} />
+            
+            <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+
+    <>
+    {confirm ? (
+      <>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        </div>
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+            
+            <h2 style={{color:"white",left :"670px" ,textAlign:'center'}}>Are you sure to cancel this Flight</h2>
+            <Button className="loginbutton" style={{ marginTop: "30px",left :"580px",position:'absolute',width:"60px",height:"40px"}} onClick={deleteFlight}>Yes</Button>
+            <Button className="loginbutton" style={{ marginTop: "30px",left :"660px",position:'absolute',width:"60px",height:"40px"}} onClick={()=>setConfirm(false)}>No</Button>
+            
+        </div>
+          </>
+      ) : (<></>
+      )}
+    </>
+    </>
+
+
+
+
+</>
   );
 }
 function formatDate(dateVal) {

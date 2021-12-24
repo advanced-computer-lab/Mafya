@@ -20,43 +20,31 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DateTimePicker from "@mui/lab/DateTimePicker";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
-import { confirmAlert } from "react-confirm-alert"; // Import
-import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import { color, height } from "@mui/system";
-import Loading from "../../components/Loading";
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+
 
 export default function BasicTable({ history }) {
-  const deleteconf = (id) => {
-    confirmAlert({
-      title: "Confirm to delete",
-      message: "Are you sure to delete this Flight",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => deleteFlight(id),
-        },
-        {
-          label: "No",
-        },
-      ],
-    });
-  };
+
 
   const [firstId, setFirstId] = useState("");
   const [secondId, setSecondId] = useState("");
   const [flights, setFlight] = useState([]);
   const [flights2, setFlight2] = useState([]);
 
-  const deleteFlight = (id) => {
-    axios
-      .delete(`http://localhost:8000/flights/deleteFlights/${id}`)
-      .then(() => {
-        window.location.reload(false);
-      });
-  };
-
-  const [loading, setLoading] = useState(false);
-  const [loadingEffect, setLoadingEffect] = useState(false);
 
   const color1 = (id) => {
     if (firstId == id) return "#C0C0C0";
@@ -67,6 +55,7 @@ export default function BasicTable({ history }) {
   };
 
   useEffect(() => {
+    setProcessing(true);
     if (JSON.parse(sessionStorage.getItem("clientFlights"))) {
       const flightSearch1 = {
         From: JSON.parse(sessionStorage.getItem("clientFlights")).From,
@@ -119,6 +108,9 @@ export default function BasicTable({ history }) {
         .post("http://localhost:8000/flights/getBookingFlights", flightSearch2)
         .then((res) => {
           setFlight2(res.data);
+          setTimeout(() => {
+            setProcessing(false);
+          }, 2000);
         });
     } else {
       const flightSearch2 = {
@@ -133,22 +125,20 @@ export default function BasicTable({ history }) {
       axios
         .post("http://localhost:8000/flights/getBookingFlights", flightSearch2)
         .then((res) => {
+
           setFlight2(res.data);
+          setTimeout(() => {
+            setProcessing(false);
+          }, 2000);
         });
-      setLoadingEffect(false);
+     
     }
+
   }, []);
 
   const book = () => {
     if (firstId == "" || secondId == "") {
-      confirmAlert({
-        message: "You have to choose two flights",
-        buttons: [
-          {
-            label: "ok",
-          },
-        ],
-      });
+      setErrorMessage("You have to choose two flights");
     } else {
       sessionStorage.setItem(
         "flightsBook",
@@ -157,17 +147,20 @@ export default function BasicTable({ history }) {
       history.push("/book");
     }
   };
+  const [processing, setProcessing] = useState(false);
+  const [errorMessage,setErrorMessage] = useState();
 
   return (
+    <>
     <div className="flightsContainer">
-      {loadingEffect && <Loading />}
-      <div className="progresss">
+    {!processing ?(      <div className="progresss">
         <button className="progressButtonn">first stage</button>
         <div className="progressbarr1"></div>
         <button className="progressButtonn1">second stage</button>
         <div className="progressbarr2"></div>
         <button className="progressButtonn2">third stage</button>
-      </div>
+      </div>):(<></>)}
+
 
       <div style={{ margin: "50px" }}>
         <Table
@@ -336,15 +329,27 @@ export default function BasicTable({ history }) {
           </TableRow>
         </Table>
 
+        <h4 style={{color:"red",textAlign:'center',marginTop: "20px"}}>{errorMessage}</h4>
         <Button
           className="loginbutton"
-          style={{ marginLeft: "43.5%", marginTop: "20px" }}
+          style={{ marginLeft: "43.5%" }}
           onClick={() => book()}
         >
           Book
         </Button>
       </div>
     </div>
+    <>
+        {processing ? (
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+                <Lottie options={defaultOptions1} height={200} width={200} />
+           
+              </div>
+          ) : (
+    <></>
+          )}
+    </>
+    </>
   );
 }
 function formatDate(dateVal) {

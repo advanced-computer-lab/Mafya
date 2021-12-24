@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Loading from "../../components/Loading";
-import ErrorMessage from "../../components/ErrorMessage";
+
+
 import MainScreen from "../../components/MainScreen";
 import "./AdminScreen.css";
 import axios from "axios";
@@ -44,18 +44,25 @@ function AdminScreen({ history }) {
     }
   });
 
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    history.push("/showFlights");
+
+  const submit =  () => {
+    setErrorMessage(null)
+    if((formatDate(search.DateD).getDate() <=formatDate(search.DateA).getDate())|| search.DateD==""||search.DateA==""){
+      sessionStorage.setItem("adminSearch", JSON.stringify(search))
+      history.push("/showFlights");
+    }
+    else{
+      setErrorMessage("invalid Dates")
+    }
+ 
+    
   };
+  const [errorMessage,setErrorMessage] = useState();
 
   return (
     <div className="inquiryMain">
-      {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-      {loading && <Loading />}
+
 
       <div className="reservationContainer">
         <div className="searchSubContainer">
@@ -65,7 +72,7 @@ function AdminScreen({ history }) {
           >
             Search For A Flight
           </h3>
-          <Form onSubmit={submitHandler}>
+          <Form >
             <div className="form-group">
               <TextField
                 id="filled-basic"
@@ -286,12 +293,11 @@ function AdminScreen({ history }) {
             </div>
 
             <div className="form-group">
+            <h4 style={{color:"red",textAlign:'center'}}>{errorMessage}</h4>
               <Button
                 className="searchFlights"
-                type="submit"
-                onClick={() =>
-                  sessionStorage.setItem("adminSearch", JSON.stringify(search))
-                }
+                onClick={submit}
+                
               >
                 Search
               </Button>
@@ -301,6 +307,32 @@ function AdminScreen({ history }) {
       </div>
     </div>
   );
+}
+function formatDate(dateVal) {
+  var newDate = new Date(dateVal);
+
+  var sMonth = padValue(newDate.getMonth() + 1);
+  var sDay = padValue(newDate.getDate());
+  var sYear = newDate.getFullYear();
+  var sHour = newDate.getHours();
+  var sMinute = padValue(newDate.getMinutes());
+  var sAMPM = "AM";
+
+  var iHourCheck = parseInt(sHour);
+
+  if (iHourCheck > 12) {
+    sAMPM = "PM";
+    sHour = iHourCheck - 12;
+  } else if (iHourCheck === 0) {
+    sHour = "12";
+  }
+
+  sHour = padValue(sHour);
+
+  return new Date(sYear, sMonth, sDay, sHour, sMinute, 0);
+}
+function padValue(value) {
+  return value < 10 ? "0" + value : value;
 }
 
 export default AdminScreen;

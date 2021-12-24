@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Loading from "../../components/Loading";
-import ErrorMessage from "../../components/ErrorMessage";
+
 import MainScreen from "../../components/MainScreen";
 import "./InquiryScreen.css";
 import axios from "axios";
@@ -28,13 +27,15 @@ function SearchScreen({ history }) {
     BusinessNumberOfSeats1: "0",
     EconomyNumberOfSeats1: "0",
   });
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+
   const [userInfo, setUserInfo] = useState("");
+  const [errorMessage,setErrorMessage] = useState();
 
   const submitHandler = async (e) => {
+    setErrorMessage(null);
     e.preventDefault();
-    setLoading(true);
+
     const x =
       (search.DateD == "" && search.DateA == "") ||
       (search.DateD == "" &&
@@ -46,19 +47,12 @@ function SearchScreen({ history }) {
         formatDate(search.DateD).getDate() >= new Date().getDate());
 
     if (x) {
-      setLoading(false);
+
       history.push("/showInquiry");
     } else {
-      setLoading(false);
-      confirmAlert({
-        title: "Error",
-        message: "invalid Dates",
-        buttons: [
-          {
-            label: "Ok",
-          },
-        ],
-      });
+      setErrorMessage("invalid Dates");
+  
+
     }
   };
 
@@ -66,8 +60,8 @@ function SearchScreen({ history }) {
     <div className="inquiryMain">
       <div className="reservationContainer">
         <div className="searchSubContainer">
-          {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
-          {loading && <Loading />}
+         
+     
           <h3
             className="heading"
             style={{ paddingLeft: "13px", color: "#3c5977" }}
@@ -204,6 +198,7 @@ function SearchScreen({ history }) {
               </LocalizationProvider>
             </div>
             <div className="form-group">
+              <h4 style={{color:"red",textAlign:'center'}}>{errorMessage}</h4>
               <Button
                 className="inquirybutton"
                 type="submit"
@@ -216,7 +211,7 @@ function SearchScreen({ history }) {
               >
                 Search
               </Button>
-              {loading && <Loading />}
+             
             </div>
           </Form>
         </div>
