@@ -26,6 +26,7 @@ import "./showFlight.css";
 import * as location from "../../1055-world-locations.json";
 import * as success from "../../1127-success.json";
 import * as fail from "../../56947-icon-failed.json";
+import * as UnSearch from "../../86046-no-search-item-available.json";
 import Lottie from "react-lottie";
 
 
@@ -55,6 +56,15 @@ const defaultOptions3 = {
     preserveAspectRatio: "xMidYMid slice",
   },
 };
+
+const defaultOptions4 = {
+  loop: true,
+  autoplay: true,
+  animationData: UnSearch.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+}
 
 const colorG = "#3ABC5E";
 const colorR = "#B2243C";
@@ -134,13 +144,23 @@ export default function BasicTable({ history }) {
         },
       };
       axios
-        .post("http://localhost:8000/flights/getFlights", flightSearch, config)
+        .post("http://localhost:8000/flights/getFlights", JSON.parse(sessionStorage.getItem("adminSearch")), config)
         .then((res) => {
           setFlight(res.data);
-          setTimeout(() => {
-            setProcessing(false);
-            
-          }, 1500);
+          if(res.data.length==0){
+            setSearchMessage("unavailable Flights for this search criteria")
+            setOption(defaultOptions4);
+            setTimeout(() => {
+              setProcessing(false);
+              history.goBack();
+            }, 3000);
+          }
+          else{
+            setTimeout(() => {
+              setProcessing(false);
+            }, 1500);
+          }
+
           
         });
     }
@@ -172,6 +192,11 @@ export default function BasicTable({ history }) {
   const [option,setOption]= useState(defaultOptions1);
   const [message,setMessage]= useState("");
   const [messageColor,setmessageColor]=useState("#3ABC5E");
+
+  
+
+  const [SearchMessage,setSearchMessage]=useState();
+
 
   
 
@@ -338,10 +363,11 @@ export default function BasicTable({ history }) {
     <>
     {processing ? (
       <>
-        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
         </div>
-        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
-            <Lottie options={defaultOptions1} height={200} width={200} />
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"17%",}} >
+            <Lottie options={option} height={200} width={200} />
+            <h2 style={{color:"#034694",left :"670px" ,textAlign:'center'}}>{SearchMessage}</h2>
             
         </div>
           </>
@@ -352,9 +378,9 @@ export default function BasicTable({ history }) {
     <>
     {loading ? (
       <>
-        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"17%",}}>
         </div>
-        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"17%",}} >
             <Lottie options={option} height={200} width={200} />
             
             <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
@@ -368,9 +394,9 @@ export default function BasicTable({ history }) {
     <>
     {confirm ? (
       <>
-        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"17%",}}>
         </div>
-        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+        <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"17%",}} >
             
             <h2 style={{color:"white",left :"670px" ,textAlign:'center'}}>Are you sure to cancel this Flight</h2>
             <Button className="loginbutton" style={{ marginTop: "30px",left :"580px",position:'absolute',width:"60px",height:"40px"}} onClick={deleteFlight}>Yes</Button>

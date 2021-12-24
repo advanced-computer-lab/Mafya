@@ -23,6 +23,7 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { color, height } from "@mui/system";
 import * as location from "../../1055-world-locations.json";
 import * as success from "../../1127-success.json";
+import * as UnSearch from "../../86046-no-search-item-available.json";
 import Lottie from "react-lottie";
 
 
@@ -34,7 +35,14 @@ const defaultOptions1 = {
     preserveAspectRatio: "xMidYMid slice",
   },
 };
-
+const defaultOptions4 = {
+  loop: true,
+  autoplay: true,
+  animationData: UnSearch.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+}
 
 
 export default function BasicTable({ history }) {
@@ -109,8 +117,24 @@ export default function BasicTable({ history }) {
         .then((res) => {
           setFlight2(res.data);
           setTimeout(() => {
-            setProcessing(false);
-          }, 2000);
+            if(flights.length==0||flights2.length==0){
+              setSearchMessage("unavailable Flights for this search criteria")
+              setOption(defaultOptions4);
+              setTimeout(() => {
+                setProcessing(false);
+                history.goBack();
+              }, 3000);
+
+            }
+            else{
+              setTimeout(() => {
+                setProcessing(false);
+              }, 1500);
+            }
+
+            
+          }, 100);
+
         });
     } else {
       const flightSearch2 = {
@@ -150,16 +174,23 @@ export default function BasicTable({ history }) {
   const [processing, setProcessing] = useState(false);
   const [errorMessage,setErrorMessage] = useState();
 
+  const [option,setOption]= useState(defaultOptions1);
+  const [SearchMessage,setSearchMessage]=useState();
+
   return (
     <>
-    <div className="flightsContainer">
-    {!processing ?(      <div className="progresss">
-        <button className="progressButtonn">first stage</button>
+    
+    {!processing ?(   
+      <div className="flightsContainer">   
+       <div className="progresss">
+        <button className="progressButtonn"  onClick={()=>history.push("/search")} >Search</button>
         <div className="progressbarr1"></div>
-        <button className="progressButtonn1">second stage</button>
+        <button disabled className="progressButtonn1">Flights</button>
         <div className="progressbarr2"></div>
-        <button className="progressButtonn2">third stage</button>
-      </div>):(<></>)}
+        <button disabled className="progressButtonn2">seats</button>
+        <div className="progressbarr3"></div>
+        <button disabled className="progressButtonn3">Payment</button>
+      </div>
 
 
       <div style={{ margin: "50px" }}>
@@ -339,10 +370,12 @@ export default function BasicTable({ history }) {
         </Button>
       </div>
     </div>
+    ):(<></>)}
     <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
-                <Lottie options={defaultOptions1} height={200} width={200} />
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
+                <Lottie options={option} height={200} width={200} />
+                <h2 style={{color:"#034694",left :"670px" ,textAlign:'center'}}>{SearchMessage}</h2>
            
               </div>
           ) : (

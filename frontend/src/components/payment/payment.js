@@ -46,6 +46,7 @@ import Select from '@mui/material/Select';
 
 import MainScreen from "../../components/MainScreen";
 import StripeCheckout from "react-stripe-checkout";
+import "./payment.css"
 
 import * as location from "../../1055-world-locations.json";
 import * as success from "../../1127-success.json";
@@ -228,6 +229,29 @@ export default function CreateFlight({history}) {
         <>
         {!processing ? (        
         <div className="TicketContainer">
+          {id?
+          (         
+          <div className="progresssss">
+          <button className="progressButtonnnn" onClick={()=>history.push("/searchNewFlight")}>Search</button>
+          <div className="progressbarrrr1" ></div>
+          <button className="progressButtonnnn1" onClick={()=>history.push("/changeDpFlight")}>Flights</button>
+          <div className="progressbarrrr2"></div>
+          <button className="progressButtonnnn2" onClick={()=>history.push("/bookDp")} >seats</button>
+          <div className="progressbarrrr3"></div>
+          <button disabled className="progressButtonnnn3">Payment</button>
+          </div>
+          ):(
+                     <div className="progresssss">
+                     <button className="progressButtonnnn" onClick={()=>history.push("/search")}>Search</button>
+                     <div className="progressbarrrr1" ></div>
+                     <button className="progressButtonnnn1" onClick={()=>history.push("/show")}>Flights</button>
+                     <div className="progressbarrrr2"></div>
+                     <button className="progressButtonnnn2" onClick={()=>history.push("/book")} >seats</button>
+                     <div className="progressbarrrr3"></div>
+                     <button disabled className="progressButtonnnn3">Payment</button>
+                     </div>
+          )}
+
         <div className="TicketSubContainer1">
         <Card className="Ticketcard" sx={{ m: 3 }}>
          <h3 className="TicketHead">Payment  Info</h3>
@@ -292,9 +316,9 @@ export default function CreateFlight({history}) {
        <>
     {loading ? (
       <>
-        <div style={{width:"1519px",height:"815px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        <div style={{width:"1519px",height:id?("691px"):("955px"),backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
         </div>
-        <div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+        <div  style={{width:"1519px",height:id?("691px"):("955px"),position:'absolute',top:"50px",paddingTop:"20%",}} >
             <Lottie options={option} height={200} width={200} />
             
             <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>

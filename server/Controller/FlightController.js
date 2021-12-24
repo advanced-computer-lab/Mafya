@@ -324,7 +324,7 @@ const validateRec = async (req)=>{
     };
 
     const findFlights = (req,res)=>{
-        //console.log(req.body);
+        console.log(req.body);
         const data = req.body;
         const val ={};
         if(data.Flight_No!=null && data.Flight_No!="" )

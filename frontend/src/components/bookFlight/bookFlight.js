@@ -306,14 +306,17 @@ const [errorMessage,setErrorMessage] = useState();
   return (
     <>
 
-    {!processing ? (      <div className="TicketContainer">
+    {!processing ? (      
+    <div className="TicketContainer">
       
       <div className="progressss">
-        <button className="progressButtonnn">first stage</button>
+        <button className="progressButtonnn" onClick={()=>history.push("/search")} >Search</button>
         <div className="progressbarrr1"></div>
-        <button className="progressButtonnn1">second stage</button>
+        <button className="progressButtonnn1" onClick={()=>history.push("/show")} >Flights</button>
         <div className="progressbarrr2"></div>
-        <button className="progressButtonnn2">third stage</button>
+        <button disabled className="progressButtonnn2">seats</button>
+        <div className="progressbarrr3"></div>
+        <button disabled className="progressButtonnn3">Payment</button>
       </div>
       <div className="TicketSubContainer1">
         <Card className="Ticketcard" sx={{ m: 3 }}>

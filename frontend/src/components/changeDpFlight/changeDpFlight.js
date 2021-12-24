@@ -116,17 +116,25 @@ export default function BasicTable({history}) {
       <>
       {!processing ?(
                <div className="flightsContainer">
+
                <link rel="preconnect" href="https://fonts.googleapis.com" />
                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
                <link
                  href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
                  rel="stylesheet"
                />
+
+             <div className="progresss">
+             <button className="progressButtonn"  onClick={()=>history.push("/searchNewFlight")} >Search</button>
+              <div className="progressbarr1"></div>
+              <button disabled className="progressButtonn1">Flights</button>
+             <div className="progressbarr2"></div>
+             <button disabled className="progressButtonn2">seats</button>
+             <div className="progressbarr3"></div>
+              <button disabled className="progressButtonn3">Payment</button>
+               </div>
          
-                  <div className="flightSubContainer">
-         
-         
-         
+              
           
                 <div style={{ margin: "50px" }}>
             
@@ -207,7 +215,7 @@ export default function BasicTable({history}) {
                  </Button>
                  </div>
              </div>
-             </div>
+             
                 </div>
       ):(<></>)}
 

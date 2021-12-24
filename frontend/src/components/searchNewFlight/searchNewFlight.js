@@ -158,7 +158,16 @@ export default function CreateFlight(props) {
 
     
       <>
-      <div className="inquiryMain">
+          <div className="inquiryMain" style={{ flexDirection: "column" }}>
+      <div className="progress">
+        <button disabled className="progressButton">Search</button>
+        <div   className="progressbar1"></div>
+        <button disabled className="progressButton1">Flights</button>
+        <div className="progressbar2"></div>
+        <button disabled className="progressButton2">seats</button>
+        <div className="progressbar3"></div>
+        <button disabled className="progressButton3">Payment</button>
+      </div>
       <div className="reservationContainer">
        <div className="searchSubContainer">
      

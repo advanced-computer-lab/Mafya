@@ -43,44 +43,56 @@
 }
 .progressButton {
   background-color: #3c5977;
-  font-size: 14px;
+  font-size: 10px;
   color: white;
   position: absolute;
-  height: 90px;
-  width: 90px;
+  height: 50px;
+  width: 50px;
   border: none;
   border-radius: 50%;
   z-index: 4;
 }
 .progressButton1 {
   background-color: white;
-  font-size: 14px;
+  font-size: 10px;
   color: #3c5977;
   position: absolute;
-  margin-left: 250px;
-  height: 90px;
-  width: 90px;
+  margin-left: 170px;
+  height: 50px;
+  width: 50px;
   border: none;
   border-radius: 50%;
   z-index: 4;
 }
 .progressButton2 {
   background-color: white;
-  font-size: 14px;
+  font-size: 10px;
+  color: #3c5977;
+  position: absolute;
+  margin-left: 330px;
+  height: 50px;
+  width: 50px;
+  border: none;
+  border-radius: 50%;
+  z-index: 4;
+}
+.progressButton3 {
+  background-color: white;
+  font-size: 10px;
   color: #3c5977;
   position: absolute;
   margin-left: 500px;
-  height: 90px;
-  width: 90px;
+  height: 50px;
+  width: 50px;
   border: none;
   border-radius: 50%;
   z-index: 4;
 }
 .progressbar1 {
   background-color: white;
-  margin-left: 87.5px;
-  width: 165px;
-  height: 10px;
+  margin-left: 50px;
+  width: 120px;
+  height: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -89,9 +101,22 @@
 }
 .progressbar2 {
   background-color: white;
-  margin-right: 97px;
-  width: 165px;
-  height: 10px;
+  margin-left: 210px;
+  position: absolute;
+  width: 120px;
+  height: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 3;
+}
+.progressbar3 {
+  background-color: white;
+  margin-left: 380px;
+  position: absolute;
+  width: 120px;
+  height: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

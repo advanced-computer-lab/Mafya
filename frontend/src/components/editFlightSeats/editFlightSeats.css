@@ -62,50 +62,56 @@
 }
 .progressButtonnn {
   background-color: #22303c;
-  font-size: 14px;
+  font-size: 10px;
   color: white;
   position: absolute;
-  height: 90px;
-  width: 90px;
+  height: 50px;
+  width: 50px;
   border: none;
   border-radius: 50%;
-  font-size: 11px;
-  font-weight: 100;
   z-index: 4;
 }
 .progressButtonnn1 {
   background-color: #22303c;
-  font-size: 14px;
+  font-size: 10px;
   color: white;
   position: absolute;
-  margin-left: 250px;
-  height: 90px;
-  width: 90px;
+  margin-left: 170px;
+  height: 50px;
+  width: 50px;
   border: none;
   border-radius: 50%;
   z-index: 4;
-  font-size: 11px;
-  font-weight: 100;
 }
 .progressButtonnn2 {
   background-color: #3c5977;
-  font-size: 14px;
+  font-size: 10px;
   color: white;
   position: absolute;
-  margin-left: 500px;
-  height: 90px;
-  width: 90px;
+  margin-left: 330px;
+  height: 50px;
+  width: 50px;
   border: none;
   border-radius: 50%;
-  font-size: 11px;
-  font-weight: 100;
+  z-index: 4;
+}
+.progressButtonnn3 {
+  background-color: white;
+  font-size: 10px;
+  color: #3c5977;
+  position: absolute;
+  margin-left: 500px;
+  height: 50px;
+  width: 50px;
+  border: none;
+  border-radius: 50%;
   z-index: 4;
 }
 .progressbarrr1 {
   background-color: #22303c;
-  margin-left: 87.5px;
-  width: 165px;
-  height: 10px;
+  margin-left: 50px;
+  width: 120px;
+  height: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -114,9 +120,22 @@
 }
 .progressbarrr2 {
   background-color: #22303c;
-  margin-right: 97px;
-  width: 165px;
-  height: 10px;
+  margin-left: 210px;
+  position: absolute;
+  width: 120px;
+  height: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 3;
+}
+.progressbarrr3 {
+  background-color: white;
+  margin-left: 380px;
+  position: absolute;
+  width: 120px;
+  height: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
