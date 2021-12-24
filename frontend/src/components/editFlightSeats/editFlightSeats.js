@@ -42,15 +42,47 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Loading from "../../components/Loading";
 import "./editFlightSeats.css"
-//import TextField from '@material-ui/core/TextField';
-//import createFlight from '../'
+import * as location from "../../1055-world-locations.json";
+import * as success from "../../1127-success.json";
+import * as fail from "../../56947-icon-failed.json";
+import Lottie from "react-lottie";
+
+
+const defaultOptions1 = {
+  loop: true,
+  autoplay: true,
+  animationData: location.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
 
 
 
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: success.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
 
-{/**Function must start with upper case */}
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: fail.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+
+const colorG = "#3ABC5E";
+const colorR = "#B2243C";
+
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -93,8 +125,7 @@ export default function CreateFlight({history}) {
   const[DseatsBR,setDseatsBR]=useState([]);
   const[DseatsER,setDseatsER]=useState([]);
 
-  const [loading, setLoading]=useState(false);
-  const [loadingEffect,setLoadingEffect]=useState(false);
+
 
 
   useEffect(() => {
@@ -148,7 +179,7 @@ export default function CreateFlight({history}) {
     
     })
 
-        setLoadingEffect(false);
+        
         
   },[]);
 
@@ -192,43 +223,22 @@ export default function CreateFlight({history}) {
 
 
 
-    const bookSeats =async () =>{
-      setLoading(true);
-
+    const bookSeats = () =>{
+      
+      setErrorMessage(null);
       if(userInfo){
         if(flight1.FirstSeatsNumbers.length==flight1.FirstNumberOfSeats && flight1.BusinessSeatsNumbers.length==flight1.BusinessNumberOfSeats && flight1.EconomySeatsNumbers.length==flight1.EconomyNumberOfSeats){
 
-            setLoading(false);
-            confirmAlert({
-            message: 'Are you Sure to Change Seats ?',
-            buttons: [
-              {
-                label: 'Yes',
-                onClick: () =>  bookSeatsCon()
-              },
-              {
-                label: 'No',
-              }
-            ]
-          });
+          bookSeatsCon();
         }
         else{
-          setLoading(false);
-          confirmAlert({
-            title: 'Error',
-            message: 'Invalid seats Numbers',
-            buttons: [
-              {
-                label: 'ok',
+          setErrorMessage("Invalid seats Numbers");
+        }
+         
 
-              }
-            ]
-          });
- 
-      }
       }
       else{
-        setLoading(false);
+   
         history.push("/homepage")
 
       }
@@ -236,6 +246,9 @@ export default function CreateFlight({history}) {
     }
 
     const bookSeatsCon =async () =>{
+      setloading(true);
+      setConfirm(false);
+      setOption(defaultOptions1);
        ///
        let AvlF = [];
        let AvlB = [];
@@ -303,28 +316,31 @@ export default function CreateFlight({history}) {
                    FId:flight1.flightId,FN:{FirstSeatsNumbers:AvlF,BusinessSeatsNumbers:AvlB,EconomySeatsNumbers:AvlE,ReservedFirstSeatsNumbers:AvlFR,ReservedBusinessSeatsNumbers:AvlBR,ReservedEconomySeatsNumbers:AvlER}}
       const res = await axios.post("http://localhost:8000/flights//editSeatsNumber",body,config);
       if(res.data==="ok"){
-        confirmAlert({
-            message: 'Seats Changed Successfully',
-            buttons: [
-              {
-                label: 'Ok',
-                onClick: () =>history.push("/myflights")
-              },
-            ]
-          });
-        
+        //'
+        setOption(defaultOptions2);
+        setMessage("Seats Changed Successfully");
+        setmessageColor(colorG);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          setMessage(null);
+          history.push("/myflights");
+        }, 3000);
+
+
 
        }
        else{
-        confirmAlert({
-            message: 'sorry try again later',
-            buttons: [
-              {
-                label: 'Ok',
-                onClick: () =>history.push("/myflights")
-              },
-            ]
-          });  
+        setOption(defaultOptions3);
+        setMessage("Error , Please Try again later");
+        setmessageColor(colorR);
+        setTimeout(() => {
+          setloading(false);
+          setOption(defaultOptions1);
+          setMessage(null);
+          
+        }, 3000);
+
 
        }
 
@@ -343,12 +359,23 @@ export default function CreateFlight({history}) {
 
   };
 
+  const [errorMessage,setErrorMessage] = useState();
+ 
+  const [processing, setProcessing] = useState(false);
+
+  const [loading, setloading] = useState(false);
+
+  const [confirm,setConfirm] = useState(false);
+
+  const [option,setOption]= useState(defaultOptions1);
+  const [message,setMessage]= useState("");
+  const [messageColor,setmessageColor]=useState("#3ABC5E");
+
 
   return (
     <>
 
-      {loading && <Loading />}
-      <div className="TicketContainer">
+     {!processing ?(      <div className="TicketContainer">
         <div className="TicketSubContainer1">
           <Card className="Ticketcard" sx={{ m: 3 }}>
             <h3 className="TicketHead">Mafya Air Ticket</h3>
@@ -569,18 +596,45 @@ export default function CreateFlight({history}) {
         </div>
 
 
-        <br></br>
-        {loadingEffect && <Loading />}
-        {loading && <Loading />}
-        <br></br>
+        <h4 style={{color:"red",textAlign:'center',marginTop: "-30px"}}>{errorMessage}</h4>
         <Button
           className="loginbutton"
-          style={{ marginTop: "-30px", marginBottom: "20px" }}
+          style={{ marginBottom: "20px" }}
           onClick={bookSeats}
         >
-          Book
+          Update
         </Button>
+      </div>):(<></>)}
+
+
+      <>
+{processing ? (
+    <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+       <>
+    <Lottie options={defaultOptions1} height={200} width={200} />
+
+       </>
+        
+   
       </div>
+  ) : (<></> )}
+</>
+
+      <>
+{loading ? (
+<>
+<div style={{width:"1519px",height:"815px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+</div>
+<div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"20%",}} >
+    <Lottie options={option} height={200} width={200} />
+    
+    <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
+    
+</div>
+  </>
+) : (<></>
+)}
+</>
     </>
     
 

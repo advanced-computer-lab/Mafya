@@ -25,6 +25,7 @@ import { color, height } from "@mui/system";
 
 import * as location from "../../1055-world-locations.json";
 import * as success from "../../1127-success.json";
+import * as UnSearch from "../../86046-no-search-item-available.json";
 import Lottie from "react-lottie";
 
 
@@ -36,6 +37,15 @@ const defaultOptions1 = {
     preserveAspectRatio: "xMidYMid slice",
   },
 };
+const defaultOptions4 = {
+  loop: true,
+  autoplay: true,
+  animationData: UnSearch.default,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+}
+
 
 
 
@@ -84,9 +94,20 @@ export default function BasicTable({history}) {
       }
       axios.post('http://localhost:8000/flights/getBookingFlights',flightSearch1).then((res)=>{
         setFlight(res.data)
-        setTimeout(() => {
-          setProcessing(false);
-        }, 2000);
+        if(res.data.length==0){
+          setSearchMessage("unavailable Flights for this search criteria")
+          setOption(defaultOptions4);
+          setTimeout(() => {
+            setProcessing(false);
+            history.goBack();
+          }, 3000);
+        }
+        else{
+          setTimeout(() => {
+            setProcessing(false);
+          }, 2000);
+        }
+
       })
 
     }
@@ -112,8 +133,18 @@ export default function BasicTable({history}) {
     const [processing, setProcessing] = useState(false);
     const [errorMessage,setErrorMessage] = useState();
 
+    const [option,setOption]= useState(defaultOptions1);
+    const [SearchMessage,setSearchMessage]=useState();
+
   return (
       <>
+          <div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+        rel="stylesheet"
+      />
       {!processing ?(
                <div className="flightsContainer">
 
@@ -221,14 +252,15 @@ export default function BasicTable({history}) {
 
 <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
-                <Lottie options={defaultOptions1} height={200} width={200} />
-           
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
+                <Lottie options={option} height={200} width={200} />
+                <h2 style={{color:"#034694",left :"670px" ,textAlign:'center'}}>{SearchMessage}</h2>
               </div>
           ) : (
     <></>
           )}
     </>
+    </div>
 
 
     </>

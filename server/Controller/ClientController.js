@@ -177,7 +177,7 @@ const deleteClientFlight = async(req,res)=>{
     const book = await Booking.findById(bookingId);
     await cancelBooking(bookingId);
     var currentClient = await Client.findById(book.clientId);
-    sendMail(currentClient.email,"your flight has been canceled successfully",'Ticket cancellation')
+    sendMail(currentClient.email,"your flight has been canceled successfully , the refunded amount :"+book.TotalPrice,'Ticket cancellation')
     res.send("User Deleted successfully");
 
   }

@@ -305,7 +305,13 @@ const [processing, setProcessing] = useState(false);
 const [errorMessage,setErrorMessage] = useState();
   return (
     <>
-
+    <div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+        rel="stylesheet"
+      />
     {!processing ? (      
     <div className="TicketContainer">
       
@@ -769,7 +775,7 @@ const [errorMessage,setErrorMessage] = useState();
 
       <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
                 <Lottie options={defaultOptions1} height={200} width={200} />
            
               </div>
@@ -777,6 +783,7 @@ const [errorMessage,setErrorMessage] = useState();
     <></>
           )}
     </>
+    </div>
     </>
   );
 }

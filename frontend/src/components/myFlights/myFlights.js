@@ -185,6 +185,14 @@ const [flights, setFlight] = useState([]);
 
   return (
     <>
+    <div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+        rel="stylesheet"
+      />
+    
     {!processing ?(    <div className="flightsContainer">
 
 <div className="flightSubContainer">
@@ -372,7 +380,7 @@ const [flights, setFlight] = useState([]);
 
 
 
-
+    </div>
 </>
   );
 }

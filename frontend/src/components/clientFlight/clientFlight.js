@@ -63,6 +63,8 @@ export default function BasicTable({ history }) {
   };
 
   useEffect(() => {
+    let res1=null;
+    let res2 =null;
     setProcessing(true);
     if (JSON.parse(sessionStorage.getItem("clientFlights"))) {
       const flightSearch1 = {
@@ -79,25 +81,10 @@ export default function BasicTable({ history }) {
       };
       axios
         .post("http://localhost:8000/flights/getBookingFlights", flightSearch1)
-        .then((res) => {
-          setFlight(res.data);
-        });
-    } else {
-      const flightSearch1 = {
-        From: "",
-        To: "",
-        DateD: "",
-        DateA: "",
-        FirstSeats: "",
-        BusinessSeats: "",
-        EconomySeats: "",
-      };
-      axios
-        .post("http://localhost:8000/flights/getBookingFlights", flightSearch1)
-        .then((res) => {
-          setFlight(res.data);
-        });
-    }
+        .then((res1) => {
+          setFlight(res1.data);
+      
+
 
     if (JSON.parse(sessionStorage.getItem("clientFlights"))) {
       const flightSearch2 = {
@@ -115,9 +102,9 @@ export default function BasicTable({ history }) {
       axios
         .post("http://localhost:8000/flights/getBookingFlights", flightSearch2)
         .then((res) => {
-          setFlight2(res.data);
           setTimeout(() => {
-            if(flights.length==0||flights2.length==0){
+            setFlight2(res.data);
+            if(res.data.length==0||res1.data.length==0){
               setSearchMessage("unavailable Flights for this search criteria")
               setOption(defaultOptions4);
               setTimeout(() => {
@@ -136,27 +123,10 @@ export default function BasicTable({ history }) {
           }, 100);
 
         });
-    } else {
-      const flightSearch2 = {
-        From: "",
-        To: "",
-        DateD: "",
-        DateA: "",
-        FirstSeats: "",
-        BusinessSeats: "",
-        EconomySeats: "",
-      };
-      axios
-        .post("http://localhost:8000/flights/getBookingFlights", flightSearch2)
-        .then((res) => {
-
-          setFlight2(res.data);
-          setTimeout(() => {
-            setProcessing(false);
-          }, 2000);
-        });
-     
     }
+  });
+} 
+
 
   }, []);
 
@@ -179,6 +149,13 @@ export default function BasicTable({ history }) {
 
   return (
     <>
+        <div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+        rel="stylesheet"
+      />
     
     {!processing ?(   
       <div className="flightsContainer">   
@@ -382,6 +359,7 @@ export default function BasicTable({ history }) {
     <></>
           )}
     </>
+    </div>
     </>
   );
 }

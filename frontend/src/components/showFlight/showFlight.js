@@ -202,6 +202,13 @@ export default function BasicTable({ history }) {
 
   return (
     <>
+        <div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+        rel="stylesheet"
+      />
     {!processing ?(    <div className="flightsContainer" style={{ display: "flex" }}>
       <div style={{ position: "absolute", top: "150px" }}>
         <TableContainer component={Paper}>
@@ -407,6 +414,7 @@ export default function BasicTable({ history }) {
       ) : (<></>
       )}
     </>
+    </div>
     </>
   );
 }
