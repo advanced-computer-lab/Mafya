@@ -182,7 +182,13 @@ const [flights, setFlight] = useState([]);
   const [message,setMessage]= useState("");
   const [messageColor,setmessageColor]=useState("#3ABC5E");
 
-
+  const heightTemp=()=>{
+    const x = (flights.length*73)+150;
+    if(x>690)
+    return x+"px";
+    else
+    return "690px"
+  }
   return (
     <>
     <div>
@@ -197,103 +203,103 @@ const [flights, setFlight] = useState([]);
       <>
 
 <div className="flightSubContainer">
-  <TableContainer component={Paper} sx={{ width: 1300 }}>
+  <TableContainer component={Paper} sx={{ width: 1300 }}  style={{ position: "relative", borderRadius: "0" }}>
     <Table aria-label="simple table" sx={{ width: 1300 }}>
-      <TableHead>
+      <TableHead style={{ backgroundColor: "#3c5977", color: "white" }}>
         <TableRow style={{ backgroundColor: "#3c5977", color: "white" }}>
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             Flight_No
           </TableCell>
 
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             From
           </TableCell>
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             To
           </TableCell>
 
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             Departure Date
           </TableCell>
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             Arrival Date
           </TableCell>
 
           <TableCell
-            style={{ color: "white" }}
+            className="FlightCell"
             sx={{ width: 200 }}
             align="center"
           >
             First Seats Numbers{" "}
           </TableCell>
           <TableCell
-            style={{ color: "white" }}
+            className="FlightCell"
             sx={{ width: 200 }}
             align="center"
           >
             Business Seats Numbers
           </TableCell>
           <TableCell
-            style={{ color: "white" }}
+            className="FlightCell"
             sx={{ width: 200 }}
             align="center"
           >
             Economy Seats Numbers
           </TableCell>
 
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             Number of children
           </TableCell>
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             Total Price
           </TableCell>
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             Total baggage alowance
           </TableCell>
 
-          <TableCell style={{ color: "white" }} align="center">
+          <TableCell className="FlightCell" align="center">
             Cancel
           </TableCell>
-          <TableCell style={{color:'white'}} align="right">Change my Flight</TableCell>
-          <TableCell style={{color:'white'}} align="right">Change Seats Numbers</TableCell>
+          <TableCell className="FlightCell" align="center">Change my Flight</TableCell>
+          <TableCell className="FlightCell" align="center">Change Seats Numbers</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {flights.map((flight, key) => (
           <TableRow key={flight._id}>
-            <TableCell align="center">{flight.Flight_No}</TableCell>
+            <TableCell className="FlightSubCell" align="center">{flight.Flight_No}</TableCell>
 
-            <TableCell align="center">{flight.From}</TableCell>
-            <TableCell align="center">{flight.To}</TableCell>
+            <TableCell className="FlightSubCell" align="center">{flight.From}</TableCell>
+            <TableCell className="FlightSubCell" align="center">{flight.To}</TableCell>
 
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">
               {formatDate(flight.DateD)}
             </TableCell>
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">
               {formatDate(flight.DateA)}
             </TableCell>
 
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">
               {comb(flight.FirstSeatsNumbers)}
             </TableCell>
 
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">
               {comb(flight.BusinessSeatsNumbers)}
             </TableCell>
 
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">
               {comb(flight.EconomySeatsNumbers)}
             </TableCell>
 
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">
               {flight.NumberOfChildren}
             </TableCell>
-            <TableCell align="center">{flight.TotalPrice}</TableCell>
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">{flight.TotalPrice}</TableCell>
+            <TableCell className="FlightSubCell" align="center">
               {flight.TotalBaggageAlowance}
             </TableCell>
 
-            <TableCell align="center">
+            <TableCell className="FlightSubCell" align="center">
               <Button
                 aria-label="delete"
                 size="small"
@@ -304,7 +310,7 @@ const [flights, setFlight] = useState([]);
               </Button>
             </TableCell>
 
-            <TableCell align="right">
+            <TableCell className="FlightSubCell" align="center">
        
           <Button className="editButton" aria-label="edit" size="small" onClick={()=>editF(flight._id,flight.From,flight.To,flight.DateD,flight.FirstNumberOfSeats,
                          flight.BusinessNumberOfSeats,flight.EconomyNumberOfSeats,flight.NumberOfChildren)}>
@@ -313,7 +319,7 @@ const [flights, setFlight] = useState([]);
          
        </TableCell>
 
-       <TableCell align="right">
+       <TableCell className="FlightSubCell" align="center">
        
        <Button className="editButton" aria-label="edit" size="small" onClick={()=>editS(flight)}>
           <EditIcon fontSize="small" />
@@ -346,7 +352,7 @@ const [flights, setFlight] = useState([]);
     <>
     {loading ? (
       <>
-        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        <div style={{width:"1519px",height:heightTemp(),backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
         </div>
         <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
             <Lottie options={option} height={200} width={200} />
@@ -362,7 +368,7 @@ const [flights, setFlight] = useState([]);
     <>
     {confirm ? (
       <>
-        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        <div style={{width:"1519px",height:heightTemp(),backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
         </div>
         <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"20%",}} >
             

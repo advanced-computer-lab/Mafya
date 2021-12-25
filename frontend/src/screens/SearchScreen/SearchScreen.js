@@ -20,14 +20,14 @@ function SearchScreen({ history }) {
     To: "",
     DateD: "",
     DateA: "",
-    FirstNumberOfSeats1: "0",
-    BusinessNumberOfSeats1: "0",
-    EconomyNumberOfSeats1: "0",
-    FirstNumberOfSeats2: "0",
-    BusinessNumberOfSeats2: "0",
-    EconomyNumberOfSeats2: "0",
+    FirstNumberOfSeats1: 0,
+    BusinessNumberOfSeats1: 0,
+    EconomyNumberOfSeats1: 0,
+    FirstNumberOfSeats2:0,
+    BusinessNumberOfSeats2: 0,
+    EconomyNumberOfSeats2: 0,
     children1: 0,
-    children2: "0",
+    children2: 0,
   });
 
   const [userInfo, setUserInfo] = useState("");
@@ -35,12 +35,13 @@ function SearchScreen({ history }) {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
+    console.log();
 
     if (
-      //&&formatDate(search.DateD).getDate() >= new Date().getDate()
+      //&&
       formatDate(search.DateD).getDate() <=
-        formatDate(search.DateA).getDate() 
+        formatDate(search.DateA).getDate() &&
+        (search.DateD.getFullYear()>new Date().getFullYear()||search.DateD.getDate()>=new Date().getDate())
     ) {
       if (
         parseInt(search.FirstNumberOfSeats1) +

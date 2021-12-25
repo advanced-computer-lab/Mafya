@@ -78,6 +78,7 @@ const signUp = asyncHandler(async (req,res)=>{
 
 const SignIn =asyncHandler(async (req,res)=>{
     const content = req.body;
+    try{
 
     const client = await Client.findOne({ email:content.email });
     const tok = createTokens.generateToken(client._id);
@@ -98,6 +99,10 @@ const SignIn =asyncHandler(async (req,res)=>{
       res.send(["Invalid Email or Password"]);
       
     }
+  }
+  catch(err){
+    res.send(["Invalid Email or Password"]);
+  }
 });
 
 var forgetStore ={};
@@ -245,13 +250,13 @@ const book = asyncHandler(async (req,res)=>{
 
 
               
-                emad.FirstSeats-=req.body.FirstNumberOfSeats
-                emad.BusinessSeats-=req.body.BusinessNumberOfSeats
-                emad.EconomySeats-=req.body.EconomyNumberOfSeats
+                emad.FirstSeats-=parseInt(req.body.FirstNumberOfSeats)
+                emad.BusinessSeats-=parseInt(req.body.BusinessNumberOfSeats)
+                emad.EconomySeats-=parseInt(req.body.EconomyNumberOfSeats)
 
-                emad.ReservedFirstSeats+=req.body.FirstNumberOfSeats;
-                emad.ReservedBusinessSeats+=req.body.BusinessNumberOfSeats;
-                emad.ReservedEconomySeats+=req.body.EconomyNumberOfSeats;
+                emad.ReservedFirstSeats+=parseInt(req.body.FirstNumberOfSeats);
+                emad.ReservedBusinessSeats+=parseInt(req.body.BusinessNumberOfSeats);
+                emad.ReservedEconomySeats+=parseInt(req.body.EconomyNumberOfSeats);
 
                 emad.FirstSeatsNumbers = removeSubset(emad.FirstSeatsNumbers,req.body.FirstSeatsNumbers);
                 emad.BusinessSeatsNumbers = removeSubset(emad.BusinessSeatsNumbers,req.body.BusinessSeatsNumbers);
@@ -383,7 +388,9 @@ const findFlights = (req,res)=>{
 
   
   Flight.find(val).then((result)=>{
+    
       resData =  filter(result,data) ;
+      console.log(data)
       res.status(200).json(resData);
       
   }).catch (error=>{

@@ -75,9 +75,9 @@ export default function CreateFlight(props) {
     From:'',
     To:'',
     DateD:'',
-    FirstNumberOfSeats:'0',
-    BusinessNumberOfSeats:'0',
-    EconomyNumberOfSeats:'0',
+    FirstNumberOfSeats:0,
+    BusinessNumberOfSeats:0,
+    EconomyNumberOfSeats:0,
     children:0,
   });
   useEffect(() => {
@@ -98,6 +98,12 @@ export default function CreateFlight(props) {
   },[]);
   const search=(flight)=>{
     ///// valid dates
+
+    if (
+        (new Date(flight.DateD).getFullYear()>new Date().getFullYear()||new Date(flight.DateD).getDate()>=new Date().getDate())
+    ) {
+
+    
     if (
       parseInt(flight.FirstNumberOfSeats) +
       parseInt(flight.BusinessNumberOfSeats) +
@@ -113,6 +119,10 @@ export default function CreateFlight(props) {
       else{
         setErrorMessage("invalid seats Numbers");
       }
+    }
+    else{
+      setErrorMessage("Invalid Date")
+    }
     
    
 
@@ -319,4 +329,3 @@ export default function CreateFlight(props) {
   );
   
 }
-

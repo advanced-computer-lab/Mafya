@@ -12,8 +12,8 @@ function Loading({ size = 25 }) {
         alignItems: "center",
         width: "100%",
         height: "100%",
-         top:"0px",
-         left:"-380px",
+         top:"20px",
+         left:"0px",
          color:"white"
 
       }}

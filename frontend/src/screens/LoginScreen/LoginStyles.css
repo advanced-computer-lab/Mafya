@@ -55,3 +55,9 @@
   background-color: yellow;
   border: none;
 }
+.forgetPassword{
+  font-size: 50x;
+  }
+.forgetPassword:hover{
+color:gray;
+}

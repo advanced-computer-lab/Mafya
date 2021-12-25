@@ -197,11 +197,16 @@ export default function BasicTable({ history }) {
   
 
   const [SearchMessage,setSearchMessage]=useState();
+
+  const heightTemp=()=>{
+    const x = (flights.length*100)+150;
+    if(x>690)
+    return x+"px";
+    else
+    return "690px"
+  }
   
 
-  const height =()=>{
-    return 
-  }
 
   
 
@@ -391,7 +396,7 @@ export default function BasicTable({ history }) {
     <>
     {loading ? (
       <>
-        <div style={{width:"1519px",height:"1850px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
+        <div style={{width:"1519px",height:heightTemp(),backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
         </div>
         <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
             <Lottie options={option} height={200} width={200} />
@@ -407,7 +412,7 @@ export default function BasicTable({ history }) {
     <>
     {confirm ? (
       <>
-        <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"17%",}}>
+        <div style={{width:"1519px",height:heightTemp(),backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"17%",}}>
         </div>
         <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"17%",}} >
             

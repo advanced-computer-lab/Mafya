@@ -38,7 +38,7 @@ function LoginScreen({ history }) {
      
       if(data instanceof Array){
         setLoading(false);
-        setError(data)
+        setError("Invalid Email or Password")
       }
       else{
         localStorage.setItem('userInfo',JSON.stringify(data))
@@ -52,7 +52,7 @@ function LoginScreen({ history }) {
     }
     catch(err){
       setLoading(false);
-      setError(err.message)
+      setError("Invalid Email or Password")
 
     }
   };
@@ -93,9 +93,14 @@ function LoginScreen({ history }) {
             >
            </TextField>
            </div>
+           <Row className="py-3">
+          <Col style={{marginTop:'-35px',marginLeft:"0px",color:"white"}}>
+            <Link className="forgetPassword" to="/emailStep">Forgot Your Password?</Link>
+          </Col>
+        </Row>
           
             <div className="form-group">
-          <Button className="loginbutton"    type="submit" >
+          <Button className="loginbutton" style={{marginTop:"-20px"}}    type="submit" >
             Login
           </Button>
           {loading && <Loading />}
@@ -103,7 +108,7 @@ function LoginScreen({ history }) {
         </Form  >
           
         <Row className="py-3">
-          <Col style={{margin:'8px',color:"white"}}>
+          <Col style={{margin:'8px',marginTop:"-20px",color:"white"}}>
             New Customer ? <Link to="/register">Register Here</Link>
           </Col>
         </Row>

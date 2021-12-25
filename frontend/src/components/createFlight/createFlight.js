@@ -102,8 +102,10 @@ export default function CreateFlight({ history }) {
   });
 
   const createFlight = () => {
-    if( formatDate(flight.DateD).getDate() <=
-    formatDate(flight.DateA).getDate() ){
+    if( new Date(flight.DateD).getDate() <=
+    new Date(flight.DateA).getDate() &&
+    (new Date(flight.DateD).getFullYear()>new Date().getFullYear()||new Date(flight.DateD).getDate()>=new Date().getDate())
+    ){
       setloading(true);
       setConfirm(false);
       setOption(defaultOptions1);
@@ -125,6 +127,8 @@ export default function CreateFlight({ history }) {
             setTimeout(() => {
               setloading(false);
               setOption(defaultOptions1);
+              setMessage(null);
+              setErrorMessage(null)
             }, 3000);
   
           }
@@ -136,6 +140,7 @@ export default function CreateFlight({ history }) {
               setloading(false);
               setOption(defaultOptions1);
               setMessage(null);
+              setErrorMessage(null);
               
             }, 3000);
   

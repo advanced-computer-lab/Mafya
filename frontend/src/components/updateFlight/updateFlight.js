@@ -168,8 +168,11 @@ export default function CreateFlight(props) {
   });
 
   const updateFlight = () => {
-    if( formatDate(flight.DateD).getDate() <=
-    formatDate(flight.DateA).getDate() ){
+    setMessage(null);
+    setErrorMessage(null);
+    if( new Date(flight.DateD).getDate() <=
+    new Date(flight.DateA).getDate() && 
+    (new Date(flight.DateD).getFullYear()>new Date().getFullYear()||new Date(flight.DateD).getDate()>=new Date().getDate()) ){
       
       try {
         setloading(true);
@@ -197,7 +200,7 @@ export default function CreateFlight(props) {
               setTimeout(() => {
                 setloading(false);
                 setOption(defaultOptions1);
-                setMessage(null);
+
                 window.location.reload(false);
               }, 3000);
             }

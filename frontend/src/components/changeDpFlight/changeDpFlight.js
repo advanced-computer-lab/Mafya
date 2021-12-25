@@ -88,9 +88,9 @@ export default function BasicTable({history}) {
         To:JSON.parse(sessionStorage.getItem("changeDpFlight")).To,
         DateD:JSON.parse(sessionStorage.getItem("changeDpFlight")).DateD,
         DateA:'',
-        FirstSeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).FirstSeats,
-        BusinessSeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).BusinessSeats,
-        EconomySeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).EconomySeats
+        FirstSeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).FirstNumberOfSeats,
+        BusinessSeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).BusinessNumberOfSeats,
+        EconomySeats:JSON.parse(sessionStorage.getItem("changeDpFlight")).EconomyNumberOfSeats
       }
       axios.post('http://localhost:8000/flights/getBookingFlights',flightSearch1).then((res)=>{
         setFlight(res.data)

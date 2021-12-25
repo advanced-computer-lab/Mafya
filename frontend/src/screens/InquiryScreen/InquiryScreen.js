@@ -35,16 +35,16 @@ function SearchScreen({ history }) {
   const submitHandler = async (e) => {
     setErrorMessage(null);
     e.preventDefault();
-
+    
     const x =
       (search.DateD == "" && search.DateA == "") ||
       (search.DateD == "" &&
-        formatDate(search.DateA).getDate() >= new Date().getDate()) ||
+      (search.DateA.getFullYear()>new Date().getFullYear()||search.DateA.getDate()>=new Date().getDate())) ||
       (search.DateA == "" &&
-        formatDate(search.DateD).getDate() >= new Date().getDate()) ||
+      (search.DateD.getFullYear()>new Date().getFullYear()||search.DateD.getDate()>=new Date().getDate())) ||
       (formatDate(search.DateD).getDate() <=
         formatDate(search.DateA).getDate() &&
-        formatDate(search.DateD).getDate() >= new Date().getDate());
+        (search.DateD.getFullYear()>new Date().getFullYear()||search.DateD.getDate()>=new Date().getDate()));
 
     if (x) {
 

@@ -240,7 +240,7 @@ export default function CreateFlight({history}) {
           {id?
           (         
           <div className="progresssss">
-          <button className="progressButtonnnn" onClick={()=>history.push("/searchNewFlight")}>Search</button>
+          <button  className="progressButtonnnn" onClick={()=>history.push("/searchNewFlight")}>Search</button>
           <div className="progressbarrrr1" ></div>
           <button className="progressButtonnnn1" onClick={()=>history.push("/changeDpFlight")}>Flights</button>
           <div className="progressbarrrr2"></div>
