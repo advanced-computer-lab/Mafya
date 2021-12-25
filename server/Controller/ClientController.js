@@ -1,12 +1,24 @@
 const Client =require( '../model/client.js');
 const Booking =require( '../model/booking');
 const Flight =require( '../model/flight');
+const Forget =require('../model/forget')
 const  asyncHandler = require("express-async-handler");
 const  createTokens = require( "../utils/generateToken");
 const flightController=require('../Controller/FlightController');
+const bcrypt = require("bcryptjs");
 const Token = require("../model/token.js");
-
+const stripe = require("stripe")("sk_test_51K8TPLHG9DEEaFkHIgPdKyIv9gCvzOmb2IPAKJRyOwRlUjESClUCLSEQ4BraqG8cyIwIYsMyhjkfx2lfQRvTEemM00ftg3wFQ0")
+const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
+
+const access_key_forget='ee0d55e175ce42e2793234775bcb39cd786317223bb65951957de78b3bd4f5eb07aeafd2c1b546e159e2c0282f60b65f7a9a575ae9392e7e28b29e56e6e4b1ad';
+
+
+const generateTokenForget =(id) => {
+  return  jwt.sign({ id }, access_key_forget, {
+    expiresIn: "10d",
+  });
+};
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -39,7 +51,7 @@ const sendMail=(email,message,subject)=>{
 
 
 const signUp = asyncHandler(async (req,res)=>{
-    
+    console.log(req.body);
     try{
 
         const client = new Client(req.body);
@@ -66,6 +78,7 @@ const signUp = asyncHandler(async (req,res)=>{
 
 const SignIn =asyncHandler(async (req,res)=>{
     const content = req.body;
+    try{
 
     const client = await Client.findOne({ email:content.email });
     const tok = createTokens.generateToken(client._id);
@@ -86,7 +99,131 @@ const SignIn =asyncHandler(async (req,res)=>{
       res.send(["Invalid Email or Password"]);
       
     }
+  }
+  catch(err){
+    res.send(["Invalid Email or Password"]);
+  }
 });
+
+var forgetStore ={};
+var forgetValid ={};
+
+const forgetPasswordStep1 =asyncHandler(async (req,res)=>{
+        try{
+          const ans =await Client.findOne({email:req.body.email});
+          const ans2 = await Forget.findOne({email:req.body.email});
+            if(ans&&!ans2){
+             
+              const code = parseInt(Math.random()*10)+""+parseInt(Math.random()*10)+parseInt(Math.random()*10)+parseInt(Math.random()*10)+parseInt(Math.random()*10)+parseInt(Math.random()*10);
+              const forgetReq = new Forget({email:req.body.email,code :generateTokenForget(code),state : false})
+              await forgetReq.save();
+              const tok = generateTokenForget(forgetReq._id);
+              await sendMail(req.body.email,"this is the code for changing your mafya air password account :"+code,'changing password')
+              res.json({tokenForget:tok});
+            }
+            else{
+              res.send("Invalid Email");
+            }
+          }
+
+     catch(err){
+            res.send("Invalid Email");
+      }
+})
+
+const forgetPasswordStep2 =asyncHandler(async (req,res)=>{
+
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, access_key_forget);
+      const forgetReq = await Forget.findById(decoded.id);
+      if(forgetReq){
+        const serverCode = jwt.verify(forgetReq.code, access_key_forget);
+        if(serverCode.id===req.body.code){
+            await Forget.findByIdAndUpdate(decoded.id,{state:true});
+            res.send("ok");
+        }
+        else{
+          res.send("incorrectCode");
+        }
+
+      }
+      else{
+        res.send("failed");
+      }
+
+
+    } catch (error) {
+      console.log(error.message)
+      res.send("failed");
+    }
+  }
+  
+})
+
+const forgetPasswordStep3 =asyncHandler(async (req,res)=>{
+
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, access_key_forget);
+      const forgetReq = await Forget.findById(decoded.id);
+      if(forgetReq){
+        const salt = await bcrypt.genSalt(10);
+        const passNew = await bcrypt.hash(req.body.password, salt);
+        await Client.findOneAndUpdate({email:forgetReq.email},{password:passNew})
+        await Forget.findByIdAndDelete(decoded.id);
+        res.send("ok");
+      }
+      else{
+        res.send("failed");
+      }
+
+
+    } catch (error) {
+      console.log(error.message)
+      res.send("failed");
+    }
+  }
+  
+})
+
+
+const payment = asyncHandler((req,res)=>{
+  const { product, token } = req.body;
+ stripe.customers
+    .create({
+      email: token.email,
+      source: token.id
+    }).then(customer =>{
+      stripe.charges.create(
+        {
+          amount: product.price * 100,
+          currency: "usd",
+          customer: customer.id,
+          receipt_email: customer.email,
+          description: `purchase of ${product.name}`,
+        }
+      
+      ).then(result=>{res.status(200).json("ok")})
+      .catch(err => res.send("error"))
+      
+    })
+    .catch(err => res.send("error"));
+})
 
 
 const book = asyncHandler(async (req,res)=>{
@@ -113,13 +250,13 @@ const book = asyncHandler(async (req,res)=>{
 
 
               
-                emad.FirstSeats-=req.body.FirstNumberOfSeats
-                emad.BusinessSeats-=req.body.BusinessNumberOfSeats
-                emad.EconomySeats-=req.body.EconomyNumberOfSeats
+                emad.FirstSeats-=parseInt(req.body.FirstNumberOfSeats)
+                emad.BusinessSeats-=parseInt(req.body.BusinessNumberOfSeats)
+                emad.EconomySeats-=parseInt(req.body.EconomyNumberOfSeats)
 
-                emad.ReservedFirstSeats+=req.body.FirstNumberOfSeats;
-                emad.ReservedBusinessSeats+=req.body.BusinessNumberOfSeats;
-                emad.ReservedEconomySeats+=req.body.EconomyNumberOfSeats;
+                emad.ReservedFirstSeats+=parseInt(req.body.FirstNumberOfSeats);
+                emad.ReservedBusinessSeats+=parseInt(req.body.BusinessNumberOfSeats);
+                emad.ReservedEconomySeats+=parseInt(req.body.EconomyNumberOfSeats);
 
                 emad.FirstSeatsNumbers = removeSubset(emad.FirstSeatsNumbers,req.body.FirstSeatsNumbers);
                 emad.BusinessSeatsNumbers = removeSubset(emad.BusinessSeatsNumbers,req.body.BusinessSeatsNumbers);
@@ -152,7 +289,7 @@ const deleteClientFlight = async(req,res)=>{
     const book = await Booking.findById(bookingId);
     await cancelBooking(bookingId);
     var currentClient = await Client.findById(book.clientId);
-    sendMail(currentClient.email,"your flight has been canceled successfully",'Ticket cancellation')
+    sendMail(currentClient.email,"your flight has been canceled successfully , the refunded amount :"+book.TotalPrice,'Ticket cancellation')
     res.send("User Deleted successfully");
 
   }
@@ -251,7 +388,9 @@ const findFlights = (req,res)=>{
 
   
   Flight.find(val).then((result)=>{
+    
       resData =  filter(result,data) ;
+      console.log(data)
       res.status(200).json(resData);
       
   }).catch (error=>{
@@ -308,6 +447,7 @@ const getBookings = (req,res)=>{
   const id = req.params.id;
       Booking.find({clientId:id}).then((result)=>{
           res.status(200).send(result);
+          
       }).catch((err)=>{
           res.status(409).json({message: err.message})
       })
@@ -315,10 +455,42 @@ const getBookings = (req,res)=>{
 
 };
 
+const getPassword=asyncHandler(async(req,res)=>{
+  const id = req.user._id.toString();
+  const client = await Client.findById(id);
+  const content = req.body;
+  
+  if (client && (await client.matchPassword(content.password))) {
+          try{
+            const salt = await bcrypt.genSalt(10);
+            const passNew = await bcrypt.hash(content.newPassword, salt);
+          await Client.findByIdAndUpdate(id,{password:passNew});
+          res.send("ok");
+          }
+          catch(error){
+            console.log(error.message);
+            res.send(error.message);
+          }
+  }
+  else{
+        res.send("no");
+  }
+  
 
 
+})
 
+const editSeatsNumber=asyncHandler(async(req,res)=>{
+  try{
+  await Booking.findByIdAndUpdate(req.body.BId,req.body.BN);
+  await Flight.findByIdAndUpdate(req.body.FId,req.body.FN);
+  res.send("ok")
+  }
+  catch(err){
+    res.send("error")
 
+  }
+})
 
 
 function filter(result,data){
@@ -378,6 +550,12 @@ getProfile,
 updateProfile,
 cancelBooking,
 getBookings,
-deleteClientFlight
+deleteClientFlight,
+payment,
+getPassword,
+editSeatsNumber,
+forgetPasswordStep1,
+forgetPasswordStep2,
+forgetPasswordStep3
 
 }

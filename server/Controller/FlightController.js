@@ -90,16 +90,15 @@ const createFlight=(req,res)=>
     );
     
     flight.save().then((result)=>{
-        res.send("User created successfully");
+        res.send("1");
     }).catch((err)=>
     { 
-        res.send("Invalid Flight");
-        console.log(req.body)
+        res.send("2");
     });
     }
     catch(error){
        
-        res.send("Invalid Flight");
+        res.send("2");
     }
 
  
@@ -148,7 +147,7 @@ const deleteFlight = (req,res)=>{
     const id = req.params.id;
         Flight.findById(id).then((result)=>{
             res.status(200).json(result);
-
+            
         }).catch((err)=>{
             res.status(409).json({message: err.message})
         })
@@ -165,23 +164,23 @@ const updateFlight = (req,res)=>{
             Flight.findByIdAndUpdate(req.params.id,req.body).then(result =>{
                 notify(oldFilght,req.body,req.params.id);
         
-                res.send("User updated successfully");
+                res.send("1");
             }).catch(err => {
-                res.send("error");
+                res.send("2");
               });
 
         }).catch(err => {
-            res.send("error");
+            res.send("2");
           });
 
 
       }
       else{
-          res.send("invalid Data");
+          res.send("2");
       }
 
   }).catch(err =>{
-      res.send("error");
+      res.send("2");
 
   })
     
@@ -325,7 +324,7 @@ const validateRec = async (req)=>{
     };
 
     const findFlights = (req,res)=>{
-        //console.log(req.body);
+        console.log(req.body);
         const data = req.body;
         const val ={};
         if(data.Flight_No!=null && data.Flight_No!="" )
