@@ -14,7 +14,8 @@ function Loading({ size = 25 }) {
         height: "100%",
          top:"20px",
          left:"0px",
-         color:"white"
+         color:"white",
+         marginBottom:"35px"
 
       }}
     >
