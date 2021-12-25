@@ -158,6 +158,13 @@ export default function CreateFlight(props) {
 
     
       <>
+          <div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
+        rel="stylesheet"
+      />
           <div className="inquiryMain" style={{ flexDirection: "column" }}>
       <div className="progress">
         <button disabled className="progressButton">Search</button>
@@ -300,6 +307,7 @@ export default function CreateFlight(props) {
    
     
       </Form>
+      </div>
       </div>
       </div>
       </div>

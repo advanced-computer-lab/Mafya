@@ -312,8 +312,9 @@ const [errorMessage,setErrorMessage] = useState();
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
+      <div className="TicketContainer">
     {!processing ? (      
-    <div className="TicketContainer">
+    <>
       
       <div className="progressss">
         <button className="progressButtonnn" onClick={()=>history.push("/search")} >Search</button>
@@ -771,18 +772,19 @@ const [errorMessage,setErrorMessage] = useState();
       </Button>
      
       
-    </div>):(<></>)}
+    </>):(<></>)}
 
       <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
-                <Lottie options={defaultOptions1} height={200} width={200} />
+             <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
+             <Lottie options={defaultOptions1} height={200} width={200} />
            
               </div>
           ) : (
     <></>
           )}
     </>
+    </div>
     </div>
     </>
   );

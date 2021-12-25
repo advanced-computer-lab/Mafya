@@ -48,6 +48,10 @@ flightRouter.post('/getPassword',protect.protect,clientController.getPassword);
 flightRouter.post('/editSeatsNumber',protect.protect,clientController.editSeatsNumber)
 
 
+flightRouter.post('/forgetPasswordStep1',clientController.forgetPasswordStep1);
+flightRouter.post('/forgetPasswordStep2',clientController.forgetPasswordStep2);
+flightRouter.post('/forgetPasswordStep3',clientController.forgetPasswordStep3);
+
 
 flightRouter.post('/test',testController.createst);
 flightRouter.post('/testGet',testController.getTest);

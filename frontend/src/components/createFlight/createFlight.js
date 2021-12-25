@@ -182,7 +182,9 @@ export default function CreateFlight({ history }) {
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
-    {!processing ?(    <div className="inquiryMain">
+      <div className="inquiryMain">
+    {!processing ?(    
+      <>
       <div className="reservationContainer">
         <TableContainer
           className="searchSubContainer"
@@ -468,14 +470,13 @@ export default function CreateFlight({ history }) {
           </Table>
         </TableContainer>
       </div>
-    </div>):(<></>)}
+    </>):(<></>)}
     <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
-               <>
+              <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
             <Lottie options={defaultOptions1} height={200} width={200} />
 
-               </>
+           
                 
            
               </div>
@@ -497,6 +498,7 @@ export default function CreateFlight({ history }) {
       ) : (<></>
       )}
     </>
+    </div>
     </div>
 
     </>

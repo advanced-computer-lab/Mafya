@@ -51,18 +51,17 @@ const colorG = "#3ABC5E";
 const colorR = "#B2243C";
 
 function RegisterScreen({ history }) {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [age, setAge] = useState("");
-  const [passport, setPassport] = useState("");
 
 
 
 
-  const [password, setPassword] = useState({
-      "password":"",
-      "newPassword":""
+  const [email, setEmail] = useState({
+      "email":"",
   });
+  const [password, setPassword] = useState({
+    "password":"",
+    "newPassword":""
+});
 
   const userInfo  = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
@@ -70,7 +69,7 @@ function RegisterScreen({ history }) {
 
 
   useEffect(() => {
-    if(!userInfo){
+    if(userInfo){
         history.push('/homePage');
     }
   },[]);
@@ -90,31 +89,16 @@ function RegisterScreen({ history }) {
     const config = {
         headers:{
               "Content-type":"application/json",
-                Authorization: `Bearer ${userInfo.token}`
-
               }
             }
 
-           const  ans =  await axios.post('http://localhost:8000/flights/getPassword',password,config);
-         
+           const  ans =  await axios.post('http://localhost:8000/flights/forgetPasswordStep1',email,config);
            
-           if(ans.data==="ok"){
-            setOption(defaultOptions2);
-            setMessage("Your Password has been updated  successfully");
-            setmessageColor(colorG);
-            setTimeout(() => {
-              setloading(false);
-              setOption(defaultOptions1);
-              setMessage(null);
-              history.push("/profile");
-            }, 3000);
-    
-
-           }
-           else{
+           
+           if(ans.data=="Invalid Email"){
 
             setOption(defaultOptions3);
-            setMessage("Error , Wrong Password");
+            setMessage("Error , Invalid Email");
             setmessageColor(colorR);
             setTimeout(() => {
               setloading(false);
@@ -122,6 +106,16 @@ function RegisterScreen({ history }) {
               setMessage(null);
               
             }, 3000);
+
+           }
+           else{ 
+            setTimeout(() => {
+              setloading(false);
+              sessionStorage.setItem('forget',JSON.stringify(ans.data));
+              history.push("/codeStep");
+            }, 3000);
+    
+
 
 
            }
@@ -149,9 +143,7 @@ function RegisterScreen({ history }) {
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
-      <div className="Background">
-    {!processing ? (    
-    <>
+    {!processing ? (    <div className="Background">
       <div className="loginContainer" style={{ marginTop: "-20px" }}>
       <img
           src={pic}
@@ -166,39 +158,21 @@ function RegisterScreen({ history }) {
            InputProps={{ className: "textfield__input" }}
            label="Filled"
            variant="filled"
-           label="Old Password" 
+           label="Your Email" 
            sx={{ m: 1, width: "60ch" }}
-           type="password" 
+           type="email" 
            required 
           
-           value={password.password} 
-      onChange={(event) =>{setPassword({...password, password:event.target.value})}}
+           value={email.email} 
+      onChange={(event) =>{setEmail({...email, email:event.target.value})}}
      />
           </Form.Group>
 
-          
-          <Form.Group controlId="formBasicPassword">
-            <TextField 
-            id="filled-basic"
-            InputLabelProps={{ className: "textfield__label" }}
-            InputProps={{ className: "textfield__input" }}
-            label="Filled"
-            variant="filled"
-            label="Age"
-            sx={{ m: 1, width: "60ch" }}
-            label="New Password"
-            type="password"
-            required
-            value={password.newPassword}
-            placeholder="Password"
-              onChange={(event) =>{setPassword({...password, newPassword:event.target.value})}}            >
-            </TextField>
-          </Form.Group>
 
           
 
           <Button className="loginbutton" variant="primary" style={{margin:'10px', width: '25ch' }} type="submit">
-            update 
+            send 
           </Button>
         
 
@@ -206,18 +180,19 @@ function RegisterScreen({ history }) {
         
         
       </div>
-      </>
-      ):(<></>)}
+      </div>):(<></>)}
 
 
       <>
 {processing ? (
-       <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
+    <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+       <>
     <Lottie options={defaultOptions1} height={200} width={200} />
 
-       </div>
+       </>
         
-      
+   
+      </div>
   ) : (<></> )}
 </>
 
@@ -226,7 +201,7 @@ function RegisterScreen({ history }) {
 <>
 <div style={{width:"1519px",height:"815px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
 </div>
-<div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"16%",}} >
+<div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"20%",}} >
     <Lottie options={option} height={200} width={200} />
     
     <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
@@ -236,7 +211,6 @@ function RegisterScreen({ history }) {
 ) : (<></>
 )}
 </>
-</div>
     </div>
       </>
     

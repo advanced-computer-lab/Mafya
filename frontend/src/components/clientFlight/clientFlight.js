@@ -156,9 +156,9 @@ export default function BasicTable({ history }) {
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
-    
+    <div className="flightsContainer">  
     {!processing ?(   
-      <div className="flightsContainer">   
+       <>
        <div className="progresss">
         <button className="progressButtonn"  onClick={()=>history.push("/search")} >Search</button>
         <div className="progressbarr1"></div>
@@ -346,11 +346,11 @@ export default function BasicTable({ history }) {
           Book
         </Button>
       </div>
-    </div>
+      </>
     ):(<></>)}
     <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
+          <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
                 <Lottie options={option} height={200} width={200} />
                 <h2 style={{color:"#034694",left :"670px" ,textAlign:'center'}}>{SearchMessage}</h2>
            
@@ -359,6 +359,7 @@ export default function BasicTable({ history }) {
     <></>
           )}
     </>
+    </div>
     </div>
     </>
   );

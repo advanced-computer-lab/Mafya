@@ -28,6 +28,9 @@ import editFlightSeats from "./components/editFlightSeats/editFlightSeats"
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import test from "./components/test"
+import emailStep from "./components/forgetPassword/emailStep"
+import codeStep from "./components/forgetPassword/codeStep"
+import passwordStep from "./components/forgetPassword/passwordStep"
 function App() {
   const [search, setSearch] = useState("");
 
@@ -51,6 +54,10 @@ function App() {
 
         <Route path='/changePassword' component={changePassword} />
         <Route path='/editFlightSeats' component={editFlightSeats} />
+
+        <Route path='/emailStep' component={emailStep} />
+        <Route path='/codeStep' component={codeStep} />
+        <Route path='/passwordStep' component={passwordStep} />
         
         
         <Route path="/profile" component={profile} />

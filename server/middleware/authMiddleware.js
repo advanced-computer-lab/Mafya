@@ -39,6 +39,34 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 });
 
+const protectForget = asyncHandler(async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    
+    try {
+      token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, access_key);
+      req.email= decoded;
+      next();
+      
+    } catch (error) {
+      res.send("failed");
+    }
+  }
+
+  if (!token) {
+    res.send("failed");
+  }
+});
+
+
+
+
+
 
 const protectAdmin = asyncHandler(async (req, res, next) => {
   let token;
@@ -137,5 +165,6 @@ module.exports= {
   protect,
   protectAdmin,
   createTokents,
-  logout
+  logout,
+  protectForget
  };

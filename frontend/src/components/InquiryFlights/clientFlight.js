@@ -123,127 +123,134 @@ export default function BasicTable({ history }) {
 
   return (
     <>
-    <div className="flightsContainer">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <div>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
       <link
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
-      <div className="flightSubContainer">
-        <TableContainer
-          style={{ width: "1300px", borderRadius: "0" }}
-          component={Paper}
-        >
-          <Table
-            style={{ width: "1300px", borderRadius: "0" }}
-            aria-label="simple table"
-          >
-            <TableHead
-              style={{
-                backgroundColor: "#3c5977",
-                color: "white",
-                borderRadius: "0",
-              }}
-            >
-              <TableRow style={{ borderRadius: "0" }}>
-                <TableCell className="FlightCell" align="center">
-                  From
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  To
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Departure Date
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Arrival Date
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  First ${" "}
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  First Available seats{" "}
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Baggage Allowance First{" "}
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Economy $
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Economy Available seats{" "}
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Baggage Allowance Business{" "}
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Business $
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Business Available seats{" "}
-                </TableCell>
-                <TableCell className="FlightCell" align="center">
-                  Baggage Allowance Economy{" "}
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {flights.map((flight, key) => (
-                <TableRow key={flight._id}>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.From}
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.To}
-                  </TableCell>
+    
+    <div className="flightsContainer">
 
-                  <TableCell align="center" className="FlightSubCell">
-                    {formatDate(flight.DateD)}
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {formatDate(flight.DateA)}
-                  </TableCell>
+    {!processing ?(   <>
 
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.FirstPrice}$
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.FirstSeats}
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.BaggageAllowanceFirst}
-                  </TableCell>
+<div className="flightSubContainer">
+  <TableContainer
+    style={{ width: "1300px", borderRadius: "0" }}
+    component={Paper}
+  >
+    <Table
+      style={{ width: "1300px", borderRadius: "0" }}
+      aria-label="simple table"
+    >
+      <TableHead
+        style={{
+          backgroundColor: "#3c5977",
+          color: "white",
+          borderRadius: "0",
+        }}
+      >
+        <TableRow style={{ borderRadius: "0" }}>
+          <TableCell className="FlightCell" align="center">
+            From
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            To
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Departure Date
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Arrival Date
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            First ${" "}
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            First Available seats{" "}
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Baggage Allowance First{" "}
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Economy $
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Economy Available seats{" "}
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Baggage Allowance Business{" "}
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Business $
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Business Available seats{" "}
+          </TableCell>
+          <TableCell className="FlightCell" align="center">
+            Baggage Allowance Economy{" "}
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {flights.map((flight, key) => (
+          <TableRow key={flight._id}>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.From}
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.To}
+            </TableCell>
 
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.BusinessPrice}$
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.BusinessSeats}
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.BaggageAllowanceBusiness}
-                  </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {formatDate(flight.DateD)}
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {formatDate(flight.DateA)}
+            </TableCell>
 
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.EconomyPrice}$
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.EconomySeats}
-                  </TableCell>
-                  <TableCell align="center" className="FlightSubCell">
-                    {flight.BaggageAllowanceEconomy}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-    </div>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.FirstPrice}$
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.FirstSeats}
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.BaggageAllowanceFirst}
+            </TableCell>
+
+            <TableCell align="center" className="FlightSubCell">
+              {flight.BusinessPrice}$
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.BusinessSeats}
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.BaggageAllowanceBusiness}
+            </TableCell>
+
+            <TableCell align="center" className="FlightSubCell">
+              {flight.EconomyPrice}$
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.EconomySeats}
+            </TableCell>
+            <TableCell align="center" className="FlightSubCell">
+              {flight.BaggageAllowanceEconomy}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</div>
+
+</>):(<></>)}
+ 
 <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
+          <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
                 <Lottie options={option} height={200} width={200} />
                 <h2 style={{color:"#034694",left :"670px" ,textAlign:'center'}}>{SearchMessage}</h2>
               </div>
@@ -253,8 +260,8 @@ export default function BasicTable({ history }) {
 <>
 </>
     
-    
-        
+</div>
+    </div>
     </>
     
   );

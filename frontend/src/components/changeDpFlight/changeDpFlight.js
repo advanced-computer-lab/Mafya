@@ -95,7 +95,7 @@ export default function BasicTable({history}) {
       axios.post('http://localhost:8000/flights/getBookingFlights',flightSearch1).then((res)=>{
         setFlight(res.data)
         if(res.data.length==0){
-          setSearchMessage("unavailable Flights for this search criteria")
+          setSearchMessage("No available flights for this search criteria")
           setOption(defaultOptions4);
           setTimeout(() => {
             setProcessing(false);
@@ -145,8 +145,9 @@ export default function BasicTable({history}) {
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
+       <div className="flightsContainer">
       {!processing ?(
-               <div className="flightsContainer">
+               <>
 
                <link rel="preconnect" href="https://fonts.googleapis.com" />
                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -247,12 +248,12 @@ export default function BasicTable({history}) {
                  </div>
              </div>
              
-                </div>
+                </>
       ):(<></>)}
 
 <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"17%",}}>
+          <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
                 <Lottie options={option} height={200} width={200} />
                 <h2 style={{color:"#034694",left :"670px" ,textAlign:'center'}}>{SearchMessage}</h2>
               </div>
@@ -260,6 +261,7 @@ export default function BasicTable({history}) {
     <></>
           )}
     </>
+    </div>
     </div>
 
 

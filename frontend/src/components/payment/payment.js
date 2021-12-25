@@ -234,9 +234,9 @@ export default function CreateFlight({history}) {
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
-        
-        {!processing ? (        
         <div className="TicketContainer">
+        {!processing ? (        
+          <>
           {id?
           (         
           <div className="progresssss">
@@ -305,13 +305,12 @@ export default function CreateFlight({history}) {
              
           </StripeCheckout>
           
-        </div>):(<></>)}
+        </>):(<></>)}
 
 
         <>
         {processing ? (
-            <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
-               <>
+          <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >               <>
             <Lottie options={defaultOptions1} height={200} width={200} />
 
                </>
@@ -326,7 +325,7 @@ export default function CreateFlight({history}) {
       <>
         <div style={{width:"1519px",height:id?("691px"):("955px"),backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
         </div>
-        <div  style={{width:"1519px",height:id?("691px"):("955px"),position:'absolute',top:"50px",paddingTop:"20%",}} >
+        <div  style={{width:"1519px",height:id?("691px"):("955px"),position:'absolute',top:"50px",paddingTop:"16%",}} >
             <Lottie options={option} height={200} width={200} />
             
             <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
@@ -337,7 +336,7 @@ export default function CreateFlight({history}) {
       )}
     </>
 
-       
+       </div>
         </div>
         </>
 

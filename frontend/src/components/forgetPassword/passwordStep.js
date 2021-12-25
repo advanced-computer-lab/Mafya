@@ -61,16 +61,21 @@ function RegisterScreen({ history }) {
 
   const [password, setPassword] = useState({
       "password":"",
-      "newPassword":""
+      "confirmPassword":""
   });
 
   const userInfo  = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
+  const forgetInfo  = sessionStorage.getItem("forget")
+  ? JSON.parse(sessionStorage.getItem("forget"))
+  : null;
+
+
 
   useEffect(() => {
-    if(!userInfo){
+    if(userInfo||!forgetInfo){
         history.push('/homePage');
     }
   },[]);
@@ -83,6 +88,9 @@ function RegisterScreen({ history }) {
 
   }
   const changePassword =async()=>{
+    if(password.password===password.confirmPassword){
+  
+      
     setloading(true);
     setConfirm(false);
     setOption(defaultOptions1);
@@ -90,12 +98,12 @@ function RegisterScreen({ history }) {
     const config = {
         headers:{
               "Content-type":"application/json",
-                Authorization: `Bearer ${userInfo.token}`
+                Authorization: `Bearer ${forgetInfo.tokenForget}`
 
               }
             }
 
-           const  ans =  await axios.post('http://localhost:8000/flights/getPassword',password,config);
+           const  ans =  await axios.post('http://localhost:8000/flights/forgetPasswordStep3',{password:password.password},config);
          
            
            if(ans.data==="ok"){
@@ -106,7 +114,7 @@ function RegisterScreen({ history }) {
               setloading(false);
               setOption(defaultOptions1);
               setMessage(null);
-              history.push("/profile");
+              history.push("/login");
             }, 3000);
     
 
@@ -114,16 +122,23 @@ function RegisterScreen({ history }) {
            else{
 
             setOption(defaultOptions3);
-            setMessage("Error , Wrong Password");
+            setMessage("invalid Request");
             setmessageColor(colorR);
             setTimeout(() => {
               setloading(false);
               setOption(defaultOptions1);
               setMessage(null);
+              history.push("/homePage");
               
             }, 3000);
 
 
+           }
+           sessionStorage.removeItem("forget")
+        }
+           else{
+            setErrorMessage("Passwords do not match");
+            return ;
            }
     
 
@@ -139,7 +154,7 @@ function RegisterScreen({ history }) {
   const [message,setMessage]= useState("");
   const [messageColor,setmessageColor]=useState("#3ABC5E");
    
-
+  const [errorMessage,setErrorMessage] = useState();
   return (
     <>
         <div>
@@ -149,9 +164,7 @@ function RegisterScreen({ history }) {
         href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500&display=swap"
         rel="stylesheet"
       />
-      <div className="Background">
-    {!processing ? (    
-    <>
+    {!processing ? (    <div className="Background">
       <div className="loginContainer" style={{ marginTop: "-20px" }}>
       <img
           src={pic}
@@ -166,7 +179,7 @@ function RegisterScreen({ history }) {
            InputProps={{ className: "textfield__input" }}
            label="Filled"
            variant="filled"
-           label="Old Password" 
+           label="New Password" 
            sx={{ m: 1, width: "60ch" }}
            type="password" 
            required 
@@ -184,19 +197,18 @@ function RegisterScreen({ history }) {
             InputProps={{ className: "textfield__input" }}
             label="Filled"
             variant="filled"
-            label="Age"
             sx={{ m: 1, width: "60ch" }}
-            label="New Password"
+            label="Confirm new Password"
             type="password"
             required
-            value={password.newPassword}
+            value={password.confirmPassword}
             placeholder="Password"
-              onChange={(event) =>{setPassword({...password, newPassword:event.target.value})}}            >
+              onChange={(event) =>{setPassword({...password, confirmPassword:event.target.value})}}            >
             </TextField>
           </Form.Group>
 
           
-
+          <h4 style={{color:"red",textAlign:'center'}}>{errorMessage}</h4>
           <Button className="loginbutton" variant="primary" style={{margin:'10px', width: '25ch' }} type="submit">
             update 
           </Button>
@@ -206,18 +218,19 @@ function RegisterScreen({ history }) {
         
         
       </div>
-      </>
-      ):(<></>)}
+      </div>):(<></>)}
 
 
       <>
 {processing ? (
-       <div  style={{width:"1519px",height:"690px",position:'absolute',top:"50px",paddingTop:"16%",}} >
+    <div style={{width:"1519px",height:"690px",backgroundColor:"#282c34",opacity:"1",position:'absolute',top:"50px",paddingTop:"20%",}}>
+       <>
     <Lottie options={defaultOptions1} height={200} width={200} />
 
-       </div>
+       </>
         
-      
+   
+      </div>
   ) : (<></> )}
 </>
 
@@ -226,7 +239,7 @@ function RegisterScreen({ history }) {
 <>
 <div style={{width:"1519px",height:"815px",backgroundColor:"#282c34",opacity:"0.8",position:'absolute',top:"50px",paddingTop:"20%",}}>
 </div>
-<div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"16%",}} >
+<div  style={{width:"1519px",height:"815px",position:'absolute',top:"50px",paddingTop:"20%",}} >
     <Lottie options={option} height={200} width={200} />
     
     <h2 style={{color:messageColor,left :"670px" ,textAlign:'center'}}>{message}</h2>
@@ -236,7 +249,6 @@ function RegisterScreen({ history }) {
 ) : (<></>
 )}
 </>
-</div>
     </div>
       </>
     
