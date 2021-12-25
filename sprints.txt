@@ -1,0 +1,88 @@
+Sprint 1:
+----------------
+Tasks                                                                 Student Name
+
+-creating an Administrator for the system                             Ahmed Ramadan
+
+-enable the Administrator to Create flights                           Mohammed Youssef
+using all flight details such that flight
+number,departure and arrival airports,
+cabin class and number of seats
+
+-enable the Administrator to Delete selected                          Ahmed Ramadan 
+flight with its details upon confirmation
+
+-enable the Administrator to Update selected                          Abdallah Adel
+flight with its details upon confirmation for 
+this update and saving these updates
+
+-enable the Administrator to Search through                           Fady Rezk
+all created flights using search criteria 
+including all flight details
+
+-enable the Administrator to List all existing                        Mahmoud Khaled
+flights in the system 
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Sprint 2:
+-----------
+Tasks                                                                 Student Name
+
+-allow Guest/Existing user to search through                          Mohammed Youssef
+all flights for departure or return flight
+
+-allow Guest/Existing user to see all details                         Mohammed Youssef
+of any selected departure or return flight
+
+-allow Guest/Existing user to see all avialable                       Ahmed Ramadan
+seats in the selected flight and choose any
+number of seats from the available ones
+
+-allow Existing user to reserve a round-                              Ahmed Ramadan
+trip flight and confirm this reservation
+
+-allow Existing user to be emailed after                              Fady Rezk
+reservation 
+
+-allow Existing user to have a profile with                           Fady Rezk
+all his/her details such that name,email,
+passport number and password
+
+-allow Existing user to edit in his/her                               Abdallah Adel
+profile
+
+-allow Existing user to see all reservations                          Abdallah Adel
+he/she made in my flights section
+
+-allow Existing user to cancel any reserved                           Mahmoud Khaled
+flight upon confirmation
+
+-allow Existing user to be emailed with                               Mahmoud Khaled
+the amount to be refunded after cancellation 
+of a reserved flight 
+
+----------------------------------------------------------------------------------------------------------------
+
+Sprint 3:
+-----------
+Tasks                                                                 Student Name
+ 
+-allow Existing user to edit selected reserved                        Mohammed Youssef
+departure or return flight
+ 
+-allow Existing user to edit selected seats in any                    Abdallah Adel       
+reversed departure or return flight
+
+-allow Existing user to be emailed with the updates                   Mohammed Youssef
+on the reserved flights with the amount to be refunded
+
+-allow Existing user to change his/her password after                 Mahmoud Khaled
+entering the old password
+
+-allow Existing user to pay for reservation using                     Ahmed Ramadan
+MasterCard or Visa
+
+-Non-Functional Requirements                                          Fady Rezk
+
+-Authentication(Sign In,Sign Up)                                      Ahmed Ramadan
